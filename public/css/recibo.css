@@ -1,0 +1,220 @@
+/*
+|--------------------------------------------------------------------------
+| RECIBO DE MEMBRESÍA - IMPULSO FITNESS
+|--------------------------------------------------------------------------
+| Estilos exclusivos para la vista de recibo.
+| NO usa estilos globales para evitar conflictos con dashboard.
+| Optimizado para pantalla e impresión.
+*/
+
+body {
+    margin: 0;
+    padding: 40px;
+    background: #f3f6fb;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #111827;
+}
+
+/*
+|--------------------------------------------------------------------------
+| CONTENEDOR PRINCIPAL
+|--------------------------------------------------------------------------
+*/
+.receipt-wrapper {
+    max-width: 850px;
+    margin: 0 auto;
+}
+
+/*
+|--------------------------------------------------------------------------
+| TARJETA DEL RECIBO
+|--------------------------------------------------------------------------
+*/
+.receipt-card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 40px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+}
+
+/*
+|--------------------------------------------------------------------------
+| ENCABEZADO
+|--------------------------------------------------------------------------
+*/
+.receipt-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 24px;
+    margin-bottom: 28px;
+}
+
+.receipt-brand h1 {
+    margin: 0;
+    font-size: 30px;
+    color: #0f172a;
+}
+
+.receipt-brand p {
+    margin-top: 6px;
+    color: #64748b;
+}
+
+/*
+|--------------------------------------------------------------------------
+| INFO DEL RECIBO (ID, FECHA, REFERENCIA)
+|--------------------------------------------------------------------------
+*/
+.receipt-info {
+    text-align: right;
+}
+
+.receipt-info h2 {
+    margin: 0;
+    font-size: 22px;
+    color: #0f172a;
+}
+
+.receipt-info p {
+    margin: 6px 0 0;
+    color: #64748b;
+}
+
+.receipt-reference {
+    margin-top: 8px;
+    font-weight: bold;
+    color: #2563eb;
+}
+
+/*
+|--------------------------------------------------------------------------
+| GRID DE SECCIONES
+|--------------------------------------------------------------------------
+*/
+.receipt-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    margin-bottom: 28px;
+}
+
+/*
+|--------------------------------------------------------------------------
+| BLOQUES DE INFORMACIÓN
+|--------------------------------------------------------------------------
+*/
+.receipt-section {
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 22px;
+    background: #fafafa;
+}
+
+.receipt-section h3 {
+    margin-top: 0;
+    margin-bottom: 16px;
+    font-size: 18px;
+    color: #0f172a;
+}
+
+.receipt-section p {
+    margin: 10px 0;
+    color: #374151;
+    font-size: 14px;
+}
+
+/*
+|--------------------------------------------------------------------------
+| TOTAL
+|--------------------------------------------------------------------------
+*/
+.receipt-total {
+    border-top: 2px solid #e5e7eb;
+    padding-top: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.receipt-total span {
+    color: #64748b;
+    font-size: 15px;
+}
+
+.receipt-total strong {
+    font-size: 32px;
+    color: #0f172a;
+}
+
+/*
+|--------------------------------------------------------------------------
+| BOTONES
+|--------------------------------------------------------------------------
+*/
+.receipt-actions {
+    margin-top: 28px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.btn {
+    text-decoration: none;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 18px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.btn-secondary {
+    background: #e5e7eb;
+    color: #111827;
+}
+
+.btn-primary {
+    background: #2563eb;
+    color: #ffffff;
+}
+
+/*
+|--------------------------------------------------------------------------
+| NOTA FINAL
+|--------------------------------------------------------------------------
+*/
+.receipt-note {
+    margin-top: 28px;
+    font-size: 13px;
+    color: #64748b;
+    text-align: center;
+}
+
+/*
+|--------------------------------------------------------------------------
+| IMPRESIÓN (CLAVE)
+|--------------------------------------------------------------------------
+| Esto hace que el recibo se vea limpio al imprimir (sin fondo gris ni botones)
+*/
+@media print {
+    body {
+        background: #ffffff;
+        padding: 0;
+    }
+
+    .receipt-wrapper {
+        max-width: 100%;
+    }
+
+    .receipt-card {
+        box-shadow: none;
+        border-radius: 0;
+    }
+
+    .receipt-actions {
+        display: none;
+    }
+}

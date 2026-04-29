@@ -1,0 +1,351 @@
+/* =========================================================
+   SOCIOS.CSS
+   Todo lo exclusivo del módulo de socios:
+   - registro
+   - vista previa
+   - búsqueda
+   - detalle
+   ========================================================= */
+
+/* ===== REGISTRO DE SOCIO ===== */
+.register-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 2.15fr) minmax(300px, 0.95fr);
+    gap: 18px;
+    align-items: start;
+}
+
+.register-main {
+    min-width: 0;
+}
+
+.register-side {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    position: sticky;
+    top: 20px;
+}
+
+.card-section {
+    padding: 18px;
+}
+
+.membership-block {
+    border-top: 1px solid rgba(148, 163, 184, 0.12);
+    padding-top: 16px;
+}
+
+/* Cards simples de membresía dentro de Socios */
+.membership-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.membership-card {
+    border: 1px solid rgba(43, 81, 145, 0.55);
+    border-radius: 14px;
+    background: rgba(10, 18, 36, 0.92);
+    padding: 16px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    transition: 0.2s ease;
+    min-height: 112px;
+    justify-content: center;
+}
+
+.membership-card:hover {
+    border-color: #3b82f6;
+    transform: translateY(-1px);
+}
+
+.membership-card.active {
+    border: 2px solid #f5a623;
+    box-shadow: 0 0 18px rgba(245, 166, 35, 0.25);
+    background: linear-gradient(
+        180deg,
+        rgba(12, 28, 70, 1) 0%,
+        rgba(8, 20, 54, 1) 100%
+    );
+}
+
+.membership-title {
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: #f8fafc;
+}
+
+.membership-card small {
+    color: #94a3b8;
+    font-size: 0.82rem;
+}
+
+.membership-card strong {
+    color: #ffffff;
+    font-size: 0.95rem;
+    margin-top: 4px;
+}
+
+.side-card {
+    padding: 18px;
+}
+
+.side-card h4 {
+    margin-bottom: 14px;
+    font-size: 1.05rem;
+}
+
+.success-card {
+    border-color: rgba(16, 185, 129, 0.28);
+    background: linear-gradient(180deg, rgba(8, 54, 44, 0.92) 0%, rgba(6, 31, 27, 0.96) 100%);
+}
+
+.action-row {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.preview-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.preview-list p {
+    margin: 0;
+    font-size: 0.92rem;
+    color: #dbe5f5;
+}
+
+.preview-list strong {
+    color: #f8fafc;
+}
+
+.badge-plan {
+    display: inline-block;
+    background: #7c3aed;
+    color: #ffffff;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+}
+
+/* ===== BUSCAR SOCIO ===== */
+.left-column-search {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.socio-search-grid {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap: 18px;
+    align-items: start;
+}
+
+.search-toolbar {
+    display: flex;
+    gap: 12px;
+}
+
+.socios-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 430px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.socio-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(13, 23, 45, 0.92);
+    border: 1px solid #273759;
+    border-radius: 16px;
+    padding: 14px 16px;
+    color: #ffffff;
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
+.socio-list-item:hover,
+.socio-list-item.selected {
+    border-color: #3b82f6;
+    background: rgba(20, 33, 61, 0.98);
+}
+
+.socio-list-item h5 {
+    margin: 0 0 6px 0;
+    font-size: 1rem;
+    color: #f8fafc;
+}
+
+.arrow {
+    font-size: 1.35rem;
+    color: #b7c3d7;
+}
+
+.detail-column {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.detail-card h2 {
+    margin-bottom: 10px;
+    font-size: 1.42rem;
+}
+
+.detail-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 16px;
+}
+
+.detail-box {
+    border: 1px solid rgba(101, 118, 150, 0.22);
+    border-radius: 16px;
+    padding: 14px;
+    background: rgba(8, 16, 34, 0.72);
+}
+
+.detail-box h4 {
+    margin-bottom: 12px;
+    font-size: 1rem;
+}
+
+.detail-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 16px;
+}
+
+.detail-info-grid p {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.9rem;
+}
+
+.detail-info-grid span {
+    color: #9fb0cb;
+    font-size: 0.8rem;
+}
+
+.detail-info-grid strong {
+    color: #f8fafc;
+    font-size: 0.9rem;
+}
+
+.history-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.history-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+    font-size: 0.9rem;
+}
+
+/* ========================================================= */
+/* VALIDACIÓN DE INPUTS - ESTILO ELEGANTE (TEMA OSCURO)      */
+/* ========================================================= */
+/*
+    Esta clase se aplica dinámicamente desde socios.js
+    cuando un campo tiene un error de validación.
+
+    Objetivo:
+    - Resaltar el campo sin romper el diseño
+    - Mantener coherencia con tema oscuro
+    - No ser agresivo visualmente
+*/
+.input-error {
+    border: 1px solid #ff4d4f !important; /* Rojo principal de error */
+    background-color: rgba(255, 77, 79, 0.08); /* Fondo suave */
+    box-shadow: 0 0 6px rgba(255, 77, 79, 0.35); /* Glow sutil */
+    color: #fff; /* Mantiene contraste en tema oscuro */
+
+    /* Transición suave para no ser brusco */
+    transition: all 0.2s ease;
+}
+
+/*
+    Estado cuando el usuario vuelve a interactuar con el campo.
+    Se intensifica ligeramente para dar feedback visual.
+*/
+.input-error:focus {
+    outline: none;
+    border-color: #ff4d4f !important;
+    box-shadow: 0 0 10px rgba(255, 77, 79, 0.6);
+}
+
+/*
+    Hover ligero (opcional pero mejora UX)
+*/
+.input-error:hover {
+    box-shadow: 0 0 8px rgba(255, 77, 79, 0.45);
+}
+
+/* ========================================================= */
+/* OPCIONAL: INPUT NORMAL MEJORADO                           */
+/* ========================================================= */
+/*
+    Esto ayuda a que el contraste entre normal vs error
+    se vea más limpio en todo el sistema.
+*/
+.custom-input {
+    transition: all 0.2s ease;
+}
+
+/*
+    Estado focus general (cuando NO hay error)
+*/
+.custom-input:focus {
+    border-color: #4dabf7;
+    box-shadow: 0 0 6px rgba(77, 171, 247, 0.4);
+}
+
+/* ========================================================= */
+/* OPCIONAL: MENSAJES DE ERROR FUTUROS (PREPARADO)           */
+/* ========================================================= */
+/*
+    Si después quieres mostrar errores debajo del input,
+    ya tienes este estilo listo.
+*/
+.input-error-message {
+    font-size: 0.8rem;
+    color: #ff4d4f;
+    margin-top: 4px;
+}
+
+/* Responsive del módulo Socios */
+@media (max-width: 1200px) {
+    .register-layout,
+    .socio-search-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .register-side {
+        position: static;
+    }
+}
+
+@media (max-width: 992px) {
+    .membership-grid,
+    .detail-info-grid {
+        grid-template-columns: 1fr;
+    }
+}

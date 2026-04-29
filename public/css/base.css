@@ -1,0 +1,131 @@
+/* =========================================================
+   BASE.CSS
+   Estilos globales del sistema:
+   - body
+   - contenido principal
+   - cards generales
+   - inputs y labels reutilizables
+   - títulos de módulos
+   ========================================================= */
+
+body {
+    margin: 0;
+    background: #06122b;
+    color: #f8fafc;
+    font-family: Arial, sans-serif;
+}
+
+/* Área principal a la derecha del sidebar */
+.main-content {
+    margin-left: 250px;
+    min-height: 100vh;
+    padding: 22px;
+}
+
+/* Card general reutilizable en todos los módulos */
+.page-card {
+    background: linear-gradient(180deg, rgba(5, 16, 40, 0.96) 0%, rgba(5, 14, 34, 0.96) 100%);
+    border: 1px solid rgba(117, 133, 165, 0.22);
+    border-radius: 22px;
+    padding: 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+}
+
+/* Encabezado de módulo */
+.module-title-bar {
+    margin-bottom: 16px;
+}
+
+.module-title-bar h1 {
+    font-size: 1.55rem;
+    margin: 0;
+    font-weight: 600;
+}
+
+/* Encabezados secundarios reutilizables */
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.section-header h3 {
+    margin: 0;
+    font-size: 1.12rem;
+    font-weight: 600;
+}
+
+.section-header p {
+    margin: 2px 0 0;
+    color: #94a3b8;
+    font-size: 0.86rem;
+}
+
+/* Inputs globales reutilizables */
+.custom-input {
+    background: rgba(15, 23, 42, 0.88) !important;
+    border: 1px solid #253552 !important;
+    color: #f8fafc !important;
+    border-radius: 12px !important;
+    padding: 11px 14px !important;
+    font-size: 0.95rem !important;
+}
+
+.custom-input::placeholder {
+    color: #7f8da3;
+}
+
+.custom-input:focus {
+    background: rgba(15, 23, 42, 0.95) !important;
+    color: #fff !important;
+    border-color: #3b82f6 !important;
+    box-shadow: none !important;
+}
+
+/* Labels de formularios */
+.form-label {
+    color: #cfd9ea;
+    font-weight: 500;
+    margin-bottom: 7px;
+    font-size: 0.92rem;
+}
+
+/* Badge general para estados */
+.status-pill {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+.status-active {
+    background: rgba(16, 185, 129, 0.18);
+    color: #34d399;
+}
+
+.status-inactive {
+    background: rgba(239, 68, 68, 0.18);
+    color: #f87171;
+}
+
+/* Cajas vacías o mensajes suaves */
+.empty-box {
+    padding: 18px;
+    border: 1px dashed rgba(148, 163, 184, 0.25);
+    border-radius: 14px;
+    color: #b7c3d7;
+    background: rgba(12, 20, 38, 0.75);
+}
+
+/* Responsive global */
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0;
+        padding: 18px;
+    }
+
+    .page-card {
+        padding: 16px;
+    }
+}
