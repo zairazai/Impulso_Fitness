@@ -3,20 +3,21 @@
 |--------------------------------------------------------------------------
 | MIDDLEWARE DE AUTENTICACIÓN
 |--------------------------------------------------------------------------
-| Validamos que el usuario tenga sesión activa antes de cargar la vista.
-| Esto evita repetir la lógica de sesión en cada archivo.
 */
 require_once __DIR__ . '/../../../app/middleware/auth.php';
 
 /*
 |--------------------------------------------------------------------------
-| MODELO
+| MODELO SOCIO
 |--------------------------------------------------------------------------
-| Cargamos el modelo Socio para listar socios y obtener el detalle
-| del socio seleccionado.
 */
 require_once __DIR__ . '/../../../app/models/Socio.php';
 
+/*
+|--------------------------------------------------------------------------
+| INSTANCIA DEL MODELO
+|--------------------------------------------------------------------------
+*/
 $modeloSocio = new Socio();
 
 /*
@@ -30,8 +31,6 @@ $socios = $modeloSocio->listarSocios();
 |--------------------------------------------------------------------------
 | SOCIO SELECCIONADO
 |--------------------------------------------------------------------------
-| Si viene un id por URL, buscamos ese socio.
-| Si no viene ninguno y sí hay socios, mostramos el primero.
 */
 $idSeleccionado = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $socioSeleccionado = null;
@@ -48,7 +47,6 @@ if (!$socioSeleccionado && !empty($socios)) {
 |--------------------------------------------------------------------------
 | FUNCIÓN AUXILIAR PARA FORMATEAR FECHAS
 |--------------------------------------------------------------------------
-| Convierte una fecha tipo YYYY-MM-DD a formato más amigable.
 */
 function formatearFecha(?string $fecha): string
 {
@@ -57,16 +55,35 @@ function formatearFecha(?string $fecha): string
     }
 
     $timestamp = strtotime($fecha);
+
     if (!$timestamp) {
         return '-';
     }
 
     return date('d/m/Y', $timestamp);
 }
+
+/*
+|--------------------------------------------------------------------------
+| HEADER GENERAL
+|--------------------------------------------------------------------------
+| Cargamos el CSS del módulo socios antes del header para que
+| se inserte correctamente dentro del <head>.
+*/
+$extraCss = "/Impulso_Fitness/public/css/socios.css";
+
+include __DIR__ . '/../layouts/header.php';
+
 ?>
 
-<?php include __DIR__ . '/../layouts/header.php'; ?>
-<?php include __DIR__ . '/../layouts/sidebar.php'; ?>
+<?php
+/*
+|--------------------------------------------------------------------------
+| SIDEBAR
+|--------------------------------------------------------------------------
+*/
+include __DIR__ . '/../layouts/sidebar.php';
+?>
 
 <div class="main-content">
     <div class="container-fluid px-0">

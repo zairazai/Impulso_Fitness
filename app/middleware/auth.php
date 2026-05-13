@@ -2,15 +2,15 @@
 
 /*
 |--------------------------------------------------------------------------
-| CONFIGURACIÓN GENERAL
-|--------------------------------------------------------------------------
-| Cargamos BASE_URL para usar rutas centralizadas.
+| CONFIGURACIÓN GENERAL:  Cargamos BASE_URL para usar rutas centralizadas.
 */
 require_once __DIR__ . '/../../config/app.php';
 
 /*
 |--------------------------------------------------------------------------
-| SESIÓN
+| SESIÓN: Usamos sesiones PHP y un middleware de autenticación que valida 
+|si existe un usuario autenticado en $_SESSION. Si no existe, 
+|redirige automáticamente al login.
 |--------------------------------------------------------------------------
 | Iniciamos sesión solo si no existe una sesión activa.
 */

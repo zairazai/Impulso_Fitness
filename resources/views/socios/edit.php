@@ -1,50 +1,107 @@
 <?php
+/*
+|--------------------------------------------------------------------------
+| MIDDLEWARE DE AUTENTICACIÓN
+|--------------------------------------------------------------------------
+| Validamos que exista una sesión activa antes de cargar la vista.
+*/
 require_once __DIR__ . '/../../../app/middleware/auth.php';
+
+/*
+|--------------------------------------------------------------------------
+| MODELO SOCIO
+|--------------------------------------------------------------------------
+| Cargamos el modelo para obtener la información del socio seleccionado.
+*/
 require_once __DIR__ . '/../../../app/models/Socio.php';
 
+/*
+|--------------------------------------------------------------------------
+| VALIDAR ID DEL SOCIO
+|--------------------------------------------------------------------------
+*/
 $id = (int)($_GET['id'] ?? 0);
 
 if ($id <= 0) {
-    header("Location: /Impulso_Fitness/resources/views/socios/index.php?error=datos_invalidos");
+    header("Location: " . BASE_URL . "/resources/views/socios/index.php?error=datos_invalidos");
     exit;
 }
 
+/*
+|--------------------------------------------------------------------------
+| OBTENER DATOS DEL SOCIO
+|--------------------------------------------------------------------------
+*/
 $modeloSocio = new Socio();
+
 $socio = $modeloSocio->obtenerSocioPorId($id);
 $huella = $modeloSocio->obtenerHuellaPorSocio($id);
 
 if (!$socio) {
-    header("Location: /Impulso_Fitness/resources/views/socios/index.php?error=no_encontrado");
+    header("Location: " . BASE_URL . "/resources/views/socios/index.php?error=no_encontrado");
     exit;
 }
 
-$nombreCompleto = trim(($socio['nombres'] ?? '') . ' ' . ($socio['apellido_paterno'] ?? '') . ' ' . ($socio['apellido_materno'] ?? ''));
+/*
+|--------------------------------------------------------------------------
+| NOMBRE COMPLETO
+|--------------------------------------------------------------------------
+| Se usa en el input hidden para conservar compatibilidad con el update.
+*/
+$nombreCompleto = trim(
+    ($socio['nombres'] ?? '') . ' ' .
+    ($socio['apellido_paterno'] ?? '') . ' ' .
+    ($socio['apellido_materno'] ?? '')
+);
+
+/*
+|--------------------------------------------------------------------------
+| HEADER GENERAL
+|--------------------------------------------------------------------------
+| Cargamos el CSS del módulo socios antes del header para que
+| el navegador lo inserte correctamente dentro del <head>.
+*/
+$extraCss = "/Impulso_Fitness/public/css/socios.css";
+
+include __DIR__ . '/../layouts/header.php';
+
 ?>
 
-<?php include __DIR__ . '/../layouts/header.php'; ?>
-<?php include __DIR__ . '/../layouts/sidebar.php'; ?>
+<?php
+/*
+|--------------------------------------------------------------------------
+| SIDEBAR
+|--------------------------------------------------------------------------
+*/
+include __DIR__ . '/../layouts/sidebar.php';
+?>
 
 <div class="main-content">
     <div class="container-fluid px-0">
 
+        <!-- ENCABEZADO -->
         <div class="socio-page-header mb-3">
             <h1>Editar Socio</h1>
             <p>Actualiza la información del socio seleccionado.</p>
         </div>
 
+        <!-- ALERTAS -->
         <?php if (isset($_GET['error'])): ?>
             <div class="alert alert-danger">
                 Revisa los datos del formulario antes de guardar.
             </div>
         <?php endif; ?>
 
-        <div class="page-card">
+        <!-- FORMULARIO -->
+        <div class="page-card card-section">
             <form method="POST" action="<?= BASE_URL ?>/routes/socios_update.php" id="formSocioEdit">
 
                 <input type="hidden" name="id" value="<?= htmlspecialchars($socio['id']) ?>">
+                <input type="hidden" name="nombre" id="nombre" value="<?= htmlspecialchars($nombreCompleto) ?>">
 
                 <div class="row g-3">
 
+                    <!-- Nombre(s) -->
                     <div class="col-md-4">
                         <label class="form-label" for="nombres">Nombre(s) *</label>
                         <input
@@ -58,6 +115,7 @@ $nombreCompleto = trim(($socio['nombres'] ?? '') . ' ' . ($socio['apellido_pater
                         >
                     </div>
 
+                    <!-- Apellido paterno -->
                     <div class="col-md-4">
                         <label class="form-label" for="apellidoPaterno">Apellido paterno *</label>
                         <input
@@ -71,6 +129,7 @@ $nombreCompleto = trim(($socio['nombres'] ?? '') . ' ' . ($socio['apellido_pater
                         >
                     </div>
 
+                    <!-- Apellido materno -->
                     <div class="col-md-4">
                         <label class="form-label" for="apellidoMaterno">Apellido materno</label>
                         <input
@@ -83,13 +142,7 @@ $nombreCompleto = trim(($socio['nombres'] ?? '') . ' ' . ($socio['apellido_pater
                         >
                     </div>
 
-                    <input
-                        type="hidden"
-                        name="nombre"
-                        id="nombre"
-                        value="<?= htmlspecialchars($nombreCompleto) ?>"
-                    >
-
+                    <!-- Fecha de nacimiento -->
                     <div class="col-md-6">
                         <label class="form-label" for="fechaNacimiento">Fecha de nacimiento *</label>
                         <input
@@ -103,6 +156,7 @@ $nombreCompleto = trim(($socio['nombres'] ?? '') . ' ' . ($socio['apellido_pater
                         >
                     </div>
 
+                    <!-- Teléfono -->
                     <div class="col-md-6">
                         <label class="form-label" for="telefono">Teléfono *</label>
                         <input
@@ -117,6 +171,7 @@ $nombreCompleto = trim(($socio['nombres'] ?? '') . ' ' . ($socio['apellido_pater
                         >
                     </div>
 
+                    <!-- Correo -->
                     <div class="col-md-6">
                         <label class="form-label" for="email">Correo electrónico *</label>
                         <input
@@ -130,6 +185,7 @@ $nombreCompleto = trim(($socio['nombres'] ?? '') . ' ' . ($socio['apellido_pater
                         >
                     </div>
 
+                    <!-- Género -->
                     <div class="col-md-6">
                         <label class="form-label" for="genero">Género *</label>
                         <select name="genero" id="genero" class="form-select custom-input" required>
@@ -140,6 +196,7 @@ $nombreCompleto = trim(($socio['nombres'] ?? '') . ' ' . ($socio['apellido_pater
                         </select>
                     </div>
 
+                    <!-- Contacto de emergencia -->
                     <div class="col-md-6">
                         <label class="form-label" for="nombreContactoEmergencia">Nombre del contacto de emergencia *</label>
                         <input
@@ -153,6 +210,7 @@ $nombreCompleto = trim(($socio['nombres'] ?? '') . ' ' . ($socio['apellido_pater
                         >
                     </div>
 
+                    <!-- Teléfono de emergencia -->
                     <div class="col-md-6">
                         <label class="form-label" for="telefonoEmergencia">Teléfono de emergencia *</label>
                         <input
@@ -167,6 +225,7 @@ $nombreCompleto = trim(($socio['nombres'] ?? '') . ' ' . ($socio['apellido_pater
                         >
                     </div>
 
+                    <!-- Huella demo -->
                     <div class="col-md-6">
                         <label class="form-label" for="huellaDemo">Huella demo</label>
                         <input
@@ -179,6 +238,7 @@ $nombreCompleto = trim(($socio['nombres'] ?? '') . ' ' . ($socio['apellido_pater
                         >
                     </div>
 
+                    <!-- Estado actual -->
                     <div class="col-md-6">
                         <label class="form-label">Estado actual</label>
                         <input
@@ -189,6 +249,7 @@ $nombreCompleto = trim(($socio['nombres'] ?? '') . ' ' . ($socio['apellido_pater
                         >
                     </div>
 
+                    <!-- Dirección -->
                     <div class="col-12">
                         <label class="form-label" for="direccion">Dirección *</label>
                         <input
@@ -202,6 +263,7 @@ $nombreCompleto = trim(($socio['nombres'] ?? '') . ' ' . ($socio['apellido_pater
                         >
                     </div>
 
+                    <!-- Notas -->
                     <div class="col-12">
                         <label class="form-label" for="notas">Notas *</label>
                         <textarea
@@ -213,8 +275,10 @@ $nombreCompleto = trim(($socio['nombres'] ?? '') . ' ' . ($socio['apellido_pater
                             required
                         ><?= htmlspecialchars($socio['notas'] ?? '') ?></textarea>
                     </div>
+
                 </div>
 
+                <!-- BOTONES -->
                 <div class="d-flex gap-2 mt-4 flex-wrap">
                     <button type="submit" class="btn btn-success">
                         Guardar cambios
@@ -224,11 +288,14 @@ $nombreCompleto = trim(($socio['nombres'] ?? '') . ' ' . ($socio['apellido_pater
                         Cancelar
                     </a>
                 </div>
+
             </form>
         </div>
+
     </div>
 </div>
 
+<!-- JS LOCAL DE ESTA VISTA -->
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const nombre = document.getElementById('nombre');
@@ -240,30 +307,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const telefonoEmergencia = document.getElementById('telefonoEmergencia');
 
     function actualizarNombreCompleto() {
-        const valor = `${nombres.value.trim()} ${apellidoPaterno.value.trim()} ${apellidoMaterno.value.trim()}`
+        if (!nombre || !nombres || !apellidoPaterno || !apellidoMaterno) return;
+
+        nombre.value = `${nombres.value.trim()} ${apellidoPaterno.value.trim()} ${apellidoMaterno.value.trim()}`
             .replace(/\s+/g, ' ')
             .trim();
-
-        nombre.value = valor;
     }
 
     [nombres, apellidoPaterno, apellidoMaterno].forEach(input => {
-        input.addEventListener('input', actualizarNombreCompleto);
+        if (input) {
+            input.addEventListener('input', actualizarNombreCompleto);
+        }
     });
 
     actualizarNombreCompleto();
 
-    if (telefono) {
-        telefono.addEventListener('input', () => {
-            telefono.value = telefono.value.replace(/\D/g, '').slice(0, 10);
-        });
-    }
-
-    if (telefonoEmergencia) {
-        telefonoEmergencia.addEventListener('input', () => {
-            telefonoEmergencia.value = telefonoEmergencia.value.replace(/\D/g, '').slice(0, 10);
-        });
-    }
+    [telefono, telefonoEmergencia].forEach(input => {
+        if (input) {
+            input.addEventListener('input', () => {
+                input.value = input.value.replace(/\D/g, '').slice(0, 10);
+            });
+        }
+    });
 });
 </script>
 

@@ -87,6 +87,7 @@ function formatoFechaRecibo(?string $fecha): string
     return date('d/m/Y H:i', $timestamp);
 }
 
+
 ?>
 <!DOCTYPE html>
 <html lang="es">

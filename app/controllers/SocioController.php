@@ -1,14 +1,37 @@
 <?php
-
+/*
+|--------------------------------------------------------------------------
+| CARGA DE DEPENDENCIAS
+|--------------------------------------------------------------------------
+| require_once incluye archivos necesarios para que el controlador funcione.
+| __DIR__ obtiene la ruta actual del archivo y permite acceder a otros
+| archivos usando rutas relativas sin importar desde dónde se ejecute.
+|
+| Socio.php hacer referencia al  Modelo del módulo de socios.
+| app.php  es la Configuración global de la aplicación (BASE_URL).
+*/
 require_once __DIR__ . '/../models/Socio.php';
+require_once __DIR__ . '/../../config/app.php';
 
 class SocioController
 {
-    private const LOGIN_VIEW = '/Impulso_Fitness/resources/views/auth/login.php';
-    private const SOCIOS_INDEX_VIEW = '/Impulso_Fitness/resources/views/socios/index.php';
-    private const SOCIOS_CREATE_VIEW = '/Impulso_Fitness/resources/views/socios/create.php';
-    private const SOCIOS_EDIT_VIEW = '/Impulso_Fitness/resources/views/socios/edit.php';
-    private const MEMBRESIAS_INDEX_VIEW = '/Impulso_Fitness/resources/views/membresias/index.php';
+
+/*
+|--------------------------------------------------------------------------
+| RUTAS CONSTANTES DEL CONTROLADOR
+|--------------------------------------------------------------------------
+| Se definen como constantes privadas porque:
+| - Son rutas fijas que no cambian durante la ejecución.
+| - Solo deben utilizarse dentro de este controlador.
+| - Evitan repetir rutas manualmente en varias partes del código.
+| - Facilitan el mantenimiento y la lectura del sistema.
+*/
+
+    private const LOGIN_VIEW =  BASE_URL . '/resources/views/auth/login.php';
+    private const SOCIOS_INDEX_VIEW = BASE_URL . '/resources/views/socios/index.php';
+    private const SOCIOS_CREATE_VIEW = BASE_URL . '/resources/views/socios/create.php';
+    private const SOCIOS_EDIT_VIEW = BASE_URL . '/resources/views/socios/edit.php';
+    private const MEMBRESIAS_INDEX_VIEW = BASE_URL . '/resources/views/membresias/index.php';
 
     private function validarSesion(): void
     {

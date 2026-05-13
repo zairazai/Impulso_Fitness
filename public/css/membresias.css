@@ -1,235 +1,373 @@
 /* =========================================================
-   MEMBRESÍAS - ESTILOS GENERALES
-========================================================= */
+   MEMBRESÍAS.CSS
+   Estilos exclusivos del módulo de membresías:
+   - Registro de pago
+   - Lista de socios
+   - Selección de planes
+   - Resumen de pago
+   - Historial de pagos
+   ========================================================= */
 
-.membresias-layout {
+/* =========================================================
+   LAYOUT DEL MÓDULO
+   ========================================================= */
+
+.register-layout {
     display: grid;
-    grid-template-columns: 1fr 380px;
-    gap: 20px;
+    grid-template-columns: minmax(0, 2fr) minmax(320px, 0.8fr);
+    gap: 24px;
+    align-items: start;
+}
+
+.register-main {
+    min-width: 0;
+}
+
+.register-side {
+    min-width: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
 }
 
 /* =========================================================
-   TARJETAS GENERALES
-========================================================= */
+   TARJETAS
+   ========================================================= */
 
 .page-card {
-    background: rgba(5, 18, 52, 0.96);
-    border: 1px solid rgba(58, 123, 213, 0.35);
-    border-radius: 18px;
-    padding: 20px;
+    background: rgba(5, 18, 52, 0.92);
+    border: 1px solid rgba(77, 171, 247, 0.18);
+    border-radius: 22px;
+    padding: 22px;
+    backdrop-filter: blur(10px);
+}
+
+.card-section {
+    width: 100%;
+}
+
+.side-card {
+    position: relative;
+}
+
+/* =========================================================
+   TÍTULOS
+   ========================================================= */
+
+.module-title-bar {
+    margin-bottom: 20px;
+}
+
+.module-title-bar h1 {
+    color: #fff;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.section-header h3 {
+    color: #fff;
+    font-size: 1.2rem;
+    margin-bottom: 4px;
+}
+
+.section-header p {
+    color: #94a3b8;
+    margin: 0;
+}
+
+/* =========================================================
+   INPUTS
+   ========================================================= */
+
+.custom-input {
+    background: rgba(15, 30, 70, 0.9) !important;
+    border: 1px solid rgba(77, 171, 247, 0.25) !important;
+    color: #fff !important;
+    border-radius: 14px !important;
+    padding: 14px 16px !important;
+}
+
+.custom-input::placeholder {
+    color: #94a3b8;
 }
 
 /* =========================================================
    LISTA DE SOCIOS
-========================================================= */
+   ========================================================= */
 
 .socios-list {
-    max-height: 520px;
-    overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
+    max-height: 430px;
+    overflow-y: auto;
 }
 
-.socio-item {
+.socio-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-decoration: none;
+    color: #ffffff;
+    background: rgba(13, 23, 45, 0.92);
+    border: 1px solid #273759;
+    border-radius: 16px;
     padding: 14px 16px;
-    border-radius: 14px;
-    background: rgba(20, 40, 90, 0.4);
-    border: 1px solid rgba(100, 140, 255, 0.2);
-    cursor: pointer;
-    transition: all 0.2s ease;
+    transition: 0.2s ease;
 }
 
-.socio-item:hover {
-    background: rgba(40, 70, 160, 0.35);
-    border-color: rgba(120, 160, 255, 0.4);
+.socio-list-item:hover,
+.socio-list-item.active {
+    border-color: #3b82f6;
+    background: rgba(20, 33, 61, 0.98);
 }
 
-.socio-item.active {
-    border: 1px solid #4dabf7;
-    background: rgba(77, 171, 247, 0.15);
+.socio-list-item h4 {
+    margin: 0 0 6px 0;
+    color: #ffffff;
+    font-size: 1rem;
 }
 
-.socio-nombre {
-    font-weight: 600;
-    color: #fff;
-}
-
-.estado-badge {
-    font-size: 0.75rem;
-    padding: 4px 10px;
-    border-radius: 999px;
-    margin-top: 6px;
-    display: inline-block;
-}
-
-.estado-activo {
-    background: rgba(0, 200, 120, 0.15);
-    color: #00d68f;
-}
-
-.estado-inactivo {
-    background: rgba(255, 80, 80, 0.15);
-    color: #ff6b6b;
+.socio-arrow {
+    color: #cbd5e1;
+    font-size: 1.3rem;
 }
 
 /* =========================================================
-   SELECCIÓN DE MEMBRESÍA
-========================================================= */
+   ESTADOS DEL SOCIO
+   ========================================================= */
 
-.membership-options {
-    display: flex;
-    gap: 16px;
+.status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.status-active {
+    background: rgba(16, 185, 129, 0.18);
+    color: #34d399;
+}
+
+.status-inactive {
+    background: rgba(239, 68, 68, 0.18);
+    color: #f87171;
+}
+
+/* =========================================================
+   BLOQUES DEL FORMULARIO
+   ========================================================= */
+
+.membership-block {
     margin-top: 10px;
+}
+
+/* =========================================================
+   PLANES DE MEMBRESÍA
+   ========================================================= */
+
+.membership-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
 }
 
 .membership-card {
-    flex: 1;
-    padding: 18px;
-    border-radius: 16px;
-    border: 1px solid rgba(100, 140, 255, 0.2);
-    background: rgba(20, 40, 90, 0.4);
+    padding: 22px;
+    border-radius: 18px;
+    background: rgba(16, 32, 70, 0.7);
+    border: 1px solid rgba(77, 171, 247, 0.15);
     cursor: pointer;
-    transition: 0.2s;
+    transition: 0.2s ease;
 }
 
 .membership-card:hover {
-    border-color: rgba(120, 160, 255, 0.4);
+    border-color: #4dabf7;
+    transform: translateY(-2px);
 }
 
-.membership-card.selected {
+.membership-card.active {
     border: 1px solid #4dabf7;
-    background: rgba(77, 171, 247, 0.15);
+    background: rgba(77, 171, 247, 0.12);
 }
 
-.membership-title {
-    font-size: 1.2rem;
+.membership-card h4 {
     color: #fff;
+    margin-bottom: 10px;
 }
 
-.membership-desc {
-    font-size: 0.9rem;
+.membership-card p {
     color: #cbd5e1;
-    margin-top: 4px;
+    min-height: 40px;
 }
 
-.membership-price {
-    font-weight: bold;
-    margin-top: 10px;
+.membership-card strong {
     color: #fff;
+    font-size: 1.05rem;
 }
 
 /* =========================================================
-   PANEL DERECHO (RESUMEN)
-========================================================= */
+   MÉTODOS DE PAGO
+   ========================================================= */
 
-.resumen-panel {
+.payment-methods {
     display: flex;
-    flex-direction: column;
-    gap: 16px;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
-.resumen-title {
-    font-size: 1.3rem;
+.payment-option {
+    border: none;
+    padding: 12px 18px;
+    border-radius: 14px;
+    background: rgba(16, 32, 70, 0.8);
+    border: 1px solid rgba(77, 171, 247, 0.15);
+    color: #fff;
+    transition: 0.2s ease;
+}
+
+.payment-option:hover {
+    border-color: #4dabf7;
+}
+
+.payment-option.active {
+    background: #2563eb;
+    border-color: #2563eb;
+}
+
+/* =========================================================
+   PANEL DERECHO / RESUMEN
+   ========================================================= */
+
+.summary-block {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 18px;
+}
+
+.summary-label {
+    color: #94a3b8;
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+}
+
+.summary-value {
+    color: #fff;
     font-weight: 600;
 }
 
-.resumen-item {
+.preview-list {
     display: flex;
-    justify-content: space-between;
-    font-size: 0.95rem;
+    flex-direction: column;
+    gap: 10px;
 }
 
-.resumen-total {
-    font-size: 1.4rem;
-    font-weight: bold;
+.preview-list p {
+    color: #fff;
+    margin: 0;
 }
 
 /* =========================================================
-   BOTONES
-========================================================= */
+   CAJA VACÍA / MENSAJE INFORMATIVO
+   ========================================================= */
 
-.btn-primary {
-    background: #0d6efd;
-    border: none;
+.empty-box {
+    padding: 20px;
+    border-radius: 16px;
+    background: rgba(16, 32, 70, 0.5);
+    border: 1px dashed rgba(77, 171, 247, 0.2);
+    color: #cbd5e1;
 }
 
-.btn-success {
-    background: #198754;
-    border: none;
-}
+/* =========================================================
+   BOTONES DE ACCIÓN
+   ========================================================= */
 
-.btn-warning {
-    background: #ffc107;
-    border: none;
-}
-
-.btn-danger {
-    background: #dc3545;
-    border: none;
+.action-row {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
 }
 
 /* =========================================================
    HISTORIAL DE PAGOS
-========================================================= */
+   ========================================================= */
 
 .historial-toolbar-card {
-    padding: 18px;
+    padding: 18px 20px;
+    margin-bottom: 18px;
 }
 
-/* CONTENEDOR PRINCIPAL DE FILTROS */
 .historial-filters {
     display: grid;
-    grid-template-columns: 1.1fr 1fr auto;
-    gap: 14px;
+    grid-template-columns: 1fr 1fr auto auto;
+    gap: 12px;
     align-items: end;
 }
 
-/* INPUTS */
 .historial-filter-group {
     display: flex;
     flex-direction: column;
     gap: 6px;
 }
 
-/* BOTONES */
-.historial-filter-actions {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
+.historial-filter-group label {
+    color: #cbd5e1;
+    font-size: 0.85rem;
 }
 
-/* TABLA */
+.historial-filter-actions {
+    display: flex;
+    gap: 8px;
+    align-items: end;
+}
+
 .historial-table-card {
-    padding: 18px;
+    padding: 18px 20px;
 }
 
 .historial-table-card table {
     width: 100%;
+    border-collapse: collapse;
+    background: rgba(25, 31, 38, 0.96);
+}
+
+.historial-table-card th,
+.historial-table-card td {
+    padding: 11px 10px;
+    font-size: 0.9rem;
+    vertical-align: middle;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .historial-table-card th {
-    color: #cbd5e1;
-    font-size: 0.9rem;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    color: #ffffff;
+    font-weight: 700;
 }
 
 .historial-table-card td {
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: #f8fafc;
+}
+
+.historial-table-card .btn,
+.historial-table-card a.btn {
+    padding: 4px 10px;
+    font-size: 0.8rem;
 }
 
 /* =========================================================
    RESPONSIVE
-========================================================= */
+   ========================================================= */
 
-@media (max-width: 1200px) {
-    .membresias-layout {
+@media (max-width: 900px) {
+    .register-layout {
         grid-template-columns: 1fr;
     }
-}
 
-@media (max-width: 768px) {
+    .register-side {
+        min-width: 0;
+    }
+
     .historial-filters {
         grid-template-columns: 1fr;
     }
@@ -237,8 +375,14 @@
     .historial-filter-actions {
         justify-content: flex-start;
     }
+}
 
-    .membership-options {
+@media (max-width: 768px) {
+    .membership-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .payment-methods {
         flex-direction: column;
     }
 }

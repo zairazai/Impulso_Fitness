@@ -110,7 +110,25 @@ function formatearFechaMembresia(?string $fecha): string
     return date('d/m/Y H:i', $timestamp);
 }
 
+/*
+|--------------------------------------------------------------------------
+| HEADER GENERAL
+|--------------------------------------------------------------------------
+| Cargamos el CSS exclusivo del módulo membresías antes del
+| header para que se inserte correctamente dentro del <head>.
+*/
+$extraCss = "/Impulso_Fitness/public/css/membresias.css";
+
 include __DIR__ . '/../layouts/header.php';
+
+?>
+
+<?php
+/*
+|--------------------------------------------------------------------------
+| SIDEBAR
+|--------------------------------------------------------------------------
+*/
 include __DIR__ . '/../layouts/sidebar.php';
 ?>
 

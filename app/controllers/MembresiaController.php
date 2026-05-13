@@ -10,7 +10,7 @@
 | - validaciones
 | - redirecciones
 |
-| NO se hacen consultas directas aquí → eso lo hace el modelo.
+| NO se hacen consultas directas aquí ,  eso lo hace el modelo.
 */
 
 require_once __DIR__ . '/../models/Membresia.php';

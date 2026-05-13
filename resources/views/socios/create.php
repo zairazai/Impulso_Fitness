@@ -12,10 +12,20 @@ require_once __DIR__ . '/../../../app/middleware/auth.php';
 |--------------------------------------------------------------------------
 | LAYOUT GENERAL
 |--------------------------------------------------------------------------
-| Mantenemos header, sidebar y footer para conservar la estructura
-| visual del sistema.
+| Cargamos el CSS del módulo antes del header para que se inserte
+| correctamente dentro del <head>.
 */
+$extraCss = "/Impulso_Fitness/public/css/socios.css";
+
 include __DIR__ . '/../layouts/header.php';
+?>
+
+<?php
+/*
+|--------------------------------------------------------------------------
+| SIDEBAR
+|--------------------------------------------------------------------------
+*/
 include __DIR__ . '/../layouts/sidebar.php';
 ?>
 

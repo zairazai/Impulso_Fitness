@@ -36,10 +36,28 @@ $modelo->actualizarEstadosMembresias();
 */
 $historial = $modelo->historialPagos();
 
+/*
+|--------------------------------------------------------------------------
+| HEADER GENERAL
+|--------------------------------------------------------------------------
+| Cargamos el CSS exclusivo del módulo membresías antes del
+| header para que se inserte correctamente dentro del <head>.
+*/
+$extraCss = "/Impulso_Fitness/public/css/membresias.css";
+
+include __DIR__ . '/../layouts/header.php';
+
 ?>
 
-<?php include __DIR__ . '/../layouts/header.php'; ?>
-<?php include __DIR__ . '/../layouts/sidebar.php'; ?>
+<?php
+/*
+|--------------------------------------------------------------------------
+| SIDEBAR
+|--------------------------------------------------------------------------
+*/
+include __DIR__ . '/../layouts/sidebar.php';
+?>
+
 
 <div class="main-content">
     <div class="container-fluid px-0">

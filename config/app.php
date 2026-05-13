@@ -1,11 +1,8 @@
 <?php
 
 /*
-|--------------------------------------------------------------------------
-| CONFIGURACIÓN GENERAL DE LA APLICACIÓN
-|--------------------------------------------------------------------------
-| BASE_URL guarda la ruta base del proyecto.
-| Así evitamos escribir "/Impulso_Fitness" muchas veces en vistas,
+| CONFIGURACIÓN GENERAL DE LA APLICACIÓN : BASE_URL guarda la ruta base del proyecto.
+| se crea constante global para no rescribir la ruta base en 
 | controladores y formularios.
 */
 

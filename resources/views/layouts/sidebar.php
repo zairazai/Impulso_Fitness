@@ -48,11 +48,9 @@ $isVentasHistorial = str_contains($current, '/ventas/historial.php');
 |--------------------------------------------------------------------------
 */
 $isInventario = str_contains($current, '/inventario/') || str_contains($current, '/inventarios/');
-$isProductos = str_contains($current, '/productos/');
+$isProductos = str_contains($current, '/inventario/productos.php');
 $isEntradaProductos = str_contains($current, '/entrada');
 $isMovimientos = str_contains($current, '/movimientos');
-$isReporteFaltantes = str_contains($current, '/faltantes');
-
 /*
 |--------------------------------------------------------------------------
 | CONTROL DE ACCESO
@@ -80,8 +78,14 @@ $isReportes = str_contains($current, '/reportes/');
 
 <div class="sidebar">
     <div class="sidebar-top">
+
+        <!-- LOGO DEL SISTEMA -->
         <div class="sidebar-logo-wrap">
-            <div class="sidebar-logo">Impulso Fitness</div>
+            <img 
+                src="/Impulso_Fitness/public/img/logo.png" 
+                alt="Impulso Fitness"
+                class="sidebar-logo-img"
+            >
         </div>
 
         <div class="sidebar-user">
@@ -182,7 +186,7 @@ $isReportes = str_contains($current, '/reportes/');
                 </button>
 
                 <div id="inventario-submenu" class="sidebar-submenu <?= ($isInventario || $isProductos) ? 'open' : '' ?>">
-                    <a href="/Impulso_Fitness/resources/views/inventario/productos.php"
+                    <a href="/Impulso_Fitness/routes/inventario_mostrar_productos.php"
                        class="submenu-link <?= $isProductos ? 'active-submenu-link' : '' ?>">
                         Productos
                     </a>
@@ -197,10 +201,6 @@ $isReportes = str_contains($current, '/reportes/');
                         Movimientos
                     </a>
 
-                    <a href="/Impulso_Fitness/resources/views/inventario/reporte_faltantes.php"
-                       class="submenu-link <?= $isReporteFaltantes ? 'active-submenu-link' : '' ?>">
-                        Reporte de faltantes
-                    </a>
                 </div>
             </div>
 

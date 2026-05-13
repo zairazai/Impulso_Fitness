@@ -8,6 +8,9 @@ if (!isset($_SESSION['user'])) {
 ?>
 
 <?php include __DIR__ . '/resources/views/layouts/header.php'; ?>
+
+<link href="/Impulso_Fitness/public/css/dashboard.css" rel="stylesheet">
+
 <?php include __DIR__ . '/resources/views/layouts/sidebar.php'; ?>
 
 <div class="main-content">

@@ -1,9 +1,17 @@
 /* =========================================================
-   LAYOUT.CSS
-   Estructura compartida:
-   - sidebar
-   - menús y submenús
-   - footer del sidebar
+   LAYOUT.CSS / SIDEBAR.CSS
+   Estructura compartida del sistema:
+   - Sidebar fijo
+   - Logo del sistema
+   - Usuario activo
+   - Menú principal
+   - Submenús desplegables
+   - Footer del sidebar
+   ========================================================= */
+
+
+/* =========================================================
+   SIDEBAR PRINCIPAL
    ========================================================= */
 
 .sidebar {
@@ -12,38 +20,66 @@
     position: fixed;
     top: 0;
     left: 0;
+
     background: linear-gradient(180deg, #020617 0%, #030b1e 100%);
     border-right: 1px solid rgba(148, 163, 184, 0.12);
+
     z-index: 1000;
+
     display: flex;
     flex-direction: column;
 }
 
-/* Parte superior del sidebar */
+
+/* =========================================================
+   PARTE SUPERIOR DEL SIDEBAR
+   Aquí va el logo y los datos del usuario
+   ========================================================= */
+
 .sidebar-top {
     padding: 20px 16px 10px;
     border-bottom: 1px solid rgba(148, 163, 184, 0.08);
 }
 
-.sidebar-logo-wrap {
-    margin-bottom: 18px;
-}
 
-.sidebar-logo {
+/* =========================================================
+   LOGO DEL SISTEMA
+   Este contenedor reemplaza al texto "Impulso Fitness"
+   ========================================================= */
+
+.sidebar-logo-wrap {
     background: radial-gradient(circle at center, #0f3cff 0%, #091d48 45%, #050c1f 100%);
-    color: #ffffff;
     border: 1px solid rgba(111, 146, 255, 0.25);
     border-radius: 20px;
-    min-height: 95px;
+
+    min-height: 80px;
+    margin-bottom: 18px;
+    padding: 12px;
+
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 700;
-    text-align: center;
-    padding: 12px;
+
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
-    font-size: 1.1rem;
 }
+
+
+/* Imagen del logo */
+.sidebar-logo-img {
+    width: 180px;
+    max-width: 100%;
+    height: auto;
+
+    display: block;
+
+    /* Glow azul suave */
+    filter: drop-shadow(0 0 12px rgba(0, 102, 255, 0.55));
+}
+
+
+/* =========================================================
+   DATOS DEL USUARIO
+   ========================================================= */
 
 .sidebar-user {
     text-align: center;
@@ -66,7 +102,11 @@
     font-size: 0.84rem;
 }
 
-/* Zona scrollable del menú */
+
+/* =========================================================
+   ZONA SCROLLABLE DEL MENÚ
+   ========================================================= */
+
 .sidebar-scroll {
     flex: 1;
     padding: 14px 16px 18px;
@@ -80,7 +120,11 @@
     margin: 0 0 12px;
 }
 
-/* Menú principal */
+
+/* =========================================================
+   MENÚ PRINCIPAL
+   ========================================================= */
+
 .sidebar-menu {
     display: flex;
     flex-direction: column;
@@ -94,16 +138,22 @@
 
 .menu-link {
     width: 100%;
+
     display: flex;
     align-items: center;
     gap: 10px;
+
     color: #dbe5f5;
     text-decoration: none;
+
     padding: 10px 12px;
     border-radius: 12px;
+
     transition: 0.2s ease;
+
     background: transparent;
     border: none;
+
     text-align: left;
     font-size: 0.98rem;
     cursor: pointer;
@@ -120,11 +170,16 @@
     box-shadow: 0 6px 18px rgba(11, 79, 216, 0.25);
 }
 
-/* Submenús */
+
+/* =========================================================
+   SUBMENÚS
+   ========================================================= */
+
 .sidebar-submenu {
     display: none;
     flex-direction: column;
     gap: 4px;
+
     margin: 4px 0 6px 18px;
 }
 
@@ -135,8 +190,10 @@
 .submenu-link {
     color: #cbd5e1;
     text-decoration: none;
+
     padding: 8px 12px;
     border-radius: 10px;
+
     font-size: 0.92rem;
     transition: 0.2s ease;
 }
@@ -151,7 +208,11 @@
     background: rgba(59, 130, 246, 0.18);
 }
 
-/* Botón logout */
+
+/* =========================================================
+   CERRAR SESIÓN
+   ========================================================= */
+
 .logout-link {
     margin-top: 8px;
     color: #f87171;
@@ -162,15 +223,36 @@
     background: #3f1d1d;
 }
 
-/* Footer del sidebar */
+
+/* =========================================================
+   FOOTER DEL SIDEBAR
+   ========================================================= */
+
 .sidebar-footer {
     padding: 12px 16px;
     border-top: 1px solid rgba(148, 163, 184, 0.08);
+
     color: #94a3b8;
     font-size: 0.84rem;
 }
 
-/* Responsive del layout */
+
+/* =========================================================
+   CONTENIDO PRINCIPAL
+   ========================================================= */
+
+.main-content {
+    margin-left: 235px;
+    padding: 28px;
+    min-height: 100vh;
+}
+
+
+/* =========================================================
+   RESPONSIVE DEL LAYOUT
+   Cuando la pantalla es pequeña, el sidebar deja de ser fijo
+   ========================================================= */
+
 @media (max-width: 768px) {
     .sidebar {
         position: relative;
@@ -180,5 +262,10 @@
 
     .sidebar-scroll {
         overflow: visible;
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: 18px;
     }
 }

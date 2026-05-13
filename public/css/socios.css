@@ -1,13 +1,17 @@
 /* =========================================================
    SOCIOS.CSS
-   Todo lo exclusivo del módulo de socios:
-   - registro
-   - vista previa
-   - búsqueda
-   - detalle
+   Estilos exclusivos del módulo de socios:
+   - Registro de socio
+   - Vista previa
+   - Búsqueda de socio
+   - Detalle del socio
+   - Validaciones visuales
    ========================================================= */
 
-/* ===== REGISTRO DE SOCIO ===== */
+/* =========================================================
+   REGISTRO DE SOCIO
+   ========================================================= */
+
 .register-layout {
     display: grid;
     grid-template-columns: minmax(0, 2.15fr) minmax(300px, 0.95fr);
@@ -27,16 +31,38 @@
     top: 20px;
 }
 
+/* Tarjetas internas del módulo socios */
 .card-section {
     padding: 18px;
 }
+
+.side-card {
+    padding: 18px;
+}
+
+.side-card h4 {
+    margin-bottom: 14px;
+    font-size: 1.05rem;
+}
+
+.success-card {
+    border-color: rgba(16, 185, 129, 0.28);
+    background: linear-gradient(
+        180deg,
+        rgba(8, 54, 44, 0.92) 0%,
+        rgba(6, 31, 27, 0.96) 100%
+    );
+}
+
+/* =========================================================
+   PRESELECCIÓN DE MEMBRESÍA EN SOCIOS
+   ========================================================= */
 
 .membership-block {
     border-top: 1px solid rgba(148, 163, 184, 0.12);
     padding-top: 16px;
 }
 
-/* Cards simples de membresía dentro de Socios */
 .membership-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -72,15 +98,18 @@
     );
 }
 
-.membership-title {
+.membership-title,
+.membership-card h4 {
     font-size: 0.98rem;
     font-weight: 700;
     color: #f8fafc;
 }
 
+.membership-card p,
 .membership-card small {
     color: #94a3b8;
     font-size: 0.82rem;
+    margin: 0;
 }
 
 .membership-card strong {
@@ -89,25 +118,9 @@
     margin-top: 4px;
 }
 
-.side-card {
-    padding: 18px;
-}
-
-.side-card h4 {
-    margin-bottom: 14px;
-    font-size: 1.05rem;
-}
-
-.success-card {
-    border-color: rgba(16, 185, 129, 0.28);
-    background: linear-gradient(180deg, rgba(8, 54, 44, 0.92) 0%, rgba(6, 31, 27, 0.96) 100%);
-}
-
-.action-row {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-}
+/* =========================================================
+   VISTA PREVIA
+   ========================================================= */
 
 .preview-list {
     display: flex;
@@ -134,7 +147,20 @@
     font-size: 0.75rem;
 }
 
-/* ===== BUSCAR SOCIO ===== */
+/* =========================================================
+   BOTONES / ACCIONES
+   ========================================================= */
+
+.action-row {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* =========================================================
+   BUSCAR SOCIO
+   ========================================================= */
+
 .left-column-search {
     display: flex;
     flex-direction: column;
@@ -176,21 +202,28 @@
 }
 
 .socio-list-item:hover,
-.socio-list-item.selected {
+.socio-list-item.selected,
+.socio-list-item.active {
     border-color: #3b82f6;
     background: rgba(20, 33, 61, 0.98);
 }
 
-.socio-list-item h5 {
+.socio-list-item h5,
+.socio-list-item h4 {
     margin: 0 0 6px 0;
     font-size: 1rem;
     color: #f8fafc;
 }
 
-.arrow {
+.arrow,
+.socio-arrow {
     font-size: 1.35rem;
     color: #b7c3d7;
 }
+
+/* =========================================================
+   DETALLE DEL SOCIO
+   ========================================================= */
 
 .detail-column {
     display: flex;
@@ -260,78 +293,47 @@
     font-size: 0.9rem;
 }
 
-/* ========================================================= */
-/* VALIDACIÓN DE INPUTS - ESTILO ELEGANTE (TEMA OSCURO)      */
-/* ========================================================= */
-/*
-    Esta clase se aplica dinámicamente desde socios.js
-    cuando un campo tiene un error de validación.
+/* =========================================================
+   VALIDACIÓN DE INPUTS
+   ========================================================= */
 
-    Objetivo:
-    - Resaltar el campo sin romper el diseño
-    - Mantener coherencia con tema oscuro
-    - No ser agresivo visualmente
-*/
 .input-error {
-    border: 1px solid #ff4d4f !important; /* Rojo principal de error */
-    background-color: rgba(255, 77, 79, 0.08); /* Fondo suave */
-    box-shadow: 0 0 6px rgba(255, 77, 79, 0.35); /* Glow sutil */
-    color: #fff; /* Mantiene contraste en tema oscuro */
-
-    /* Transición suave para no ser brusco */
+    border: 1px solid #ff4d4f !important;
+    background-color: rgba(255, 77, 79, 0.08);
+    box-shadow: 0 0 6px rgba(255, 77, 79, 0.35);
+    color: #fff;
     transition: all 0.2s ease;
 }
 
-/*
-    Estado cuando el usuario vuelve a interactuar con el campo.
-    Se intensifica ligeramente para dar feedback visual.
-*/
 .input-error:focus {
     outline: none;
     border-color: #ff4d4f !important;
     box-shadow: 0 0 10px rgba(255, 77, 79, 0.6);
 }
 
-/*
-    Hover ligero (opcional pero mejora UX)
-*/
 .input-error:hover {
     box-shadow: 0 0 8px rgba(255, 77, 79, 0.45);
 }
 
-/* ========================================================= */
-/* OPCIONAL: INPUT NORMAL MEJORADO                           */
-/* ========================================================= */
-/*
-    Esto ayuda a que el contraste entre normal vs error
-    se vea más limpio en todo el sistema.
-*/
 .custom-input {
     transition: all 0.2s ease;
 }
 
-/*
-    Estado focus general (cuando NO hay error)
-*/
 .custom-input:focus {
     border-color: #4dabf7;
     box-shadow: 0 0 6px rgba(77, 171, 247, 0.4);
 }
 
-/* ========================================================= */
-/* OPCIONAL: MENSAJES DE ERROR FUTUROS (PREPARADO)           */
-/* ========================================================= */
-/*
-    Si después quieres mostrar errores debajo del input,
-    ya tienes este estilo listo.
-*/
 .input-error-message {
     font-size: 0.8rem;
     color: #ff4d4f;
     margin-top: 4px;
 }
 
-/* Responsive del módulo Socios */
+/* =========================================================
+   RESPONSIVE DEL MÓDULO SOCIOS
+   ========================================================= */
+
 @media (max-width: 1200px) {
     .register-layout,
     .socio-search-grid {
