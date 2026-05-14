@@ -1,11 +1,6 @@
 <?php
-/*
-|--------------------------------------------------------------------------
-| MIDDLEWARE DE AUTENTICACIÓN
-|--------------------------------------------------------------------------
-| Validamos que el usuario tenga sesión activa antes de cargar la vista.
-| Esto evita repetir la lógica de sesión en cada archivo.
-*/
+
+require_once __DIR__ . '/../../../config/app.php';
 require_once __DIR__ . '/../../../app/middleware/auth.php';
 
 /*
@@ -15,7 +10,7 @@ require_once __DIR__ . '/../../../app/middleware/auth.php';
 | Cargamos el CSS del módulo antes del header para que se inserte
 | correctamente dentro del <head>.
 */
-$extraCss = "/Impulso_Fitness/public/css/socios.css";
+$extraCss = BASE_URL . "/public/css/socios.css";
 
 include __DIR__ . '/../layouts/header.php';
 ?>
@@ -78,156 +73,204 @@ include __DIR__ . '/../layouts/sidebar.php';
                     <!-- ================================================= -->
                     <!-- FORMULARIO PRINCIPAL                               -->
                     <!-- ================================================= -->
-                    <form method="POST" action="<?= BASE_URL ?>/routes/socios_store.php" id="formSocioCreate">
+                    <form method="POST" action="<?= BASE_URL ?>/app/controllers/SocioController.php?action=store">
 
-                        <div class="row g-3">
+                        
 
-                            <!-- Nombre(s) -->
-                            <div class="col-md-4">
-                                <label class="form-label" for="nombres">Nombre(s) *</label>
-                                <input
-                                    type="text"
-                                    name="nombres"
-                                    id="nombres"
-                                    class="form-control custom-input"
-                                    placeholder="Ej. Juan"
-                                    maxlength="100"
-                                    required
-                                >
+                       <div class="row g-3">
+
+                                    <!-- Nombre(s) -->
+                                    <div class="col-md-4">
+                                        <label class="form-label" for="nombres">Nombre(s) *</label>
+                                        <input
+                                            type="text"
+                                            name="nombres"
+                                            id="nombres"
+                                            class="form-control custom-input"
+                                            placeholder="Ej. Juan"
+                                            maxlength="100"
+                                            required
+                                        >
+                                    </div>
+
+                                    <!-- Apellido paterno -->
+                                    <div class="col-md-4">
+                                        <label class="form-label" for="apellidoPaterno">Apellido paterno *</label>
+                                        <input
+                                            type="text"
+                                            name="apellido_paterno"
+                                            id="apellidoPaterno"
+                                            class="form-control custom-input"
+                                            placeholder="Ej. Pérez"
+                                            maxlength="80"
+                                            required
+                                        >
+                                    </div>
+
+
+                                    <!-- Apellido materno -->
+                                    <div class="col-md-4">
+                                        <label class="form-label" for="apellidoMaterno">Apellido materno</label>
+                                        <input
+                                            type="text"
+                                            name="apellido_materno"
+                                            id="apellidoMaterno"
+                                            class="form-control custom-input"
+                                            placeholder="Ej. López"
+                                            maxlength="80"
+                                        >
+                                    </div>
+
+                                    <input type="hidden" id="nombre" name="nombre">
+
+                                    <!-- Fecha de nacimiento -->
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="fechaNacimiento">Fecha de nacimiento *</label>
+                                        <input
+                                            type="date"
+                                            name="fecha_nacimiento"
+                                            id="fechaNacimiento"
+                                            class="form-control custom-input"
+                                            max="<?= date('Y-m-d'); ?>"
+                                            required
+                                        >
+                                    </div>
+
+                                    <!-- Teléfono -->
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="telefono">Teléfono *</label>
+                                        <input
+                                            type="text"
+                                            name="telefono"
+                                            id="telefono"
+                                            class="form-control custom-input"
+                                            placeholder="6671234567"
+                                            maxlength="10"
+                                            inputmode="numeric"
+                                            required
+                                        >
+                                    </div>
+
+                                    <!-- Correo -->
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="email">Correo electrónico *</label>
+                                        <input
+                                            type="email"
+                                            name="email"
+                                            id="email"
+                                            class="form-control custom-input"
+                                            placeholder="ejemplo@correo.com"
+                                            maxlength="100"
+                                            required
+                                        >
+                                    </div>
+
+                                    <!-- Género -->
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="genero">Género *</label>
+                                        <select
+                                            name="genero"
+                                            id="genero"
+                                            class="form-select custom-input"
+                                            required
+                                        >
+                                            <option value="">Seleccionar</option>
+                                            <option value="Femenino">Femenino</option>
+                                            <option value="Masculino">Masculino</option>
+                                            <option value="Otro">Otro</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Contacto de emergencia -->
+                                    <!-- Nombre del contacto de emergencia -->
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="nombreContactoEmergencia">Nombre del contacto de emergencia *</label>
+                                        <input
+                                            type="text"
+                                            name="nombre_contacto_emergencia"
+                                            id="nombreContactoEmergencia"
+                                            class="form-control custom-input"
+                                            placeholder="Ej. María López"
+                                            maxlength="100"
+                                            required
+                                        >
+                                    </div>
+
+                                    <!-- Teléfono del contacto de emergencia -->
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="telefonoEmergencia">Teléfono de emergencia *</label>
+                                        <input
+                                            type="text"
+                                            name="telefono_emergencia"
+                                            id="telefonoEmergencia"
+                                            class="form-control custom-input"
+                                            placeholder="6671234567"
+                                            maxlength="10"
+                                            inputmode="numeric"
+                                            required
+                                        >
+                                    </div>
+
+                                    <!-- Dirección completa -->
+                                    <!-- Calle -->
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="calle">Calle *</label>
+                                            <input
+                                                type="text"
+                                                name="calle"
+                                                id="calle"
+                                                class="form-control custom-input"
+                                                placeholder="Ej. Av. Insurgentes"
+                                                maxlength="120"
+                                                required
+                                            >
+                                        </div>
+
+                                        <!-- Número -->
+                                        <div class="col-md-3">
+                                            <label class="form-label" for="numero">Número *</label>
+                                            <input
+                                                type="text"
+                                                name="numero"
+                                                id="numero"
+                                                class="form-control custom-input"
+                                                placeholder="Ej. 123"
+                                                maxlength="20"
+                                                required
+                                            >
+                                        </div>
+
+                                        <!-- Código postal -->
+                                        <div class="col-md-3">
+                                            <label class="form-label" for="codigoPostal">Código postal *</label>
+                                            <input
+                                                type="text"
+                                                name="codigo_postal"
+                                                id="codigoPostal"
+                                                class="form-control custom-input"
+                                                placeholder="Ej. 82100"
+                                                maxlength="5"
+                                                inputmode="numeric"
+                                                pattern="\d{5}"
+                                                required
+                                            >
+                                        </div>
+
+                                        <!-- Colonia -->
+                                        <div class="col-12">
+                                            <label class="form-label" for="colonia">Colonia *</label>
+                                            <input
+                                                type="text"
+                                                name="colonia"
+                                                id="colonia"
+                                                class="form-control custom-input"
+                                                placeholder="Ej. Centro"
+                                                maxlength="120"
+                                                required
+                                            >
+                                      </div>
                             </div>
 
-                            <!-- Apellido paterno -->
-                            <div class="col-md-4">
-                                <label class="form-label" for="apellidoPaterno">Apellido paterno *</label>
-                                <input
-                                    type="text"
-                                    name="apellido_paterno"
-                                    id="apellidoPaterno"
-                                    class="form-control custom-input"
-                                    placeholder="Ej. Pérez"
-                                    maxlength="80"
-                                    required
-                                >
-                            </div>
-
-
-                            <!-- Apellido materno -->
-                            <div class="col-md-4">
-                                <label class="form-label" for="apellidoMaterno">Apellido materno</label>
-                                <input
-                                    type="text"
-                                    name="apellido_materno"
-                                    id="apellidoMaterno"
-                                    class="form-control custom-input"
-                                    placeholder="Ej. López"
-                                    maxlength="80"
-                                >
-                            </div>
-
-                            <input type="hidden" id="nombre" name="nombre">
-
-                            <!-- Fecha de nacimiento -->
-                            <div class="col-md-6">
-                                <label class="form-label" for="fechaNacimiento">Fecha de nacimiento *</label>
-                                <input
-                                    type="date"
-                                    name="fecha_nacimiento"
-                                    id="fechaNacimiento"
-                                    class="form-control custom-input"
-                                    max="<?= date('Y-m-d'); ?>"
-                                    required
-                                >
-                            </div>
-
-                            <!-- Teléfono -->
-                            <div class="col-md-6">
-                                <label class="form-label" for="telefono">Teléfono *</label>
-                                <input
-                                    type="text"
-                                    name="telefono"
-                                    id="telefono"
-                                    class="form-control custom-input"
-                                    placeholder="6671234567"
-                                    maxlength="10"
-                                    inputmode="numeric"
-                                    required
-                                >
-                            </div>
-
-                            <!-- Correo -->
-                            <div class="col-md-6">
-                                <label class="form-label" for="email">Correo electrónico *</label>
-                                <input
-                                    type="email"
-                                    name="email"
-                                    id="email"
-                                    class="form-control custom-input"
-                                    placeholder="ejemplo@correo.com"
-                                    maxlength="100"
-                                    required
-                                >
-                            </div>
-
-                            <!-- Género -->
-                            <div class="col-md-6">
-                                <label class="form-label" for="genero">Género *</label>
-                                <select
-                                    name="genero"
-                                    id="genero"
-                                    class="form-select custom-input"
-                                    required
-                                >
-                                    <option value="">Seleccionar</option>
-                                    <option value="Femenino">Femenino</option>
-                                    <option value="Masculino">Masculino</option>
-                                    <option value="Otro">Otro</option>
-                                </select>
-                            </div>
-
-                            <!-- Contacto de emergencia -->
-                            <!-- Nombre del contacto de emergencia -->
-                            <div class="col-md-6">
-                                <label class="form-label" for="nombreContactoEmergencia">Nombre del contacto de emergencia *</label>
-                                <input
-                                    type="text"
-                                    name="nombre_contacto_emergencia"
-                                    id="nombreContactoEmergencia"
-                                    class="form-control custom-input"
-                                    placeholder="Ej. María López"
-                                    maxlength="100"
-                                    required
-                                >
-                            </div>
-
-                            <!-- Teléfono del contacto de emergencia -->
-                            <div class="col-md-6">
-                                <label class="form-label" for="telefonoEmergencia">Teléfono de emergencia *</label>
-                                <input
-                                    type="text"
-                                    name="telefono_emergencia"
-                                    id="telefonoEmergencia"
-                                    class="form-control custom-input"
-                                    placeholder="6671234567"
-                                    maxlength="10"
-                                    inputmode="numeric"
-                                    required
-                                >
-                            </div>
-
-                            <!-- Dirección -->
-                            <div class="col-12">
-                                <label class="form-label" for="direccion">Dirección *</label>
-                                <input
-                                    type="text"
-                                    name="direccion"
-                                    id="direccion"
-                                    class="form-control custom-input"
-                                    placeholder="Calle, número, colonia, ciudad"
-                                    maxlength="255"
-                                    required
-                                >
-                            </div>
-                        </div>
 
                         <!-- ================================================= -->
                         <!-- PRESELECCIÓN DE MEMBRESÍA                         -->

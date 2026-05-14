@@ -74,7 +74,10 @@ class Socio
         string $genero,
         string $contactoEmergenciaNombre,
         string $contactoEmergenciaTelefono,
-        string $direccion,
+        string $calle,
+        string $numero,
+        string $colonia,
+        string $codigoPostal,
         string $notas
     ): int {
         $stmt = $this->conn->prepare("
@@ -88,7 +91,10 @@ class Socio
                 :genero,
                 :contacto_emergencia_nombre,
                 :contacto_emergencia_telefono,
-                :direccion,
+                :calle,
+                :numero,
+                :colonia,
+                :codigo_postal,
                 :notas
             )
         ");
@@ -102,7 +108,10 @@ class Socio
         $stmt->bindParam(':genero', $genero, PDO::PARAM_STR);
         $stmt->bindParam(':contacto_emergencia_nombre', $contactoEmergenciaNombre, PDO::PARAM_STR);
         $stmt->bindParam(':contacto_emergencia_telefono', $contactoEmergenciaTelefono, PDO::PARAM_STR);
-        $stmt->bindParam(':direccion', $direccion, PDO::PARAM_STR);
+        $stmt->bindParam(':calle', $calle, PDO::PARAM_STR);
+        $stmt->bindParam(':numero', $numero, PDO::PARAM_STR);
+        $stmt->bindParam(':colonia', $colonia, PDO::PARAM_STR);
+        $stmt->bindParam(':codigo_postal', $codigoPostal, PDO::PARAM_STR);
         $stmt->bindParam(':notas', $notas, PDO::PARAM_STR);
 
         $stmt->execute();
@@ -131,7 +140,10 @@ class Socio
         string $genero,
         string $contactoEmergenciaNombre,
         string $contactoEmergenciaTelefono,
-        string $direccion,
+        string $calle,
+        string $numero,
+        string $colonia,
+        string $codigoPostal,
         string $notas
     ): bool {
         $stmt = $this->conn->prepare("
@@ -146,7 +158,10 @@ class Socio
                 :genero,
                 :contacto_emergencia_nombre,
                 :contacto_emergencia_telefono,
-                :direccion,
+                :calle,
+                :numero,
+                :colonia,
+                :codigo_postal,
                 :notas
             )
         ");
@@ -161,7 +176,10 @@ class Socio
         $stmt->bindParam(':genero', $genero, PDO::PARAM_STR);
         $stmt->bindParam(':contacto_emergencia_nombre', $contactoEmergenciaNombre, PDO::PARAM_STR);
         $stmt->bindParam(':contacto_emergencia_telefono', $contactoEmergenciaTelefono, PDO::PARAM_STR);
-        $stmt->bindParam(':direccion', $direccion, PDO::PARAM_STR);
+        $stmt->bindParam(':calle', $calle, PDO::PARAM_STR);
+        $stmt->bindParam(':numero', $numero, PDO::PARAM_STR);
+        $stmt->bindParam(':colonia', $colonia, PDO::PARAM_STR);
+        $stmt->bindParam(':codigo_postal', $codigoPostal, PDO::PARAM_STR);
         $stmt->bindParam(':notas', $notas, PDO::PARAM_STR);
 
         $resultado = $stmt->execute();

@@ -1,5 +1,6 @@
 <?php
 
+require_once __DIR__ . '/../../../config/app.php';
 /*
 |--------------------------------------------------------------------------
 | SIDEBAR PRINCIPAL
@@ -18,10 +19,11 @@ $isDashboard = str_contains($current, 'dashboard.php');
 | SOCIOS
 |--------------------------------------------------------------------------
 */
-$isSocios = str_contains($current, '/socios/');
-$isSociosCreate = str_contains($current, '/socios/create.php');
-$isSociosIndex = str_contains($current, '/socios/index.php');
-$isSociosEdit = str_contains($current, '/socios/edit.php');
+$isSociosIndex = str_contains($current, 'SocioController.php?action=index');
+$isSociosCreate = str_contains($current, 'SocioController.php?action=create');
+$isSociosEdit = str_contains($current, 'SocioController.php?action=edit');
+
+$isSocios = $isSociosIndex || $isSociosCreate || $isSociosEdit;
 
 /*
 |--------------------------------------------------------------------------
@@ -117,17 +119,18 @@ $isReportes = str_contains($current, '/reportes/');
                 </button>
 
                 <div id="socios-submenu" class="sidebar-submenu <?= $isSocios ? 'open' : '' ?>">
-                    <a href="/Impulso_Fitness/resources/views/socios/index.php"
-                       class="submenu-link <?= ($isSociosIndex || $isSociosEdit) ? 'active-submenu-link' : '' ?>">
+
+                    <a href="<?= BASE_URL ?>/app/controllers/SocioController.php?action=index"
+                    class="submenu-link <?= $isSociosIndex ? 'active-submenu-link' : '' ?>">
                         Buscar socio
                     </a>
 
-                    <a href="/Impulso_Fitness/resources/views/socios/create.php"
-                       class="submenu-link <?= $isSociosCreate ? 'active-submenu-link' : '' ?>">
+                    <a href="<?= BASE_URL ?>/app/controllers/SocioController.php?action=create"
+                    class="submenu-link <?= $isSociosCreate ? 'active-submenu-link' : '' ?>">
                         Nuevo socio
                     </a>
+
                 </div>
-            </div>
 
             <!-- MEMBRESÍAS -->
             <div class="menu-block <?= $isMembresias ? 'active-block' : '' ?>">

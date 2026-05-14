@@ -1,47 +1,7 @@
 <?php
-/*
-|--------------------------------------------------------------------------
-| MIDDLEWARE DE AUTENTICACIÓN
-|--------------------------------------------------------------------------
-*/
+
+require_once __DIR__ . '/../../../config/app.php';
 require_once __DIR__ . '/../../../app/middleware/auth.php';
-
-/*
-|--------------------------------------------------------------------------
-| MODELO SOCIO
-|--------------------------------------------------------------------------
-*/
-require_once __DIR__ . '/../../../app/models/Socio.php';
-
-/*
-|--------------------------------------------------------------------------
-| INSTANCIA DEL MODELO
-|--------------------------------------------------------------------------
-*/
-$modeloSocio = new Socio();
-
-/*
-|--------------------------------------------------------------------------
-| LISTADO GENERAL DE SOCIOS
-|--------------------------------------------------------------------------
-*/
-$socios = $modeloSocio->listarSocios();
-
-/*
-|--------------------------------------------------------------------------
-| SOCIO SELECCIONADO
-|--------------------------------------------------------------------------
-*/
-$idSeleccionado = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-$socioSeleccionado = null;
-
-if ($idSeleccionado > 0) {
-    $socioSeleccionado = $modeloSocio->obtenerSocioPorId($idSeleccionado);
-}
-
-if (!$socioSeleccionado && !empty($socios)) {
-    $socioSeleccionado = $modeloSocio->obtenerSocioPorId((int)$socios[0]['id']);
-}
 
 /*
 |--------------------------------------------------------------------------
@@ -70,20 +30,14 @@ function formatearFecha(?string $fecha): string
 | Cargamos el CSS del módulo socios antes del header para que
 | se inserte correctamente dentro del <head>.
 */
-$extraCss = "/Impulso_Fitness/public/css/socios.css";
+$extraCss = BASE_URL . "/public/css/socios.css";
 
 include __DIR__ . '/../layouts/header.php';
-
-?>
-
-<?php
-/*
-|--------------------------------------------------------------------------
-| SIDEBAR
-|--------------------------------------------------------------------------
-*/
+/*SIDEBAR */
 include __DIR__ . '/../layouts/sidebar.php';
+
 ?>
+
 
 <div class="main-content">
     <div class="container-fluid px-0">
@@ -148,7 +102,7 @@ include __DIR__ . '/../layouts/sidebar.php';
 
                                 <a
                                     id="socio-<?= (int)$row['id'] ?>"
-                                    href="<?= BASE_URL ?>/resources/views/socios/index.php?id=<?= urlencode($row['id']) ?>"
+                                    href="<?= BASE_URL ?>/app/controllers/SocioController.php?action=index&id=<?= (int)$row['id'] ?>"
                                     class="socio-list-item <?= $esSeleccionado ? 'selected' : '' ?>"
                                 >
                                     <div>
@@ -185,7 +139,7 @@ include __DIR__ . '/../layouts/sidebar.php';
                     <div class="text-end mt-3">
                         <?php if ($socioSeleccionado): ?>
                             <a
-                                href="<?= BASE_URL ?>/resources/views/socios/edit.php?id=<?= urlencode($socioSeleccionado['id']) ?>"
+                                href="<?= BASE_URL ?>/app/controllers/SocioController.php?action=edit&id=<?= (int)$socioSeleccionado['id'] ?>"
                                 class="btn btn-primary btn-sm"
                             >
                                 Editar notas
@@ -306,7 +260,7 @@ include __DIR__ . '/../layouts/sidebar.php';
                             <!-- ===================================== -->
                             <div class="d-flex gap-2 flex-wrap">
                                 <a
-                                    href="<?= BASE_URL ?>/resources/views/socios/edit.php?id=<?= urlencode($socioSeleccionado['id']) ?>"
+                                    href="<?= BASE_URL ?>/app/controllers/SocioController.php?action=edit&id=<?= (int)$socioSeleccionado['id'] ?>"
                                     class="btn btn-warning"
                                 >
                                     Editar

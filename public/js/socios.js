@@ -29,6 +29,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const telefono = document.getElementById('telefono');
     const email = document.getElementById('email');
     const genero = document.getElementById('genero');
+    const calle = document.getElementById('calle');
+    const numero = document.getElementById('numero');
+    const colonia = document.getElementById('colonia');
+    const codigoPostal = document.getElementById('codigoPostal');
 
     const nombreContactoEmergencia = document.getElementById('nombreContactoEmergencia');
     const telefonoEmergencia = document.getElementById('telefonoEmergencia');
@@ -76,6 +80,18 @@ document.addEventListener('DOMContentLoaded', () => {
     [nombres, apellidoPaterno, apellidoMaterno].forEach(input => {
         if (input) {
             input.addEventListener('input', actualizarNombreCompleto);
+        }
+    });
+
+    [calle, numero, colonia, codigoPostal].forEach(input => {
+        if (input) {
+            input.addEventListener('input', () => {
+                if (input === codigoPostal) {
+                    input.value = input.value.replace(/\D/g, '').slice(0, 5);
+                }
+
+                limpiarError(input);
+            });
         }
     });
 
@@ -209,6 +225,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const valorNombreContactoEmergencia = nombreContactoEmergencia ? nombreContactoEmergencia.value.trim() : '';
             const valorTelefonoEmergencia = telefonoEmergencia ? telefonoEmergencia.value.trim() : '';
+            const valorCalle = calle ? calle.value.trim() : '';
+            const valorNumero = numero ? numero.value.trim() : '';
+            const valorColonia = colonia ? colonia.value.trim() : '';
+            const valorCodigoPostal = codigoPostal ? codigoPostal.value.trim() : '';
 
             const valorHuella = huellaDemo ? huellaDemo.value.trim() : '';
             const valorNotas = notas ? notas.value.trim() : '';
@@ -225,6 +245,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 genero,
                 nombreContactoEmergencia,
                 telefonoEmergencia,
+                calle,
+                numero,
+                colonia,
+                codigoPostal,
                 huellaDemo,
                 notas,
                 membresiaSeleccionada
@@ -289,6 +313,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!/^\d{10}$/.test(valorTelefonoEmergencia)) {
                 marcarError(telefonoEmergencia);
+                hayErrores = true;
+            }
+
+            if (valorCalle.length < 2 || valorCalle.length > 120) {
+                marcarError(calle);
+                hayErrores = true;
+            }
+
+            if (valorNumero === '' || valorNumero.length > 20) {
+                marcarError(numero);
+                hayErrores = true;
+            }
+
+            if (valorColonia.length < 2 || valorColonia.length > 120) {
+                marcarError(colonia);
+                hayErrores = true;
+            }
+
+            if (!/^\d{5}$/.test(valorCodigoPostal)) {
+                marcarError(codigoPostal);
                 hayErrores = true;
             }
 

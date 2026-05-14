@@ -1,46 +1,8 @@
 <?php
-/*
-|--------------------------------------------------------------------------
-| MIDDLEWARE DE AUTENTICACIÓN
-|--------------------------------------------------------------------------
-| Validamos que exista una sesión activa antes de cargar la vista.
-*/
+
+require_once __DIR__ . '/../../../config/app.php';
 require_once __DIR__ . '/../../../app/middleware/auth.php';
 
-/*
-|--------------------------------------------------------------------------
-| MODELO SOCIO
-|--------------------------------------------------------------------------
-| Cargamos el modelo para obtener la información del socio seleccionado.
-*/
-require_once __DIR__ . '/../../../app/models/Socio.php';
-
-/*
-|--------------------------------------------------------------------------
-| VALIDAR ID DEL SOCIO
-|--------------------------------------------------------------------------
-*/
-$id = (int)($_GET['id'] ?? 0);
-
-if ($id <= 0) {
-    header("Location: " . BASE_URL . "/resources/views/socios/index.php?error=datos_invalidos");
-    exit;
-}
-
-/*
-|--------------------------------------------------------------------------
-| OBTENER DATOS DEL SOCIO
-|--------------------------------------------------------------------------
-*/
-$modeloSocio = new Socio();
-
-$socio = $modeloSocio->obtenerSocioPorId($id);
-$huella = $modeloSocio->obtenerHuellaPorSocio($id);
-
-if (!$socio) {
-    header("Location: " . BASE_URL . "/resources/views/socios/index.php?error=no_encontrado");
-    exit;
-}
 
 /*
 |--------------------------------------------------------------------------
@@ -54,14 +16,8 @@ $nombreCompleto = trim(
     ($socio['apellido_materno'] ?? '')
 );
 
-/*
-|--------------------------------------------------------------------------
-| HEADER GENERAL
-|--------------------------------------------------------------------------
-| Cargamos el CSS del módulo socios antes del header para que
-| el navegador lo inserte correctamente dentro del <head>.
-*/
-$extraCss = "/Impulso_Fitness/public/css/socios.css";
+/* HEADER GENERAL */
+$extraCss = BASE_URL . "/public/css/socios.css";
 
 include __DIR__ . '/../layouts/header.php';
 
@@ -249,16 +205,61 @@ include __DIR__ . '/../layouts/sidebar.php';
                         >
                     </div>
 
-                    <!-- Dirección -->
-                    <div class="col-12">
-                        <label class="form-label" for="direccion">Dirección *</label>
+                    <!-- Dirección completa -->
+                    <!-- Calle -->
+                    <div class="col-md-6">
+                        <label class="form-label" for="calle">Calle *</label>
                         <input
                             type="text"
-                            name="direccion"
-                            id="direccion"
+                            name="calle"
+                            id="calle"
                             class="form-control custom-input"
-                            value="<?= htmlspecialchars($socio['direccion'] ?? '') ?>"
-                            maxlength="255"
+                            value="<?= htmlspecialchars($socio['calle'] ?? '') ?>"
+                            maxlength="120"
+                            required
+                        >
+                    </div>
+
+                    <!-- Número -->
+                    <div class="col-md-3">
+                        <label class="form-label" for="numero">Número *</label>
+                        <input
+                            type="text"
+                            name="numero"
+                            id="numero"
+                            class="form-control custom-input"
+                            value="<?= htmlspecialchars($socio['numero'] ?? '') ?>"
+                            maxlength="20"
+                            required
+                        >
+                    </div>
+
+                    <!-- Código postal -->
+                    <div class="col-md-3">
+                        <label class="form-label" for="codigoPostal">Código postal *</label>
+                        <input
+                            type="text"
+                            name="codigo_postal"
+                            id="codigoPostal"
+                            class="form-control custom-input"
+                            value="<?= htmlspecialchars($socio['codigo_postal'] ?? '') ?>"
+                            maxlength="5"
+                            inputmode="numeric"
+                            pattern="\d{5}"
+                            required
+                        >
+                    </div>
+
+                    <!-- Colonia -->
+                    <div class="col-12">
+                        <label class="form-label" for="colonia">Colonia *</label>
+                        <input
+                            type="text"
+                            name="colonia"
+                            id="colonia"
+                            class="form-control custom-input"
+                            value="<?= htmlspecialchars($socio['colonia'] ?? '') ?>"
+                            maxlength="120"
                             required
                         >
                     </div>
@@ -305,6 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const telefono = document.getElementById('telefono');
     const telefonoEmergencia = document.getElementById('telefonoEmergencia');
+    const codigoPostal = document.getElementById('codigoPostal');
 
     function actualizarNombreCompleto() {
         if (!nombre || !nombres || !apellidoPaterno || !apellidoMaterno) return;
@@ -322,10 +324,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     actualizarNombreCompleto();
 
-    [telefono, telefonoEmergencia].forEach(input => {
+    [telefono, telefonoEmergencia, codigoPostal].forEach(input => {
         if (input) {
             input.addEventListener('input', () => {
-                input.value = input.value.replace(/\D/g, '').slice(0, 10);
+                input.value = input.value.replace(/\D/g, '').slice(0, input === codigoPostal ? 5 : 10);
             });
         }
     });
