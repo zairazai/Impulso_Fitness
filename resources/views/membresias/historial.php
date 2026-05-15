@@ -1,40 +1,16 @@
 <?php
 
+
 /*
 |--------------------------------------------------------------------------
-| MIDDLEWARE DE AUTENTICACIÓN
+| CONFIGURACIÓN Y SEGURIDAD EXTRA
 |--------------------------------------------------------------------------
-| Validamos que el usuario tenga sesión activa antes de cargar la vista.
-| Esto evita repetir la lógica de sesión en cada archivo.
+| Cargamos la configuración general y mantenemos una validación adicional
+| de sesión como respaldo del flujo del controlador.
 */
+require_once __DIR__ . '/../../../config/app.php';
 require_once __DIR__ . '/../../../app/middleware/auth.php';
 
-/*
-|--------------------------------------------------------------------------
-| MODELO
-|--------------------------------------------------------------------------
-| Cargamos el modelo Membresia para obtener el historial de pagos.
-*/
-require_once __DIR__ . '/../../../app/models/Membresia.php';
-
-$modelo = new Membresia();
-
-/*
-|--------------------------------------------------------------------------
-| ACTUALIZAR ESTADOS DE MEMBRESÍAS
-|--------------------------------------------------------------------------
-| Antes de mostrar el historial actualizamos estados para que la información
-| esté sincronizada con las fechas de inicio y fin.
-*/
-$modelo->actualizarEstadosMembresias();
-
-/*
-|--------------------------------------------------------------------------
-| HISTORIAL DE PAGOS
-|--------------------------------------------------------------------------
-| Recuperamos todos los pagos registrados.
-*/
-$historial = $modelo->historialPagos();
 
 /*
 |--------------------------------------------------------------------------
@@ -43,7 +19,7 @@ $historial = $modelo->historialPagos();
 | Cargamos el CSS exclusivo del módulo membresías antes del
 | header para que se inserte correctamente dentro del <head>.
 */
-$extraCss = "/Impulso_Fitness/public/css/membresias.css";
+$extraCss = BASE_URL . "/public/css/membresias.css";
 
 include __DIR__ . '/../layouts/header.php';
 
@@ -136,14 +112,14 @@ include __DIR__ . '/../layouts/sidebar.php';
                         <?php if (!empty($historial)): ?>
                             <?php foreach ($historial as $pago): ?>
                                 <tr>
-                                    <td><?= htmlspecialchars($pago['socio'] ?? '-') ?></td>
+                                    <td><?= htmlspecialchars($pago['socio_nombre'] ?? '-') ?></td>
                                     <td><?= htmlspecialchars($pago['fecha_pago'] ?? '-') ?></td>
                                     <td><?= htmlspecialchars(ucfirst($pago['metodo_pago'] ?? '-')) ?></td>
-                                    <td><?= htmlspecialchars($pago['membresia'] ?? '-') ?></td>
+                                    <td><?= htmlspecialchars($pago['membresia_nombre'] ?? '-') ?></td>
                                     <td>$<?= number_format((float)($pago['monto'] ?? 0), 2) ?></td>
                                     <td>
                                         <a
-                                            href="<?= BASE_URL ?>/resources/views/membresias/recibo.php?id=<?= urlencode($pago['id']) ?>"
+                                            href="<?= BASE_URL ?>/app/controllers/MembresiaController.php?action=recibo&id=<?= urlencode($pago['id']) ?>"
                                             class="btn btn-outline-info btn-sm"
                                         >
                                             Recibo

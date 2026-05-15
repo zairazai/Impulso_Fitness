@@ -1,32 +1,23 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| CONTROLADOR DE MEMBRESÍAS
-|--------------------------------------------------------------------------
-| Este archivo se encarga de manejar la lógica del módulo de membresías.
-| Aquí procesamos:
-| - registro de pago
-| - validaciones
-| - redirecciones
-|
-| NO se hacen consultas directas aquí ,  eso lo hace el modelo.
-*/
-
-require_once __DIR__ . '/../models/Membresia.php';
 require_once __DIR__ . '/../../config/app.php';
+require_once __DIR__ . '/../models/Membresia.php';
+
 
 class MembresiaController
 {
-    /*
-    |--------------------------------------------------------------------------
-    | RUTAS DE REDIRECCIÓN
-    |--------------------------------------------------------------------------
-    | Definimos rutas base para no repetir strings en todo el código.
-    */
-    private const LOGIN_VIEW = BASE_URL . '/resources/views/auth/login.php';
-    private const MEMBRESIAS_INDEX_VIEW = BASE_URL . '/resources/views/membresias/index.php';
-    private const SOCIOS_INDEX_VIEW = BASE_URL . '/resources/views/socios/index.php';
+     private Membresia $modelo;
+
+    public function __construct()
+    {
+        $this->modelo = new Membresia();
+    }
+
+    /*  RUTAS DE REDIRECCIÓN */
+    private const LOGIN_ROUTE = BASE_URL . '/login';
+    private const MEMBRESIAS_INDEX_ROUTE = BASE_URL . '/app/controllers/MembresiaController.php?action=index';
+    private const SOCIOS_INDEX_ROUTE = BASE_URL . '/app/controllers/SocioController.php?action=index';
+    private const MEMBRESIAS_HISTORIAL_ROUTE = BASE_URL . '/app/controllers/MembresiaController.php?action=historial';
 
     /*
     |--------------------------------------------------------------------------
@@ -43,9 +34,55 @@ class MembresiaController
 
         // Si no hay usuario, redirigir al login
         if (!isset($_SESSION['user'])) {
-            header("Location: " . self::LOGIN_VIEW);
+            header("Location: " . self::LOGIN_ROUTE);
             exit;
         }
+    }
+
+   public function index(): void
+    {
+        $this->validarSesion();
+
+        $this->modelo->actualizarEstadosMembresias();
+
+        $idSeleccionado = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+        $planSeleccionado = trim($_GET['plan'] ?? '');
+        $success = trim($_GET['success'] ?? '');
+
+        $socios = $this->modelo->listarSocios();
+
+        $socioSeleccionado = null;
+
+        if ($idSeleccionado > 0) {
+            $socioSeleccionado = $this->modelo->obtenerSocioPorId($idSeleccionado);
+        }
+
+        $planes = $this->modelo->listarMembresias();
+
+        $totalInicial = 0;
+
+        foreach ($planes as $plan) {
+            if ($plan['nombre'] === $planSeleccionado) {
+                $totalInicial = (float)$plan['precio'];
+                break;
+            }
+        }
+
+        $fechaActual = date('Y-m-d H:i:s');
+
+        require_once __DIR__ . '/../../resources/views/membresias/index.php';
+    }
+
+    public function historial(): void
+    {
+        $this->validarSesion();
+
+        $this->modelo->actualizarEstadosMembresias();
+
+        $historial = $this->modelo->historialPagos();
+
+        require_once __DIR__ .
+        '/../../resources/views/membresias/historial.php';
     }
 
     /*
@@ -53,147 +90,142 @@ class MembresiaController
     | STORE (REGISTRAR MEMBRESÍA / PAGO)
     |--------------------------------------------------------------------------
     | Este método:
-    | 1. Recibe datos del formulario
-    | 2. Valida datos
-    | 3. Consulta el modelo
-    | 4. Registra el pago
-    | 5. Actualiza estados de membresías/socios
+    | 1. Recibe datos del formulario, 2. Valida datos, 3. Consulta el modelo
+    | 4. Registra el pago, 5. Actualiza estados de membresías/socios
     | 6. Redirige según resultado
     */
     public function store(): void
-    {
-        // Validar sesión
-        $this->validarSesion();
+{
+    $this->validarSesion();
 
-        // Validar que sea método POST
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header("Location: " . self::MEMBRESIAS_INDEX_VIEW);
-            exit;
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header("Location: " . self::MEMBRESIAS_INDEX_ROUTE);
+        exit;
+    }
+
+    $socioId = (int)($_POST['socio_id'] ?? 0);
+    $planSeleccionado = trim($_POST['plan_seleccionado'] ?? '');
+    $fechaInicioInput = trim($_POST['fecha_inicio'] ?? '');
+    $total = (float)($_POST['total'] ?? 0);
+    $metodoPago = trim($_POST['metodo_pago'] ?? '');
+
+    $fechaInicio = '';
+
+    if ($fechaInicioInput !== '') {
+        $fechaInicio = str_replace('T', ' ', $fechaInicioInput);
+
+        if (strlen($fechaInicio) === 16) {
+            $fechaInicio .= ':00';
         }
+    }
 
-        /*
-        |--------------------------------------------------------------------------
-        | OBTENER DATOS DEL FORMULARIO
-        |--------------------------------------------------------------------------
-        */
-        $socioId = (int)($_POST['socio_id'] ?? 0);
-        $planSeleccionado = trim($_POST['plan_seleccionado'] ?? '');
-        $fechaInicioInput = trim($_POST['fecha_inicio'] ?? '');
-        $total = (float)($_POST['total'] ?? 0);
-        $metodoPago = trim($_POST['metodo_pago'] ?? '');
+    if (
+        $socioId <= 0 ||
+        $planSeleccionado === '' ||
+        $fechaInicio === '' ||
+        $total <= 0 ||
+        $metodoPago === ''
+    ) {
+        header("Location: " . self::MEMBRESIAS_INDEX_ROUTE .
+            "&id=$socioId&plan=" . urlencode($planSeleccionado) . "&error=datos");
+        exit;
+    }
 
-        /*
-        |--------------------------------------------------------------------------
-        | NORMALIZAR FECHA DE INICIO
-        |--------------------------------------------------------------------------
-        | El input datetime-local llega así:
-        | 2026-04-27T19:30
-        |
-        | MySQL DATETIME espera:
-        | 2026-04-27 19:30:00
-        */
-        $fechaInicio = '';
+    $fechaValida = DateTime::createFromFormat('Y-m-d H:i:s', $fechaInicio);
 
-        if ($fechaInicioInput !== '') {
-            $fechaInicio = str_replace('T', ' ', $fechaInicioInput);
+    if (!$fechaValida) {
+        header("Location: " . self::MEMBRESIAS_INDEX_ROUTE .
+            "&id=$socioId&plan=" . urlencode($planSeleccionado) . "&error=fecha");
+        exit;
+    }
 
-            // Si viene sin segundos, se agregan para que coincida con DATETIME.
-            if (strlen($fechaInicio) === 16) {
-                $fechaInicio .= ':00';
-            }
-        }
+    $this->modelo->actualizarEstadosMembresias();
 
-        /*
-        |--------------------------------------------------------------------------
-        | VALIDACIÓN BÁSICA
-        |--------------------------------------------------------------------------
-        | Verificamos que los datos obligatorios estén presentes.
-        */
-        if (
-            $socioId <= 0 ||
-            $planSeleccionado === '' ||
-            $fechaInicio === '' ||
-            $total <= 0 ||
-            $metodoPago === ''
-        ) {
-            // Redirigir con error
-            header("Location: " . self::MEMBRESIAS_INDEX_VIEW .
-                "?id=$socioId&plan=" . urlencode($planSeleccionado) . "&error=datos");
-            exit;
-        }
+    $membresia = $this->modelo->obtenerMembresiaPorNombre($planSeleccionado);
 
-        /*
-        |--------------------------------------------------------------------------
-        | VALIDAR FORMATO DE FECHA
-        |--------------------------------------------------------------------------
-        | Evita mandar fechas inválidas al procedimiento almacenado.
-        */
-        $fechaValida = DateTime::createFromFormat('Y-m-d H:i:s', $fechaInicio);
+    if (!$membresia) {
+        header("Location: " . self::MEMBRESIAS_INDEX_ROUTE . "&id=$socioId&error=plan");
+        exit;
+    }
 
-        if (!$fechaValida) {
-            header("Location: " . self::MEMBRESIAS_INDEX_VIEW .
-                "?id=$socioId&plan=" . urlencode($planSeleccionado) . "&error=fecha");
-            exit;
-        }
+    $ok = $this->modelo->registrarPago(
+        $socioId,
+        (int)$membresia['id'],
+        $fechaInicio,
+        $total,
+        $metodoPago
+    );
 
-        /*
-        |--------------------------------------------------------------------------
-        | USO DEL MODELO
-        |--------------------------------------------------------------------------
-        */
-        $modelo = new Membresia();
+    if ($ok) {
+        $this->modelo->actualizarEstadosMembresias();
 
-        // Antes de registrar un nuevo pago, actualizamos estados vencidos.
-        $modelo->actualizarEstadosMembresias();
+        header("Location: " . self::SOCIOS_INDEX_ROUTE . "?id=$socioId&paid=1");
+        exit;
+    }
 
-        // Obtener información de la membresía seleccionada
-        $membresia = $modelo->obtenerMembresiaPorNombre($planSeleccionado);
+    header("Location: " . self::MEMBRESIAS_INDEX_ROUTE .
+        "&id=$socioId&plan=" . urlencode($planSeleccionado) . "&error=pago");
+    exit;
+}
 
-        // Validar que exista el plan
-        if (!$membresia) {
-            header("Location: " . self::MEMBRESIAS_INDEX_VIEW . "?id=$socioId&error=plan");
-            exit;
-        }
+    public function recibo(): void
+{
+    $this->validarSesion();
 
-        /*
-        |--------------------------------------------------------------------------
-        | REGISTRAR PAGO
-        |--------------------------------------------------------------------------
-        */
-        $ok = $modelo->registrarPago(
-            $socioId,
-            (int)$membresia['id'],
-            $fechaInicio,
-            $total,
-            $metodoPago
-        );
+    $pagoId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
-        /*
-        |--------------------------------------------------------------------------
-        | ACTUALIZAR ESTADOS DESPUÉS DEL PAGO
-        |--------------------------------------------------------------------------
-        | Esto asegura que:
-        | - Si la membresía inicia hoy o ya inició, el socio quede activo.
-        | - Si ya hay membresías vencidas, se marquen como inactivas.
-        */
-        if ($ok) {
-            $modelo->actualizarEstadosMembresias();
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | RESPUESTA FINAL
-        |--------------------------------------------------------------------------
-        */
-        if ($ok) {
-            // Redirigir a socios con confirmación
-            header("Location: " . self::SOCIOS_INDEX_VIEW . "?id=$socioId&paid=1");
-        } else {
-            // Redirigir con error
-            header("Location: " . self::MEMBRESIAS_INDEX_VIEW .
-                "?id=$socioId&plan=" . urlencode($planSeleccionado) . "&error=pago");
-        }
+    if ($pagoId <= 0) {
+        header("Location: " . self::MEMBRESIAS_HISTORIAL_ROUTE . "&error=recibo");
 
         exit;
     }
+
+    $this->modelo->actualizarEstadosMembresias();
+
+    $recibo = $this->modelo->obtenerReciboMembresia($pagoId);
+
+    if (!$recibo) {
+        header("Location: " . self::MEMBRESIAS_HISTORIAL_ROUTE . "&error=recibo");
+        exit;
+    }
+
+    $referencia = $recibo['referencia'] ?? '';
+
+    if ($referencia === '' || $referencia === null) {
+        $referencia = 'REC-' .
+            date('Ymd', strtotime($recibo['fecha_pago'])) .
+            '-' .
+            str_pad((string)$recibo['pago_id'], 6, '0', STR_PAD_LEFT);
+    }
+
+    require_once __DIR__ . '/../../resources/views/membresias/recibo.php';
+}
+
+}
+
+$controller = new MembresiaController();
+
+$action = $_GET['action'] ?? $_POST['action'] ?? 'index';
+
+switch ($action) {
+
+    case 'index':
+        $controller->index();
+        break;
+
+    case 'store':
+        $controller->store();
+        break;
+    
+    case 'historial':
+    $controller->historial();
+    break;
+
+    case 'recibo':
+    $controller->recibo();
+    break;
+
+    default:
+        $controller->index();
+        break;
 }

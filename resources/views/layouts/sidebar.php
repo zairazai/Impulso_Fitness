@@ -143,13 +143,13 @@ $isReportes = str_contains($current, '/reportes/');
                 </button>
 
                 <div id="membresias-submenu" class="sidebar-submenu <?= $isMembresias ? 'open' : '' ?>">
-                    <a href="/Impulso_Fitness/resources/views/membresias/index.php"
-                       class="submenu-link <?= $isMembresiasIndex ? 'active-submenu-link' : '' ?>">
+                    <a href="<?= BASE_URL ?>/app/controllers/MembresiaController.php?action=index"
+                    class="submenu-link <?= $isMembresiasIndex ? 'active-submenu-link' : '' ?>">
                         Registrar pago
                     </a>
 
-                    <a href="/Impulso_Fitness/resources/views/membresias/historial.php"
-                       class="submenu-link <?= ($isMembresiasHistorial || $isMembresiasRecibo) ? 'active-submenu-link' : '' ?>">
+                    <a href="<?= BASE_URL ?>/app/controllers/MembresiaController.php?action=historial"
+                    class="submenu-link <?= ($isMembresiasHistorial || $isMembresiasRecibo) ? 'active-submenu-link' : '' ?>">
                         Historial de pagos
                     </a>
                 </div>

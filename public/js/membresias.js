@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             items.forEach(item => {
                 const texto = item.innerText.toLowerCase();
-                item.style.display = texto.includes(filtro) ? '' : 'flex';
+                item.style.display = texto.includes(filtro) ? '' : 'none';
             });
         });
     }

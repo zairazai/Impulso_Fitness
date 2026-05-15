@@ -1,100 +1,11 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| MIDDLEWARE DE AUTENTICACIÓN
-|--------------------------------------------------------------------------
-| Validamos que el usuario tenga sesión activa antes de cargar la vista.
-| Esto evita repetir la lógica de sesión en cada archivo.
-*/
+require_once __DIR__ . '/../../../config/app.php';
 require_once __DIR__ . '/../../../app/middleware/auth.php';
 
-/*
-|--------------------------------------------------------------------------
-| MODELO
-|--------------------------------------------------------------------------
-| Usamos el modelo Membresia porque este módulo debe manejar:
-| - socios disponibles para membresía
-| - planes de membresía
-| - actualización de estados
-*/
-require_once __DIR__ . '/../../../app/models/Membresia.php';
 
-$membresiaModel = new Membresia();
+/* FUNCIÓN AUXILIAR PARA FORMATEAR FECHAS*/
 
-/*
-|--------------------------------------------------------------------------
-| ACTUALIZAR ESTADOS DE MEMBRESÍAS
-|--------------------------------------------------------------------------
-| Antes de mostrar la vista actualizamos estados para que:
-| - membresías vencidas pasen a inactivas
-| - socios sin membresía vigente aparezcan inactivos
-| - socios con membresía vigente aparezcan activos
-*/
-$membresiaModel->actualizarEstadosMembresias();
-
-/*
-|--------------------------------------------------------------------------
-| LISTADO GENERAL DE SOCIOS
-|--------------------------------------------------------------------------
-*/
-$socios = $membresiaModel->listarSocios();
-
-/*
-|--------------------------------------------------------------------------
-| DATOS RECIBIDOS POR URL
-|--------------------------------------------------------------------------
-*/
-$idSeleccionado = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-$planSeleccionado = trim($_GET['plan'] ?? '');
-$success = trim($_GET['success'] ?? '');
-
-/*
-|--------------------------------------------------------------------------
-| SOCIO SELECCIONADO
-|--------------------------------------------------------------------------
-*/
-$socioSeleccionado = null;
-
-if ($idSeleccionado > 0) {
-    $socioSeleccionado = $membresiaModel->obtenerSocioPorId($idSeleccionado);
-}
-
-/*
-|--------------------------------------------------------------------------
-| PLANES DISPONIBLES
-|--------------------------------------------------------------------------
-| Los planes ya no se queman en el código.
-| Ahora vienen desde la tabla membresias mediante procedimiento almacenado.
-*/
-$planes = $membresiaModel->listarMembresias();
-
-/*
-|--------------------------------------------------------------------------
-| TOTAL INICIAL
-|--------------------------------------------------------------------------
-*/
-$totalInicial = 0;
-
-foreach ($planes as $plan) {
-    if ($plan['nombre'] === $planSeleccionado) {
-        $totalInicial = (float)$plan['precio'];
-        break;
-    }
-}
-
-/*
-|--------------------------------------------------------------------------
-| FECHA ACTUAL
-|--------------------------------------------------------------------------
-*/
-$fechaActual = date('Y-m-d H:i:s');
-
-/*
-|--------------------------------------------------------------------------
-| FUNCIÓN AUXILIAR PARA FORMATEAR FECHAS
-|--------------------------------------------------------------------------
-*/
 function formatearFechaMembresia(?string $fecha): string
 {
     if (!$fecha) {
@@ -117,7 +28,7 @@ function formatearFechaMembresia(?string $fecha): string
 | Cargamos el CSS exclusivo del módulo membresías antes del
 | header para que se inserte correctamente dentro del <head>.
 */
-$extraCss = "/Impulso_Fitness/public/css/membresias.css";
+$extraCss = BASE_URL . "/public/css/membresias.css";
 
 include __DIR__ . '/../layouts/header.php';
 
@@ -179,7 +90,7 @@ include __DIR__ . '/../layouts/sidebar.php';
                                 ?>
 
                                 <a
-                                    href="<?= BASE_URL ?>/resources/views/membresias/index.php?id=<?= (int)$socio['id'] ?>&plan=<?= urlencode($planSeleccionado) ?>"
+                                    href="<?= BASE_URL ?>/app/controllers/MembresiaController.php?action=index&id=<?= (int)$socio['id'] ?>&plan=<?= urlencode($planSeleccionado) ?>"
                                     class="socio-list-item <?= $esSeleccionado ? 'active' : '' ?>"
                                 >
                                     <div>
@@ -203,7 +114,7 @@ include __DIR__ . '/../layouts/sidebar.php';
 
                 <form
                     method="POST"
-                    action="<?= BASE_URL ?>/routes/membresia_store.php"
+                    action="<?= BASE_URL ?>/app/controllers/MembresiaController.php?action=store"
                     id="formMembresia"
                     class="page-card card-section"
                 >
@@ -279,7 +190,7 @@ include __DIR__ . '/../layouts/sidebar.php';
                             name="fecha_inicio"
                             id="fechaInicio"
                             class="form-control custom-input"
-                            value="<?= date('Y-m-d\TH:i') ?>"
+                            value="<?= date('Y-m-d\TH:i', strtotime($fechaActual)) ?>"
                             required
                         >
                     </div>
@@ -322,7 +233,7 @@ include __DIR__ . '/../layouts/sidebar.php';
 
                     <div class="action-row mt-4">
                         <a
-                            href="<?= BASE_URL ?>/resources/views/socios/create.php"
+                            href="<?= BASE_URL ?>/app/controllers/SocioController.php?action=create"
                             class="btn btn-secondary"
                         >
                             Cancelar

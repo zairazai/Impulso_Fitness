@@ -18,16 +18,11 @@ class Membresia
 {
     /*
     |--------------------------------------------------------------------------
-    | CONEXIÓN PDO
+    | CONEXIÓN PDO, CONSTRUCTOR
     |--------------------------------------------------------------------------
     */
     private PDO $conn;
 
-    /*
-    |--------------------------------------------------------------------------
-    | CONSTRUCTOR
-    |--------------------------------------------------------------------------
-    */
     public function __construct()
     {
         $database = new Database();
@@ -112,7 +107,7 @@ class Membresia
     |--------------------------------------------------------------------------
     | OBTENER MEMBRESÍA ACTIVA DEL SOCIO
     |--------------------------------------------------------------------------
-    | Recupera la membresía más reciente del socio.
+    | Recupera la membresía activa y vigente
     */
     public function obtenerMembresiaActivaSocio(int $socioId): array|false
     {
@@ -131,7 +126,8 @@ class Membresia
     | REGISTRAR PAGO
     |--------------------------------------------------------------------------
     | Registra el pago de una membresía.
-    | El procedimiento también activa o inactiva al socio según la fecha.
+    | El procedimiento registra el pago, crea la relación socio-membresía
+    |   y actualiza el estado del socio según la vigencia.
     */
     public function registrarPago(
         int $socioId,
@@ -172,15 +168,33 @@ class Membresia
     |--------------------------------------------------------------------------
     | Consulta el historial de pagos desde procedimiento almacenado.
     */
-    public function historialPagos(): array
-    {
-        $stmt = $this->conn->prepare("CALL sp_historial_pagos()");
-        $stmt->execute();
+    public function historialPagos(
+        string $busqueda = '',
+        ?string $fechaInicio = null,
+        ?string $fechaFin = null
+    ): array {
+        try {
+            $stmt = $this->conn->prepare("
+                CALL sp_historial_pagos_membresia(
+                    :busqueda,
+                    :fecha_inicio,
+                    :fecha_fin
+                )
+            ");
 
-        $data = $stmt->fetchAll();
-        $stmt->closeCursor();
+            $stmt->bindParam(':busqueda', $busqueda, PDO::PARAM_STR);
+            $stmt->bindParam(':fecha_inicio', $fechaInicio);
+            $stmt->bindParam(':fecha_fin', $fechaFin);
 
-        return $data;
+            $stmt->execute();
+
+            $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+
+            return $data;
+        } catch (PDOException $e) {
+            die('Error en historialPagos: ' . $e->getMessage());
+        }
     }
 
     /*

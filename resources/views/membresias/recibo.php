@@ -1,55 +1,16 @@
 <?php
-
 /*
 |--------------------------------------------------------------------------
-| MIDDLEWARE DE AUTENTICACIÓN
+| CONFIGURACIÓN Y SEGURIDAD EXTRA
 |--------------------------------------------------------------------------
-| Validamos que el usuario tenga sesión activa.
+| Cargamos la configuración general y mantenemos una validación adicional
+| de sesión como respaldo del flujo del controlador.
 | Esta vista NO carga header ni sidebar porque debe imprimirse limpia.
 */
+
 require_once __DIR__ . '/../../../app/middleware/auth.php';
-
-/*
-|--------------------------------------------------------------------------
-| CONFIGURACIÓN Y MODELO
-|--------------------------------------------------------------------------
-*/
 require_once __DIR__ . '/../../../config/app.php';
-require_once __DIR__ . '/../../../app/models/Membresia.php';
 
-$modelo = new Membresia();
-
-/*
-|--------------------------------------------------------------------------
-| ACTUALIZAR ESTADOS DE MEMBRESÍAS
-|--------------------------------------------------------------------------
-| Sincroniza estados antes de mostrar el recibo.
-*/
-$modelo->actualizarEstadosMembresias();
-
-/*
-|--------------------------------------------------------------------------
-| OBTENER ID DEL PAGO
-|--------------------------------------------------------------------------
-*/
-$pagoId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-
-if ($pagoId <= 0) {
-    header('Location: ' . BASE_URL . '/resources/views/membresias/historial.php?error=recibo');
-    exit;
-}
-
-/*
-|--------------------------------------------------------------------------
-| OBTENER DATOS DEL RECIBO
-|--------------------------------------------------------------------------
-*/
-$recibo = $modelo->obtenerReciboMembresia($pagoId);
-
-if (!$recibo) {
-    header('Location: ' . BASE_URL . '/resources/views/membresias/historial.php?error=recibo');
-    exit;
-}
 
 /*
 |--------------------------------------------------------------------------
@@ -165,7 +126,7 @@ function formatoFechaRecibo(?string $fecha): string
 
         <div class="receipt-actions">
             <a
-                href="<?= BASE_URL ?>/resources/views/membresias/historial.php"
+                href="<?= BASE_URL ?>/app/controllers/MembresiaController.php?action=historial"
                 class="btn btn-secondary"
             >
                 Volver al historial

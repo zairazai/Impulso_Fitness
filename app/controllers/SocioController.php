@@ -25,17 +25,13 @@ public function __construct()
 |--------------------------------------------------------------------------
 | RUTAS CONSTANTES DEL CONTROLADOR
 |--------------------------------------------------------------------------
-| Se definen como constantes privadas porque:
-| Son rutas fijas que no cambian durante la ejecución
-| solo deben utilizarse dentro de este controlador.
-| Evitan repetir rutas manualmente en varias partes del código.
 */
 
-    private const LOGIN_VIEW =  BASE_URL . '/resources/views/auth/login.php';
-    private const SOCIOS_INDEX_VIEW = BASE_URL . '/resources/views/socios/index.php';
-    private const SOCIOS_CREATE_VIEW = BASE_URL . '/resources/views/socios/create.php';
-    private const SOCIOS_EDIT_VIEW = BASE_URL . '/resources/views/socios/edit.php';
-    private const MEMBRESIAS_INDEX_VIEW = BASE_URL . '/resources/views/membresias/index.php';
+    private const SOCIOS_INDEX_ROUTE = BASE_URL . '/app/controllers/SocioController.php?action=index';
+    private const SOCIOS_CREATE_ROUTE = BASE_URL . '/app/controllers/SocioController.php?action=create';
+    private const SOCIOS_EDIT_ROUTE = BASE_URL . '/app/controllers/SocioController.php?action=edit';
+    private const MEMBRESIAS_INDEX_ROUTE = BASE_URL . '/app/controllers/MembresiaController.php?action=index';
+    private const LOGIN_ROUTE = BASE_URL . '/login';
 
 
     private function validarSesion(): void
@@ -47,7 +43,7 @@ public function __construct()
 
         // Verificar que exista un usuario autenticado
         if (!isset($_SESSION['user'])) {
-            header("Location: " . self::LOGIN_VIEW);
+            header("Location: " . self::LOGIN_ROUTE);
             exit;
         }
     }
@@ -97,7 +93,7 @@ public function __construct()
             $huellaDemo === '' ||
             $plan === ''
         ) {
-            header("Location: " . self::SOCIOS_CREATE_VIEW . "?error=campos");
+            header("Location: " . self::SOCIOS_CREATE_ROUTE . "?error=campos");
             exit;
         }
         /*
@@ -106,7 +102,7 @@ public function __construct()
         |--------------------------------------------------------------------------
         */
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            header("Location: " . self::SOCIOS_CREATE_VIEW . "?error=email");
+            header("Location: " . self::SOCIOS_CREATE_ROUTE . "?error=email");
             exit;
         }
         /*
@@ -120,7 +116,7 @@ public function __construct()
             !preg_match('/^\d{10}$/', $telefono) ||
             !preg_match('/^\d{10}$/', $telefonoEmergencia)
         ) {
-            header("Location: " . self::SOCIOS_CREATE_VIEW . "?error=telefono");
+            header("Location: " . self::SOCIOS_CREATE_ROUTE . "?error=telefono");
             exit;
         }
         /*
@@ -131,7 +127,7 @@ public function __construct()
         */
 
         if (!preg_match('/^\d{5}$/', $codigoPostal)) {
-            header("Location: " . self::SOCIOS_CREATE_VIEW . "?error=cp");
+            header("Location: " . self::SOCIOS_CREATE_ROUTE . "?error=cp");
             exit;
         }
 
@@ -154,14 +150,14 @@ public function __construct()
         );
 
         if ($nuevoId <= 0) {
-            header("Location: " . self::SOCIOS_CREATE_VIEW . "?error=insert_failed");
+            header("Location: " . self::SOCIOS_CREATE_ROUTE . "?error=insert_failed");
             exit;
         }
 
         $hash = hash('sha256', $huellaDemo);
         $this->modelo->registrarHuella($nuevoId, $hash);
 
-        header("Location: " . self::MEMBRESIAS_INDEX_VIEW . "?success=1&id=$nuevoId&plan=" . urlencode($plan));
+        header("Location: " . self::MEMBRESIAS_INDEX_ROUTE . "?success=1&id=$nuevoId&plan=" . urlencode($plan));
         exit;
     }
 
@@ -170,14 +166,14 @@ public function __construct()
         $this->validarSesion();
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header("Location: " . self::SOCIOS_INDEX_VIEW);
+            header("Location: " . self::SOCIOS_INDEX_ROUTE);
             exit;
         }
 
         $id = (int)($_POST['id'] ?? 0);
 
         if ($id <= 0) {
-            header("Location: " . self::SOCIOS_INDEX_VIEW . "?error=id");
+            header("Location: " . self::SOCIOS_INDEX_ROUTE . "?error=id");
             exit;
         }
 
@@ -213,7 +209,7 @@ public function __construct()
             $colonia === '' ||
             $codigoPostal === ''
         ) {
-            header("Location: " . self::SOCIOS_EDIT_VIEW . "?id=$id&error=campos");
+            header("Location: " . self::SOCIOS_EDIT_ROUTE . "?id=$id&error=campos");
             exit;
         }
         /*
@@ -222,7 +218,7 @@ public function __construct()
         |--------------------------------------------------------------------------
         */
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            header("Location: " . self::SOCIOS_EDIT_VIEW . "?id=$id&error=email");
+            header("Location: " . self::SOCIOS_EDIT_ROUTE . "?id=$id&error=email");
             exit;
         }
         /*
@@ -236,7 +232,7 @@ public function __construct()
             !preg_match('/^\d{10}$/', $telefono) ||
             !preg_match('/^\d{10}$/', $telefonoEmergencia)
         ) {
-            header("Location: " . self::SOCIOS_EDIT_VIEW . "?id=$id&error=telefono");
+            header("Location: " . self::SOCIOS_EDIT_ROUTE . "?id=$id&error=telefono");
             exit;
         }
          /*
@@ -247,7 +243,7 @@ public function __construct()
         */
 
         if (!preg_match('/^\d{5}$/', $codigoPostal)) {
-            header("Location: " . self::SOCIOS_EDIT_VIEW . "?id=$id&error=cp");
+            header("Location: " . self::SOCIOS_EDIT_ROUTE . "?id=$id&error=cp");
             exit;
         }
 
@@ -271,9 +267,9 @@ public function __construct()
         );
 
         if ($ok) {
-            header("Location: " . self::SOCIOS_INDEX_VIEW . "?success=1");
+            header("Location: " . self::SOCIOS_INDEX_ROUTE . "?success=1");
         } else {
-            header("Location: " . self::SOCIOS_EDIT_VIEW . "?id=$id&error=update");
+            header("Location: " . self::SOCIOS_EDIT_ROUTE . "?id=$id&error=update");
         }
 
         exit;
@@ -316,7 +312,7 @@ public function __construct()
         $id = (int)($_GET['id'] ?? 0);
 
         if ($id <= 0) {
-            header("Location: " . self::SOCIOS_INDEX_VIEW . "?error=id");
+            header("Location: " . self::SOCIOS_INDEX_ROUTE . "?error=id");
             exit;
         }
 
@@ -324,7 +320,7 @@ public function __construct()
         $huella = $this->modelo->obtenerHuellaPorSocio($id);
 
         if (!$socio) {
-            header("Location: " . self::SOCIOS_INDEX_VIEW . "?error=no_encontrado");
+            header("Location: " . self::SOCIOS_INDEX_ROUTE . "?error=no_encontrado");
             exit;
         }
 
@@ -338,14 +334,14 @@ public function __construct()
         $this->validarSesion();
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header("Location: " . self::SOCIOS_INDEX_VIEW);
+            header("Location: " . self::SOCIOS_INDEX_ROUTE);
             exit;
         }
 
         $id = (int)($_POST['id'] ?? 0);
 
         if ($id <= 0) {
-            header("Location: " . self::SOCIOS_INDEX_VIEW . "?error=id");
+            header("Location: " . self::SOCIOS_INDEX_ROUTE . "?error=id");
             exit;
         }
 
@@ -353,9 +349,9 @@ public function __construct()
         $ok = $this->modelo->desactivarSocio($id);
 
         if ($ok) {
-            header("Location: " . self::SOCIOS_INDEX_VIEW . "?deleted=1&id=$id");
+            header("Location: " . self::SOCIOS_INDEX_ROUTE . "?deleted=1&id=$id");
         } else {
-            header("Location: " . self::SOCIOS_INDEX_VIEW . "?error=delete");
+            header("Location: " . self::SOCIOS_INDEX_ROUTE . "?error=delete");
         }
 
         exit;
@@ -365,35 +361,35 @@ public function __construct()
 
     $controller = new SocioController();
 
-$action = $_GET['action'] ?? $_POST['action'] ?? 'index';
+    $action = $_GET['action'] ?? $_POST['action'] ?? 'index';
 
-switch ($action) {
+    switch ($action) {
 
-    case 'index':
-        $controller->index();
+        case 'index':
+            $controller->index();
+            break;
+
+        case 'create':
+            $controller->create();
+            break;
+
+        case 'edit':
+            $controller->edit();
+            break;
+
+        case 'store':
+            $controller->store();
+            break;
+
+        case 'update':
+            $controller->update();
+            break;
+
+        case 'destroy':
+        $controller->delete();
         break;
 
-    case 'create':
-        $controller->create();
-        break;
-
-    case 'edit':
-        $controller->edit();
-        break;
-
-    case 'store':
-        $controller->store();
-        break;
-
-    case 'update':
-        $controller->update();
-        break;
-
-    case 'destroy':
-        $controller->destroy();
-        break;
-
-    default:
-        $controller->index();
-        break;
-}
+        default:
+            $controller->index();
+            break;
+    }
