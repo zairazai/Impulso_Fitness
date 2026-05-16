@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnNuevoProducto = document.getElementById('btnNuevoProducto');
     const btnCerrarModal = document.getElementById('btnCerrarModal');
     const btnCancelarProducto = document.getElementById('btnCancelarProducto');
+    const stockLabel = document.getElementById('stockLabel');
+    const stockHelpText = document.getElementById('stockHelpText');
 
     const formProducto = modalProducto ? modalProducto.querySelector('form') : null;
 
@@ -73,7 +75,15 @@ document.addEventListener('DOMContentLoaded', () => {
     */
     if (btnNuevoProducto) {
         btnNuevoProducto.addEventListener('click', () => {
+
             limpiarFormularioProducto();
+
+            stock.readOnly = false;
+            stockLabel.textContent = 'Stock inicial';
+            stockHelpText.textContent = 'Solo se usa al crear el producto.';
+            stock.readOnly = false;
+            stock.value = '0';
+
             abrirModalProducto();
         });
     }
@@ -120,6 +130,12 @@ document.addEventListener('DOMContentLoaded', () => {
             costoCompra.value = button.dataset.costoCompra || '0';
             precioVenta.value = button.dataset.precioVenta || '0';
             stock.value = button.dataset.stock || '0';
+            stock.readOnly = true;
+            stockLabel.textContent = 'Stock actual';
+            stock.value = button.dataset.stock || '0';
+            stock.readOnly = true;
+            stockHelpText.textContent = 'El stock no se edita aquí. Para cambiarlo, registra una entrada, salida o ajuste en movimientos.';
+
             stockMinimo.value = button.dataset.stockMinimo || '5';
             icono.value = button.dataset.icono || 'bi-box-seam';
 

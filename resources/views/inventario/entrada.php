@@ -1,6 +1,5 @@
 <?php
 
-
 require_once __DIR__ . '/../../../config/app.php';
 require_once __DIR__ . '/../../../app/middleware/auth.php';
 
@@ -15,7 +14,6 @@ require_once __DIR__ . '/../layouts/header.php';
 <div class="inventario-module">
 
     <div class="layout-container">
-
         <?php require_once __DIR__ . '/../layouts/sidebar.php'; ?>
 
         <main class="main-content">
@@ -44,7 +42,7 @@ require_once __DIR__ . '/../layouts/header.php';
                 </div>
             <?php endif; ?>
 
-            <section class="card-section">
+            <section class="page-card card-section">
 
                 <form
                     method="POST"
@@ -132,4 +130,4 @@ require_once __DIR__ . '/../layouts/header.php';
     <script src="<?= BASE_URL ?>/public/js/inventario.js"></script>
 
 
-<?php include __DIR__ . '/../layouts/footer.php'; ?>
+<?php require_once __DIR__ . '/../layouts/footer.php'; ?>

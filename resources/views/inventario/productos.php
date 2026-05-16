@@ -14,8 +14,6 @@ require_once __DIR__ . '/../layouts/header.php';
 <div class="inventario-module">
 
     <div class="layout-container">
-
-        <!-- SIDEBAR -->
         <?php require_once __DIR__ . '/../layouts/sidebar.php'; ?>
 
         <!-- CONTENIDO PRINCIPAL -->
@@ -52,6 +50,7 @@ require_once __DIR__ . '/../layouts/header.php';
             <?php if (isset($_GET['updated'])): ?>
                 <div class="alert success">
                     Producto actualizado correctamente.
+                    El stock se administra desde movimientos.
                 </div>
             <?php endif; ?>
 
@@ -68,7 +67,7 @@ require_once __DIR__ . '/../layouts/header.php';
             <?php endif; ?>
 
             <!-- BÚSQUEDA -->
-            <section class="card-section">
+            <section class="page-card card-section">
 
                 <form method="GET" action="<?= BASE_URL ?>/app/controllers/InventarioController.php" class="search-form">
                     <input type="hidden" name="action" value="productos">
@@ -93,7 +92,7 @@ require_once __DIR__ . '/../layouts/header.php';
             </section>
 
             <!-- TABLA DE PRODUCTOS -->
-            <section class="card-section">
+            <section class="page-card card-section">
 
                 <div class="table-container">
 
@@ -246,7 +245,7 @@ require_once __DIR__ . '/../layouts/header.php';
     <!-- MODAL PRODUCTO -->
     <div class="modal-overlay" id="modalProducto">
 
-        <div class="modal-card">
+        <div class="modal-card page-card">
 
             <div class="modal-header">
 
@@ -274,7 +273,8 @@ require_once __DIR__ . '/../layouts/header.php';
                     <input type="text"
                     name="codigo"
                     id="codigo"
-                    value="Automático"
+                    value=""
+                    placeholder="Generado automáticamente"
                     readonly
                     >
                 </div>
@@ -318,10 +318,18 @@ require_once __DIR__ . '/../layouts/header.php';
                     <input type="number" step="0.01" name="precio_venta" id="precio_venta" required>
                 </div>
 
-                <label>Stock inicial</label>
-                    <input type="number" name="stock" id="stock" value="0" min="0">
-                    <small class="form-text">
-                        Solo se usa al crear producto. Después se modifica desde movimientos.
+                <label id="stockLabel">Stock inicial</label>
+
+                    <input
+                        type="number"
+                        name="stock"
+                        id="stock"
+                        value="0"
+                        min="0"
+                    >
+
+                    <small class="form-text" id="stockHelpText">
+                        Solo se usa al crear el producto.
                     </small>
 
                 <div class="form-group">
@@ -359,4 +367,4 @@ require_once __DIR__ . '/../layouts/header.php';
     </div>
 
     <script src="<?= BASE_URL ?>/public/js/inventario.js"></script>
-    <?php include __DIR__ . '/../layouts/footer.php'; ?>
+    <?php require_once __DIR__ . '/../layouts/footer.php'; ?>

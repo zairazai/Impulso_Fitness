@@ -12,7 +12,7 @@ require_once __DIR__ . '/../../../app/middleware/auth.php';
 */
 $extraCss = BASE_URL . "/public/css/socios.css";
 
-include __DIR__ . '/../layouts/header.php';
+require_once __DIR__ . '/../layouts/header.php';
 ?>
 
 <?php

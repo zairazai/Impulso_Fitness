@@ -14,16 +14,8 @@ require_once __DIR__ . '/../../../app/middleware/auth.php';
 $extraCss = BASE_URL . "/public/css/membresias.css";
 
 include __DIR__ . '/../layouts/header.php';
-
-?>
-
-<?php
-/*
-|--------------------------------------------------------------------------
-| SIDEBAR
-|--------------------------------------------------------------------------
-*/
 include __DIR__ . '/../layouts/sidebar.php';
+
 ?>
 
 

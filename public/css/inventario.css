@@ -1,21 +1,28 @@
 /* =========================================================
-   INVENTARIO - ESTILOS DEL MÓDULO
-   =========================================================
-   IMPORTANTE:
-   Todos los estilos están encapsulados dentro de
-   .inventario-module para evitar conflictos con:
-   - socios.css
-   - membresias.css
-   - dashboard.css
+   INVENTARIO.CSS
+   Estilos exclusivos del módulo de inventario
+   ========================================================= */
 
+/* =========================================================
+   CONTENEDOR GENERAL
+   ========================================================= */
+
+.inventario-module {
+    color: #f8fafc;
+}
+
+.inventario-module .main-content {
+    background: #07142e;
+}
 
 /* =========================================================
    ENCABEZADO
    ========================================================= */
+
 .inventario-module .page-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     gap: 1rem;
     margin-bottom: 1.5rem;
 }
@@ -23,33 +30,41 @@
 .inventario-module .page-header h1 {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
+    gap: 0.65rem;
     margin: 0;
+    color: #ffffff;
+    font-size: 2rem;
+    font-weight: 700;
 }
 
 .inventario-module .page-header p {
-    margin: 0.3rem 0 0;
-    color: #777;
+    margin: 0.35rem 0 0;
+    color: #94a3b8;
 }
 
 /* =========================================================
    TARJETAS
    ========================================================= */
+
+.inventario-module .page-card,
 .inventario-module .card-section {
-    background: #fff;
-    border-radius: 18px;
-    padding: 1.2rem;
-    margin-bottom: 1.3rem;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    background: rgba(5, 18, 52, 0.92);
+    border: 1px solid rgba(77, 171, 247, 0.18);
+    border-radius: 22px;
+    padding: 22px;
+    margin-bottom: 20px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22);
 }
 
 /* =========================================================
-   FORMULARIO DE BÚSQUEDA
+   BÚSQUEDA
    ========================================================= */
+
 .inventario-module .search-form {
     display: flex;
-    gap: 0.8rem;
     align-items: center;
+    gap: 12px;
 }
 
 .inventario-module .input-icon {
@@ -59,23 +74,98 @@
 
 .inventario-module .input-icon i {
     position: absolute;
-    left: 14px;
+    left: 16px;
     top: 50%;
     transform: translateY(-50%);
-    color: #777;
+    color: #94a3b8;
+    pointer-events: none;
 }
 
 .inventario-module .input-icon input {
     width: 100%;
-    padding: 0.8rem 1rem 0.8rem 2.6rem;
-    border: 1px solid #ddd;
-    border-radius: 12px;
+    padding-left: 44px;
 }
 
 /* =========================================================
-   TABLA
+   INPUTS / SELECTS / TEXTAREAS
    ========================================================= */
+
+.inventario-module input,
+.inventario-module select,
+.inventario-module textarea {
+    background: rgba(15, 30, 70, 0.9);
+    border: 1px solid rgba(77, 171, 247, 0.25);
+    color: #ffffff;
+    border-radius: 14px;
+    padding: 14px 16px;
+    font-family: inherit;
+    transition: 0.2s ease;
+}
+
+.inventario-module input::placeholder,
+.inventario-module textarea::placeholder {
+    color: #94a3b8;
+}
+
+.inventario-module input:focus,
+.inventario-module select:focus,
+.inventario-module textarea:focus {
+    outline: none;
+    border-color: #4dabf7;
+    box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.16);
+}
+
+.inventario-module input:disabled,
+.inventario-module input[readonly] {
+    opacity: 0.72;
+    cursor: not-allowed;
+    background: rgba(15, 23, 42, 0.75);
+}
+
+.inventario-module textarea {
+    resize: vertical;
+    min-height: 110px;
+}
+
+.inventario-module .form-text {
+    color: #94a3b8;
+    font-size: 0.82rem;
+    line-height: 1.4;
+}
+
+/* =========================================================
+   FORMULARIOS
+   ========================================================= */
+
+.inventario-module .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.inventario-module .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.inventario-module .form-group.full,
+.inventario-module .modal-actions.full {
+    grid-column: 1 / -1;
+}
+
+.inventario-module .form-group label {
+    color: #cbd5e1;
+    font-weight: 600;
+    font-size: 0.92rem;
+}
+
+/* =========================================================
+   TABLAS
+   ========================================================= */
+
 .inventario-module .table-container {
+    width: 100%;
     overflow-x: auto;
 }
 
@@ -86,144 +176,224 @@
 
 .inventario-module .table-custom th,
 .inventario-module .table-custom td {
-    padding: 1rem;
+    padding: 14px 16px;
     text-align: left;
-    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .inventario-module .table-custom th {
-    color: #555;
-    font-size: 0.9rem;
+    color: #94a3b8;
+    font-size: 0.82rem;
     text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 700;
+}
+
+.inventario-module .table-custom td {
+    color: #f8fafc;
+    font-size: 0.92rem;
+}
+
+.inventario-module .table-custom tr:hover td {
+    background: rgba(77, 171, 247, 0.045);
 }
 
 /* =========================================================
    PRODUCTOS
    ========================================================= */
+
 .inventario-module .product-info {
     display: flex;
     align-items: center;
-    gap: 0.8rem;
+    gap: 12px;
 }
 
 .inventario-module .product-icon {
-    width: 42px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
     border-radius: 14px;
-    background: #f3f4f6;
+    background: rgba(16, 32, 70, 0.75);
+    border: 1px solid rgba(77, 171, 247, 0.16);
+    color: #dbeafe;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.2rem;
+    font-size: 1.15rem;
+    flex-shrink: 0;
 }
 
-.inventario-module .product-info small {
-    display: block;
-    color: #777;
-    margin-top: 0.2rem;
+.inventario-module .product-info strong {
+    color: #ffffff;
+    font-weight: 700;
 }
 
+.inventario-module .product-info small,
 .inventario-module .table-muted {
     display: block;
-    color: #777;
-    margin-top: 0.2rem;
-    font-size: 0.85rem;
+    color: #94a3b8;
+    margin-top: 2px;
+    font-size: 0.82rem;
 }
 
 /* =========================================================
    BADGES
    ========================================================= */
+
 .inventario-module .badge {
-    padding: 0.35rem 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 11px;
     border-radius: 999px;
-    font-size: 0.8rem;
-    font-weight: 600;
+    font-size: 0.78rem;
+    font-weight: 700;
+    line-height: 1;
 }
 
 .inventario-module .badge-success {
-    background: #e7f8ef;
-    color: #16834a;
+    background: rgba(16, 185, 129, 0.16);
+    color: #34d399;
 }
 
 .inventario-module .badge-warning {
-    background: #fff4d8;
-    color: #9a6500;
+    background: rgba(245, 166, 35, 0.16);
+    color: #fbbf24;
 }
 
 .inventario-module .badge-danger {
-    background: #ffe1e1;
-    color: #b42318;
+    background: rgba(239, 68, 68, 0.16);
+    color: #f87171;
 }
 
 /* =========================================================
-   BOTONES DE ACCIONES
+   BOTONES
    ========================================================= */
+
+.inventario-module .btn-primary,
+.inventario-module .btn-secondary,
+.inventario-module button[type="submit"] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border-radius: 12px;
+    padding: 11px 16px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: 0.2s ease;
+    white-space: nowrap;
+}
+
+.inventario-module .btn-primary,
+.inventario-module button[type="submit"] {
+    background: #2563eb;
+    border: 1px solid #2563eb;
+    color: #ffffff;
+}
+
+.inventario-module .btn-primary:hover,
+.inventario-module button[type="submit"]:hover {
+    background: #1d4ed8;
+    border-color: #1d4ed8;
+}
+
+.inventario-module .btn-secondary {
+    background: rgba(16, 32, 70, 0.78);
+    border: 1px solid rgba(77, 171, 247, 0.22);
+    color: #dbeafe;
+}
+
+.inventario-module .btn-secondary:hover {
+    border-color: #4dabf7;
+    background: rgba(20, 45, 95, 0.95);
+    color: #ffffff;
+}
+
 .inventario-module .actions {
     display: flex;
-    gap: 0.4rem;
+    gap: 8px;
     align-items: center;
 }
 
 .inventario-module .btn-icon {
-    border: none;
-    background: #f3f4f6;
-    color: #333;
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    border: 1px solid rgba(77, 171, 247, 0.16);
+    background: rgba(16, 32, 70, 0.76);
+    color: #dbeafe;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
     transition: 0.2s ease;
 }
 
 .inventario-module .btn-icon:hover {
-    background: #e5e7eb;
+    background: rgba(77, 171, 247, 0.14);
+    border-color: #4dabf7;
 }
 
 .inventario-module .btn-icon.danger {
-    color: #b42318;
+    color: #f87171;
+    border-color: rgba(239, 68, 68, 0.18);
 }
 
-/* =========================================================
-   TABLA VACÍA
-   ========================================================= */
-.inventario-module .empty-table {
-    text-align: center;
-    color: #777;
-    padding: 2rem;
+.inventario-module .btn-icon.danger:hover {
+    background: rgba(239, 68, 68, 0.13);
+    border-color: rgba(239, 68, 68, 0.45);
 }
 
 /* =========================================================
    ALERTAS
    ========================================================= */
+
 .inventario-module .alert {
-    padding: 0.9rem 1rem;
-    border-radius: 12px;
-    margin-bottom: 1rem;
-    font-weight: 500;
+    padding: 13px 16px;
+    border-radius: 14px;
+    margin-bottom: 16px;
+    font-weight: 600;
+    border: 1px solid transparent;
 }
 
 .inventario-module .alert.success {
-    background: #e7f8ef;
-    color: #16834a;
+    background: rgba(16, 185, 129, 0.13);
+    border-color: rgba(16, 185, 129, 0.25);
+    color: #34d399;
 }
 
 .inventario-module .alert.danger {
-    background: #ffe1e1;
-    color: #b42318;
+    background: rgba(239, 68, 68, 0.13);
+    border-color: rgba(239, 68, 68, 0.25);
+    color: #f87171;
+}
+
+/* =========================================================
+   TABLA VACÍA
+   ========================================================= */
+
+.inventario-module .empty-table {
+    padding: 32px 16px;
+    text-align: center;
+    color: #94a3b8;
 }
 
 /* =========================================================
    MODAL
    ========================================================= */
+
 .inventario-module .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.45);
+    z-index: 999;
     display: none;
     align-items: center;
     justify-content: center;
-    z-index: 999;
-    padding: 1rem;
+    padding: 18px;
+    background: rgba(2, 6, 23, 0.72);
+    backdrop-filter: blur(5px);
 }
 
 .inventario-module .modal-overlay.active {
@@ -231,92 +401,76 @@
 }
 
 .inventario-module .modal-card {
-    background: #fff;
-    width: min(760px, 100%);
-    border-radius: 22px;
-    padding: 1.5rem;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
+    width: min(800px, 100%);
+    max-height: calc(100vh - 36px);
+    overflow-y: auto;
+    background: linear-gradient(
+        180deg,
+        rgba(7, 20, 49, 0.98) 0%,
+        rgba(6, 15, 34, 0.98) 100%
+    );
+    border: 1px solid rgba(77, 171, 247, 0.2);
+    border-radius: 24px;
+    padding: 24px;
+    color: #ffffff;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
 }
 
 .inventario-module .modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
+    gap: 16px;
+    margin-bottom: 18px;
 }
 
 .inventario-module .modal-header h2 {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 10px;
     margin: 0;
+    color: #ffffff;
+    font-size: 1.5rem;
+    font-weight: 700;
 }
 
 .inventario-module .modal-close {
-    border: none;
-    background: #f3f4f6;
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    cursor: pointer;
-}
-
-/* =========================================================
-   FORMULARIO
-   ========================================================= */
-.inventario-module .form-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-}
-
-.inventario-module .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-}
-
-.inventario-module .form-group.full,
-.inventario-module .modal-actions.full {
-    grid-column: 1 / -1;
-}
-
-.inventario-module .form-group label {
-    font-weight: 600;
-    color: #444;
-}
-
-.inventario-module .form-group input,
-.inventario-module .form-group select,
-.inventario-module .form-group textarea {
-    padding: 0.8rem;
-    border: 1px solid #ddd;
+    width: 38px;
+    height: 38px;
     border-radius: 12px;
-    font-family: inherit;
+    border: 1px solid rgba(77, 171, 247, 0.16);
+    background: rgba(16, 32, 70, 0.76);
+    color: #dbeafe;
+    cursor: pointer;
+    transition: 0.2s ease;
 }
 
-.inventario-module .form-group textarea {
-    resize: vertical;
+.inventario-module .modal-close:hover {
+    background: rgba(239, 68, 68, 0.13);
+    border-color: rgba(239, 68, 68, 0.35);
+    color: #fca5a5;
 }
 
-/* =========================================================
-   ACCIONES DEL MODAL
-   ========================================================= */
 .inventario-module .modal-actions {
     display: flex;
     justify-content: flex-end;
-    gap: 0.8rem;
-    margin-top: 0.5rem;
+    gap: 12px;
+    margin-top: 8px;
 }
 
 /* =========================================================
    RESPONSIVE
    ========================================================= */
-@media (max-width: 768px) {
 
+@media (max-width: 900px) {
     .inventario-module .page-header {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: stretch;
+    }
+
+    .inventario-module .page-header .btn-primary,
+    .inventario-module .page-header .btn-secondary {
+        width: 100%;
     }
 
     .inventario-module .search-form {
@@ -329,6 +483,12 @@
     }
 
     .inventario-module .modal-actions {
-        flex-direction: column;
+        flex-direction: column-reverse;
+    }
+
+    .inventario-module .modal-actions .btn-primary,
+    .inventario-module .modal-actions .btn-secondary,
+    .inventario-module .modal-actions button {
+        width: 100%;
     }
 }

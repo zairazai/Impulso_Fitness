@@ -5,7 +5,6 @@ require_once __DIR__ . '/../../../config/app.php';
 require_once __DIR__ . '/../../../app/middleware/auth.php';
 
 $extraCss = BASE_URL . "/public/css/inventario.css";
-
 require_once __DIR__ . '/../layouts/header.php';
 
 ?>
@@ -15,7 +14,6 @@ require_once __DIR__ . '/../layouts/header.php';
 <div class="inventario-module">
 
     <div class="layout-container">
-
         <?php require_once __DIR__ . '/../layouts/sidebar.php'; ?>
 
         <main class="main-content">
@@ -50,11 +48,12 @@ require_once __DIR__ . '/../layouts/header.php';
                 </div>
             <?php endif; ?>
 
-            <section class="card-section">
+           
+
+            <section class="page-card card-section">
 
                 <form method="GET" action="<?= BASE_URL ?>/app/controllers/InventarioController.php" class="search-form">
                 <input type="hidden" name="action" value="movimientos">
-    >
                     <div class="input-icon">
                         <i class="bi bi-search"></i>
 
@@ -62,7 +61,7 @@ require_once __DIR__ . '/../layouts/header.php';
                             type="text"
                             name="buscar"
                             placeholder="Buscar por producto, código o tipo..."
-                            value="<?= htmlspecialchars($busqueda) ?>"
+                            value="<?= htmlspecialchars($busqueda ?? '') ?>"
                         >
                     </div>
 
@@ -74,7 +73,8 @@ require_once __DIR__ . '/../layouts/header.php';
 
             </section>
 
-            <section class="card-section">
+            
+            <section class="page-card card-section">
 
                 <div class="table-container">
 
@@ -171,4 +171,4 @@ require_once __DIR__ . '/../layouts/header.php';
 
     <script src="<?= BASE_URL ?>/public/js/inventario.js"></script>
 
-<?php include __DIR__ . '/../layouts/footer.php'; ?>
+<?php require_once __DIR__ . '/../layouts/footer.php'; ?>

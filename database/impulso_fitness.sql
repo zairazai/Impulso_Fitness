@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 29-04-2026 a las 02:20:45
+-- Tiempo de generación: 16-05-2026 a las 20:33:17
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -32,7 +32,8 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_estados_membresias` (
 
     UPDATE socios s
     SET s.estado = 'inactivo'
-    WHERE NOT EXISTS (
+    WHERE s.estado <> 'suspendido'
+      AND NOT EXISTS (
         SELECT 1
         FROM socio_membresia sm
         WHERE sm.socio_id = s.id
@@ -43,7 +44,8 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_estados_membresias` (
 
     UPDATE socios s
     SET s.estado = 'activo'
-    WHERE EXISTS (
+    WHERE s.estado <> 'suspendido'
+      AND EXISTS (
         SELECT 1
         FROM socio_membresia sm
         WHERE sm.socio_id = s.id
@@ -53,15 +55,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_estados_membresias` (
     );
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_socio` (IN `p_id` INT, IN `p_nombre` VARCHAR(100), IN `p_telefono` VARCHAR(20), IN `p_email` VARCHAR(100))   BEGIN
-    UPDATE socios
-    SET nombre = p_nombre,
-        telefono = p_telefono,
-        email = p_email
-    WHERE id = p_id;
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_socio_completo` (IN `p_id` INT, IN `p_nombres` VARCHAR(100), IN `p_apellido_paterno` VARCHAR(80), IN `p_apellido_materno` VARCHAR(80), IN `p_fecha_nacimiento` DATE, IN `p_telefono` VARCHAR(20), IN `p_email` VARCHAR(100), IN `p_genero` VARCHAR(20), IN `p_contacto_emergencia_nombre` VARCHAR(100), IN `p_contacto_emergencia_telefono` VARCHAR(20), IN `p_direccion` VARCHAR(255), IN `p_notas` TEXT)   BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_socio_completo` (IN `p_id` INT, IN `p_nombres` VARCHAR(100), IN `p_apellido_paterno` VARCHAR(80), IN `p_apellido_materno` VARCHAR(80), IN `p_fecha_nacimiento` DATE, IN `p_telefono` VARCHAR(20), IN `p_email` VARCHAR(100), IN `p_genero` VARCHAR(20), IN `p_contacto_emergencia_nombre` VARCHAR(100), IN `p_contacto_emergencia_telefono` VARCHAR(20), IN `p_calle` VARCHAR(120), IN `p_numero` VARCHAR(20), IN `p_colonia` VARCHAR(120), IN `p_codigo_postal` CHAR(5), IN `p_notas` TEXT)   BEGIN
     UPDATE socios
     SET
         nombres = p_nombres,
@@ -73,7 +67,10 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_socio_completo` (IN `
         genero = p_genero,
         contacto_emergencia_nombre = p_contacto_emergencia_nombre,
         contacto_emergencia_telefono = p_contacto_emergencia_telefono,
-        direccion = p_direccion,
+        calle = p_calle,
+        numero = p_numero,
+        colonia = p_colonia,
+        codigo_postal = p_codigo_postal,
         notas = p_notas
     WHERE id = p_id;
 END$$
@@ -103,22 +100,8 @@ END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_desactivar_socio` (IN `p_id` INT)   BEGIN
     UPDATE socios
-    SET estado = 'inactivo'
+    SET estado = 'suspendido'
     WHERE id = p_id;
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_historial_pagos` ()   BEGIN
-    SELECT 
-        pm.id,
-        CONCAT_WS(' ', s.nombres, s.apellido_paterno, s.apellido_materno) AS socio,
-        pm.fecha_pago,
-        pm.metodo_pago,
-        m.nombre AS membresia,
-        pm.monto
-    FROM pagos_membresia pm
-    INNER JOIN socios s ON pm.socio_id = s.id
-    INNER JOIN membresias m ON pm.membresia_id = m.id
-    ORDER BY pm.fecha_pago DESC;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_historial_pagos_membresia` (IN `p_busqueda` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci, IN `p_fecha_inicio` DATE, IN `p_fecha_fin` DATE)   BEGIN
@@ -150,12 +133,8 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_historial_pagos_membresia` (IN `
     ORDER BY pm.fecha_pago DESC;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_insertar_socio` (IN `p_nombre` VARCHAR(100), IN `p_telefono` VARCHAR(20), IN `p_email` VARCHAR(100))   BEGIN
-    INSERT INTO socios (nombre, telefono, email, fecha_registro)
-    VALUES (p_nombre, p_telefono, p_email, CURDATE());
-END$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_insertar_socio_completo` (IN `p_nombres` VARCHAR(100), IN `p_apellido_paterno` VARCHAR(80), IN `p_apellido_materno` VARCHAR(80), IN `p_fecha_nacimiento` DATE, IN `p_telefono` VARCHAR(20), IN `p_email` VARCHAR(100), IN `p_genero` VARCHAR(20), IN `p_contacto_emergencia_nombre` VARCHAR(100), IN `p_contacto_emergencia_telefono` VARCHAR(20), IN `p_calle` VARCHAR(120), IN `p_numero` VARCHAR(20), IN `p_colonia` VARCHAR(120), IN `p_codigo_postal` CHAR(5), IN `p_notas` TEXT)   BEGIN
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_insertar_socio_completo` (IN `p_nombres` VARCHAR(100), IN `p_apellido_paterno` VARCHAR(80), IN `p_apellido_materno` VARCHAR(80), IN `p_fecha_nacimiento` DATE, IN `p_telefono` VARCHAR(20), IN `p_email` VARCHAR(100), IN `p_genero` VARCHAR(20), IN `p_contacto_emergencia_nombre` VARCHAR(100), IN `p_contacto_emergencia_telefono` VARCHAR(20), IN `p_direccion` VARCHAR(255), IN `p_notas` TEXT)   BEGIN
     INSERT INTO socios (
         nombres,
         apellido_paterno,
@@ -166,7 +145,10 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_insertar_socio_completo` (IN `p_
         genero,
         contacto_emergencia_nombre,
         contacto_emergencia_telefono,
-        direccion,
+        calle,
+        numero,
+        colonia,
+        codigo_postal,
         notas,
         estado,
         fecha_registro
@@ -181,13 +163,115 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_insertar_socio_completo` (IN `p_
         p_genero,
         p_contacto_emergencia_nombre,
         p_contacto_emergencia_telefono,
-        p_direccion,
+        p_calle,
+        p_numero,
+        p_colonia,
+        p_codigo_postal,
         p_notas,
         'inactivo',
         CURDATE()
     );
 
     SELECT LAST_INSERT_ID() AS id;
+
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_inventario_movimientos_listar` (IN `p_busqueda` VARCHAR(100))   BEGIN
+    SELECT 
+        im.id,
+        im.producto_id,
+        p.nombre AS producto,
+        p.codigo,
+        p.categoria,
+        im.tipo,
+        im.cantidad,
+        im.fecha,
+        im.referencia,
+        im.observaciones
+    FROM inventario_movimientos im
+    INNER JOIN productos p ON p.id = im.producto_id
+    WHERE 
+        p_busqueda IS NULL OR p_busqueda = ''
+        OR p.nombre LIKE CONCAT('%', p_busqueda, '%')
+        OR p.codigo LIKE CONCAT('%', p_busqueda, '%')
+        OR im.tipo LIKE CONCAT('%', p_busqueda, '%')
+    ORDER BY im.fecha DESC;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_inventario_registrar_movimiento` (IN `p_producto_id` INT, IN `p_usuario_id` INT, IN `p_tipo` ENUM('entrada','salida','ajuste'), IN `p_cantidad` INT, IN `p_referencia` VARCHAR(100), IN `p_observaciones` TEXT)   BEGIN
+    DECLARE v_stock_actual INT DEFAULT 0;
+    DECLARE v_activo TINYINT DEFAULT 0;
+
+    SELECT stock, activo
+    INTO v_stock_actual, v_activo
+    FROM productos
+    WHERE id = p_producto_id
+    LIMIT 1;
+
+    IF v_activo IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El producto no existe.';
+    END IF;
+
+    IF v_activo = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'No se pueden registrar movimientos de un producto inactivo.';
+    END IF;
+
+    IF p_tipo NOT IN ('entrada', 'salida', 'ajuste') THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Tipo de movimiento inválido.';
+    END IF;
+
+    IF p_tipo IN ('entrada', 'salida') AND p_cantidad <= 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'La cantidad debe ser mayor a 0.';
+    END IF;
+
+    IF p_tipo = 'ajuste' AND p_cantidad < 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El ajuste no puede dejar stock negativo.';
+    END IF;
+
+    IF p_tipo = 'salida' AND v_stock_actual < p_cantidad THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Stock insuficiente para realizar la salida.';
+    END IF;
+
+    IF p_tipo = 'entrada' THEN
+        UPDATE productos
+        SET stock = stock + p_cantidad
+        WHERE id = p_producto_id;
+
+    ELSEIF p_tipo = 'salida' THEN
+        UPDATE productos
+        SET stock = stock - p_cantidad
+        WHERE id = p_producto_id;
+
+    ELSEIF p_tipo = 'ajuste' THEN
+        UPDATE productos
+        SET stock = p_cantidad
+        WHERE id = p_producto_id;
+    END IF;
+
+    INSERT INTO inventario_movimientos (
+        producto_id,
+        usuario_id,
+        tipo,
+        cantidad,
+        referencia,
+        observaciones
+    )
+    VALUES (
+        p_producto_id,
+        p_usuario_id,
+        p_tipo,
+        p_cantidad,
+        NULLIF(TRIM(p_referencia), ''),
+        p_observaciones
+    );
+
+    SELECT LAST_INSERT_ID() AS movimiento_id;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_listar_membresias` ()   BEGIN
@@ -212,9 +296,36 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_listar_socios` ()   BEGIN
         email,
         fecha_nacimiento,
         estado,
-        fecha_registro
+        fecha_registro,
+        genero,
+        contacto_emergencia_nombre,
+        contacto_emergencia_telefono,
+        calle,
+        numero,
+        colonia,
+        codigo_postal,
+        CONCAT_WS(' ', calle, numero, colonia, codigo_postal) AS direccion,
+        notas
     FROM socios
     ORDER BY id DESC;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_historial_reciente_pagos_socio` (IN `p_socio_id` INT)   BEGIN
+    SELECT 
+        pm.id,
+        pm.socio_id,
+        pm.membresia_id,
+        m.nombre AS membresia_nombre,
+        pm.monto,
+        pm.metodo_pago,
+        pm.fecha_pago,
+        pm.referencia
+    FROM pagos_membresia pm
+    INNER JOIN membresias m 
+        ON pm.membresia_id = m.id
+    WHERE pm.socio_id = p_socio_id
+    ORDER BY pm.fecha_pago DESC
+    LIMIT 5;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_huella_socio` (IN `p_socio_id` INT)   BEGIN
@@ -234,10 +345,14 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_membresia_activa_socio` 
         sm.activa,
         m.nombre AS membresia_nombre,
         m.precio,
-        m.duracion_dias
+        m.duracion_dias,
+        DATEDIFF(sm.fecha_fin, NOW()) AS dias_restantes
     FROM socio_membresia sm
     INNER JOIN membresias m ON sm.membresia_id = m.id
     WHERE sm.socio_id = p_socio_id
+      AND sm.activa = 1
+      AND sm.fecha_inicio <= NOW()
+      AND sm.fecha_fin > NOW()
     ORDER BY sm.fecha_fin DESC
     LIMIT 1;
 END$$
@@ -303,9 +418,190 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_socio_por_id` (IN `p_id`
         genero,
         contacto_emergencia_nombre,
         contacto_emergencia_telefono,
-        direccion,
+        calle,
+        numero,
+        colonia,
+        codigo_postal,
+        CONCAT_WS(' ', calle, numero, colonia, codigo_postal) AS direccion,
         notas
     FROM socios
+    WHERE id = p_id
+    LIMIT 1;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_productos_listar` (IN `p_busqueda` VARCHAR(100))   BEGIN
+    SELECT 
+        id,
+        codigo,
+        nombre,
+        categoria,
+        descripcion,
+        costo_compra,
+        precio_venta,
+        stock,
+        stock_minimo,
+        icono,
+        activo,
+        CASE 
+            WHEN stock <= 0 THEN 'Agotado'
+            WHEN stock <= stock_minimo THEN 'Por agotarse'
+            ELSE 'Stock OK'
+        END AS estado_stock
+    FROM productos
+    WHERE activo = 1
+      AND (
+        p_busqueda IS NULL OR p_busqueda = ''
+        OR nombre LIKE CONCAT('%', p_busqueda, '%')
+        OR codigo LIKE CONCAT('%', p_busqueda, '%')
+        OR categoria LIKE CONCAT('%', p_busqueda, '%')
+      )
+    ORDER BY nombre ASC;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_productos_stock_bajo` ()   BEGIN
+    SELECT 
+        id,
+        codigo,
+        nombre,
+        categoria,
+        stock,
+        stock_minimo,
+        icono,
+        CASE 
+            WHEN stock <= 0 THEN 'Agotado'
+            ELSE 'Por agotarse'
+        END AS estado_stock
+    FROM productos
+    WHERE activo = 1
+      AND stock <= stock_minimo
+    ORDER BY stock ASC;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_producto_baja_logica` (IN `p_id` INT)   BEGIN
+    DECLARE v_existe INT DEFAULT 0;
+
+    SELECT COUNT(*)
+    INTO v_existe
+    FROM productos
+    WHERE id = p_id
+      AND activo = 1;
+
+    IF v_existe = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El producto no existe o ya está inactivo.';
+    END IF;
+
+    UPDATE productos
+    SET activo = 0
+    WHERE id = p_id;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_producto_guardar` (IN `p_id` INT, IN `p_codigo` VARCHAR(30), IN `p_nombre` VARCHAR(100), IN `p_categoria` VARCHAR(100), IN `p_descripcion` TEXT, IN `p_costo_compra` DECIMAL(10,2), IN `p_precio_venta` DECIMAL(10,2), IN `p_stock` INT, IN `p_stock_minimo` INT, IN `p_icono` VARCHAR(50))   BEGIN
+    DECLARE v_nuevo_codigo VARCHAR(30);
+    DECLARE v_existe INT DEFAULT 0;
+
+    IF p_nombre IS NULL OR TRIM(p_nombre) = '' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El nombre del producto es obligatorio.';
+    END IF;
+
+    IF p_costo_compra < 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El costo de compra no puede ser negativo.';
+    END IF;
+
+    IF p_precio_venta <= 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El precio de venta debe ser mayor a 0.';
+    END IF;
+
+    IF p_stock_minimo < 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El stock mínimo no puede ser negativo.';
+    END IF;
+
+    IF p_id IS NULL OR p_id = 0 THEN
+
+        IF p_stock < 0 THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'El stock inicial no puede ser negativo.';
+        END IF;
+
+        SELECT CONCAT('PR', LPAD(COALESCE(MAX(id), 0) + 1, 3, '0'))
+        INTO v_nuevo_codigo
+        FROM productos;
+
+        INSERT INTO productos (
+            codigo,
+            nombre,
+            categoria,
+            descripcion,
+            costo_compra,
+            precio_venta,
+            stock,
+            stock_minimo,
+            icono,
+            activo
+        )
+        VALUES (
+            v_nuevo_codigo,
+            TRIM(p_nombre),
+            NULLIF(TRIM(p_categoria), ''),
+            p_descripcion,
+            p_costo_compra,
+            p_precio_venta,
+            p_stock,
+            p_stock_minimo,
+            IFNULL(NULLIF(TRIM(p_icono), ''), 'bi-box-seam'),
+            1
+        );
+
+        SELECT LAST_INSERT_ID() AS producto_id;
+
+    ELSE
+
+        SELECT COUNT(*)
+        INTO v_existe
+        FROM productos
+        WHERE id = p_id;
+
+        IF v_existe = 0 THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'El producto no existe.';
+        END IF;
+
+        UPDATE productos
+        SET 
+            nombre = TRIM(p_nombre),
+            categoria = NULLIF(TRIM(p_categoria), ''),
+            descripcion = p_descripcion,
+            costo_compra = p_costo_compra,
+            precio_venta = p_precio_venta,
+            stock_minimo = p_stock_minimo,
+            icono = IFNULL(NULLIF(TRIM(p_icono), ''), 'bi-box-seam')
+        WHERE id = p_id;
+
+        SELECT p_id AS producto_id;
+
+    END IF;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_producto_obtener` (IN `p_id` INT)   BEGIN
+    SELECT 
+        id,
+        codigo,
+        nombre,
+        categoria,
+        descripcion,
+        costo_compra,
+        precio_venta,
+        stock,
+        stock_minimo,
+        icono,
+        activo,
+        fecha_creacion,
+        fecha_actualizacion
+    FROM productos
     WHERE id = p_id
     LIMIT 1;
 END$$
@@ -322,27 +618,60 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registrar_pago` (IN `p_socio_id`
     DECLARE v_duracion INT;
     DECLARE v_fecha_inicio DATETIME;
     DECLARE v_fecha_fin DATETIME;
+    DECLARE v_fecha_fin_actual DATETIME;
+    DECLARE v_estado_socio VARCHAR(20);
     DECLARE v_pago_id INT;
     DECLARE v_referencia VARCHAR(50);
 
-    -- Obtener duración de la membresía
+    SELECT estado
+    INTO v_estado_socio
+    FROM socios
+    WHERE id = p_socio_id
+    LIMIT 1;
+
+    IF v_estado_socio IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El socio no existe.';
+    END IF;
+
+    IF v_estado_socio = 'suspendido' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El socio está suspendido. No se puede registrar pago.';
+    END IF;
+
     SELECT duracion_dias
     INTO v_duracion
     FROM membresias
     WHERE id = p_membresia_id
     LIMIT 1;
 
-    -- Definir fechas
+    IF v_duracion IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'La membresía no existe.';
+    END IF;
+
+    SELECT MAX(fecha_fin)
+    INTO v_fecha_fin_actual
+    FROM socio_membresia
+    WHERE socio_id = p_socio_id
+      AND activa = 1
+      AND fecha_fin > NOW();
+
     SET v_fecha_inicio = IFNULL(p_fecha_inicio, NOW());
+
+    IF v_fecha_fin_actual IS NOT NULL AND v_fecha_fin_actual > v_fecha_inicio THEN
+        SET v_fecha_inicio = v_fecha_fin_actual;
+    END IF;
+
     SET v_fecha_fin = DATE_ADD(v_fecha_inicio, INTERVAL v_duracion DAY);
 
-    -- Desactivar membresías activas previas
-    UPDATE socio_membresia
-    SET activa = 0
-    WHERE socio_id = p_socio_id
-      AND activa = 1;
+    IF v_fecha_inicio <= NOW() THEN
+        UPDATE socio_membresia
+        SET activa = 0
+        WHERE socio_id = p_socio_id
+          AND activa = 1;
+    END IF;
 
-    -- Registrar pago
     INSERT INTO pagos_membresia (
         socio_id,
         membresia_id,
@@ -356,10 +685,8 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registrar_pago` (IN `p_socio_id`
         p_metodo
     );
 
-    -- Obtener ID del pago insertado
     SET v_pago_id = LAST_INSERT_ID();
 
-    -- Generar referencia automática
     SET v_referencia = CONCAT(
         'REC-',
         DATE_FORMAT(NOW(), '%Y%m%d'),
@@ -367,12 +694,10 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registrar_pago` (IN `p_socio_id`
         LPAD(v_pago_id, 6, '0')
     );
 
-    -- Guardar referencia en el pago
     UPDATE pagos_membresia
     SET referencia = v_referencia
     WHERE id = v_pago_id;
 
-    -- Insertar membresía del socio
     INSERT INTO socio_membresia (
         socio_id,
         membresia_id,
@@ -385,73 +710,21 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registrar_pago` (IN `p_socio_id`
         p_membresia_id,
         v_fecha_inicio,
         v_fecha_fin,
-        1
+        CASE
+            WHEN v_fecha_inicio <= NOW() AND v_fecha_fin > NOW()
+            THEN 1
+            ELSE 0
+        END
     );
 
-    -- Actualizar estado del socio
     UPDATE socios
     SET estado = CASE
         WHEN v_fecha_inicio <= NOW() AND v_fecha_fin > NOW()
         THEN 'activo'
-        ELSE 'inactivo'
+        ELSE estado
     END
     WHERE id = p_socio_id;
 
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registrar_pago_y_renovar_membresia` (IN `p_socio_id` INT, IN `p_membresia_id` INT, IN `p_metodo_pago` ENUM('efectivo','tarjeta','transferencia'), IN `p_monto` DECIMAL(10,2))   BEGIN
-    DECLARE v_duracion INT;
-    DECLARE v_fecha_inicio DATE;
-    DECLARE v_fecha_fin DATE;
-
-    SELECT duracion_dias
-    INTO v_duracion
-    FROM membresias
-    WHERE id = p_membresia_id
-    LIMIT 1;
-
-    SET v_fecha_inicio = CURDATE();
-    SET v_fecha_fin = DATE_ADD(v_fecha_inicio, INTERVAL v_duracion DAY);
-
-    UPDATE socio_membresia
-    SET activa = 0
-    WHERE socio_id = p_socio_id
-      AND activa = 1;
-
-    INSERT INTO socio_membresia (
-        socio_id,
-        membresia_id,
-        fecha_inicio,
-        fecha_fin,
-        activa
-    )
-    VALUES (
-        p_socio_id,
-        p_membresia_id,
-        v_fecha_inicio,
-        v_fecha_fin,
-        1
-    );
-
-    INSERT INTO pagos_membresia (
-        socio_id,
-        membresia_id,
-        monto,
-        metodo_pago,
-        fecha_pago
-    )
-    VALUES (
-        p_socio_id,
-        p_membresia_id,
-        p_monto,
-        p_metodo_pago,
-        NOW()
-    );
-
-    /* Al confirmar pago, ahora sí se activa el socio */
-    UPDATE socios
-    SET estado = 'activo'
-    WHERE id = p_socio_id;
 END$$
 
 DELIMITER ;
@@ -509,11 +782,24 @@ CREATE TABLE `instructor_horarios` (
 CREATE TABLE `inventario_movimientos` (
   `id` int(11) NOT NULL,
   `producto_id` int(11) NOT NULL,
-  `tipo` enum('entrada','salida') NOT NULL,
+  `usuario_id` int(11) DEFAULT NULL,
+  `tipo` enum('entrada','salida','ajuste') NOT NULL,
   `cantidad` int(11) NOT NULL,
   `fecha` timestamp NOT NULL DEFAULT current_timestamp(),
-  `referencia` varchar(100) DEFAULT NULL
+  `referencia` varchar(100) DEFAULT NULL,
+  `observaciones` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `inventario_movimientos`
+--
+
+INSERT INTO `inventario_movimientos` (`id`, `producto_id`, `usuario_id`, `tipo`, `cantidad`, `fecha`, `referencia`, `observaciones`) VALUES
+(1, 1, 1, 'entrada', 2, '2026-05-09 00:28:21', 'Compra proveedor', 'Entrada de recepción 08-05-2026'),
+(2, 1, 1, 'entrada', 3, '2026-05-16 08:58:37', 'PRUEBA-ENTRADA', 'Prueba de entrada manual'),
+(3, 1, 1, 'salida', 1, '2026-05-16 08:58:54', 'PRUEBA-SALIDA', 'Prueba de salida manual'),
+(4, 4, 1, 'entrada', 10, '2026-05-16 18:21:22', 'Ajuste fisico', 'Prueba'),
+(5, 3, 1, 'salida', 5, '2026-05-16 18:28:39', 'Ajuste fisico', '');
 
 -- --------------------------------------------------------
 
@@ -591,7 +877,19 @@ INSERT INTO `pagos_membresia` (`id`, `socio_id`, `membresia_id`, `monto`, `metod
 (15, 13, 3, 500.00, 'transferencia', '2026-04-27 20:42:16', NULL),
 (16, 12, 1, 50.00, 'tarjeta', '2026-04-27 20:42:58', NULL),
 (17, 4, 1, 50.00, 'efectivo', '2026-04-27 20:45:20', NULL),
-(18, 11, 1, 50.00, 'efectivo', '2026-04-27 21:25:44', 'REC-20260427-000018');
+(18, 11, 1, 50.00, 'efectivo', '2026-04-27 21:25:44', 'REC-20260427-000018'),
+(19, 11, 3, 500.00, 'transferencia', '2026-05-09 04:04:38', 'REC-20260508-000019'),
+(20, 20, 3, 500.00, 'transferencia', '2026-05-14 07:55:31', 'REC-20260514-000020'),
+(21, 12, 1, 50.00, 'efectivo', '2026-05-15 04:21:08', 'REC-20260514-000021'),
+(22, 21, 2, 200.00, 'transferencia', '2026-05-15 04:25:32', 'REC-20260514-000022'),
+(23, 22, 1, 50.00, 'tarjeta', '2026-05-15 06:41:05', 'REC-20260514-000023'),
+(24, 23, 1, 50.00, 'tarjeta', '2026-05-15 17:37:19', 'REC-20260515-000024'),
+(25, 23, 1, 50.00, 'tarjeta', '2026-05-16 06:29:07', 'REC-20260515-000025'),
+(26, 20, 1, 50.00, 'tarjeta', '2026-05-16 07:04:47', 'REC-20260516-000026'),
+(27, 21, 2, 200.00, 'tarjeta', '2026-05-16 07:14:06', 'REC-20260516-000027'),
+(28, 6, 1, 50.00, 'efectivo', '2026-05-16 07:29:15', 'REC-20260516-000028'),
+(29, 19, 1, 50.00, 'transferencia', '2026-05-16 07:51:21', 'REC-20260516-000029'),
+(30, 18, 1, 50.00, 'efectivo', '2026-05-16 07:54:40', 'REC-20260516-000030');
 
 -- --------------------------------------------------------
 
@@ -605,11 +903,27 @@ CREATE TABLE `productos` (
   `nombre` varchar(100) NOT NULL,
   `categoria` varchar(100) DEFAULT NULL,
   `descripcion` text DEFAULT NULL,
+  `costo_compra` decimal(10,2) DEFAULT 0.00,
   `precio_venta` decimal(10,2) NOT NULL,
   `stock` int(11) DEFAULT 0,
   `stock_minimo` int(11) DEFAULT 5,
-  `activo` tinyint(1) DEFAULT 1
+  `icono` varchar(50) DEFAULT 'bi-box-seam',
+  `activo` tinyint(1) DEFAULT 1,
+  `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp(),
+  `fecha_actualizacion` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `productos`
+--
+
+INSERT INTO `productos` (`id`, `codigo`, `nombre`, `categoria`, `descripcion`, `costo_compra`, `precio_venta`, `stock`, `stock_minimo`, `icono`, `activo`, `fecha_creacion`, `fecha_actualizacion`) VALUES
+(1, 'PR001', 'Proteína Whey', 'Suplementos', '', 600.00, 1200.00, 8, 2, 'bi-capsule', 1, '2026-05-08 16:55:12', '2026-05-16 08:58:54'),
+(2, 'PR002', 'Proteína Itholate', 'Suplementos', '', 800.00, 1300.00, 3, 1, 'bi-capsule', 1, '2026-05-09 00:32:12', '2026-05-09 00:32:12'),
+(3, 'PR003', 'Agua', 'Bebidas', '', 15.00, 25.00, 95, 8, 'bi-cup-straw', 1, '2026-05-09 04:10:08', '2026-05-16 18:28:39'),
+(4, 'PR004', 'Producto prueba', 'Prueba', 'Producto temporal para validar SP', 10.00, 20.00, 15, 2, 'bi-box-seam', 1, '2026-05-16 08:57:59', '2026-05-16 18:21:22'),
+(5, 'PR005', 'Monster Energy', 'Bebidas', '', 35.00, 45.00, 12, 6, 'bi-lightning-charge', 1, '2026-05-16 16:52:12', '2026-05-16 16:52:12'),
+(6, 'PR006', 'Producto equis', 'Suplementos', '', 100.00, 200.00, 8, 2, 'bi-capsule', 0, '2026-05-16 18:31:08', '2026-05-16 18:31:25');
 
 -- --------------------------------------------------------
 
@@ -631,6 +945,10 @@ CREATE TABLE `socios` (
   `genero` varchar(20) DEFAULT NULL,
   `contacto_emergencia_nombre` varchar(100) DEFAULT NULL,
   `contacto_emergencia_telefono` varchar(20) DEFAULT NULL,
+  `calle` varchar(120) DEFAULT NULL,
+  `numero` varchar(20) DEFAULT NULL,
+  `colonia` varchar(120) DEFAULT NULL,
+  `codigo_postal` char(5) DEFAULT NULL,
   `direccion` varchar(255) DEFAULT NULL,
   `notas` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -639,24 +957,30 @@ CREATE TABLE `socios` (
 -- Volcado de datos para la tabla `socios`
 --
 
-INSERT INTO `socios` (`id`, `user_id`, `nombres`, `apellido_paterno`, `apellido_materno`, `telefono`, `email`, `fecha_nacimiento`, `estado`, `fecha_registro`, `genero`, `contacto_emergencia_nombre`, `contacto_emergencia_telefono`, `direccion`, `notas`) VALUES
-(1, NULL, 'Juan Perez López', NULL, NULL, '6691272667', 'juanperez@gmail.com', '2000-09-10', 'inactivo', '2026-04-16', 'Masculino', 'Juan Ramos', '4444444444', 'San Matias', 'ninguna'),
-(2, NULL, 'Miguel Lizarraga Osuna', NULL, NULL, '6692481620', 'cris00@gmail.com', '2006-03-19', 'inactivo', '2026-04-17', 'Masculino', 'Alondra Hernandez', '6691666339', 'San Juan 23', 'ninguna'),
-(3, NULL, 'Juan', 'Ramos', 'Hernandez', '8889001231', 'juaito@live.com.mx', '1966-07-16', 'inactivo', '2026-04-18', 'Masculino', 'Fanny Cañedo', '3784920204', 'San Matias', 'OKK'),
-(4, NULL, 'Gabriela', 'Mora', 'Ramirez', '6690000000', 'gabo@gmail.com', '2005-10-19', 'activo', '2026-04-19', 'Femenino', '6690000001', '6690000001', 'San Jose #1244 Azul Marino, Mazatlan', 'Este socio no registro ninguna nota adicional.'),
-(5, NULL, 'Maria Navarro Lopez', NULL, NULL, '6691666335', 'mari@live.com.mx', '1980-07-08', 'activo', '2026-04-19', 'Femenino', 'Alondra Hernandez', '6691666335', 'San Martin 89 Real Pacifico, Mazatlan', 'Este socio tiene una lesión en el hombro derecho'),
-(6, NULL, 'Juan Manuel Silva', NULL, NULL, '0000000000', 'juan2@outlook.com', '2002-04-12', 'inactivo', '2026-04-19', 'Masculino', '7892289202', '7892289202', 'Calle 78 #456 Terrranova, Mazatlan', 'Sin notas adicionales'),
-(7, NULL, 'Jose Hernandez Cañedo', NULL, NULL, '1111111111', 'jose@live.com', '2000-02-10', 'activo', '2026-04-19', 'Masculino', 'Alondra Hernandez', '2222222222', 'Calle Juan Grijalva #389', 'Ninguna'),
-(8, NULL, 'Ivana Ramos de la Cruz', NULL, NULL, '6691666339', 'ivana@gmail.com', '1990-09-13', 'inactivo', '2026-04-19', 'Femenino', 'Juan Ramos', '6691272567', 'San Matias 67 Real Pacifico', 'NINGUNA'),
-(9, NULL, 'Oscar Torres Olivier', NULL, NULL, '6692497367', 'oscar3@outlook.com', '2006-01-23', 'inactivo', '2026-04-19', 'Masculino', 'Cristobal Lizarraga', '6699248162', 'San Marcos #45 Real Del Valle', 'niguno'),
-(10, NULL, 'Zaira', NULL, NULL, '6682345678', 'zai@gmail.com', '2002-06-23', 'activo', '2026-04-20', 'Femenino', 'Juan Ramos', '1111111111', 'San Matias #123 Colinas', 'Ninguna'),
-(11, NULL, 'Carlos', 'Camacho', 'Sanchez', '3333333333', 'carcar@outlook.com', '1990-07-30', 'activo', '2026-04-20', 'Masculino', 'Maria Tejeda', '9999999999', 'Calle Ola #345, Fracc. Haciendas, Mazatlán', 'Este socio tiene una lesión en el hombro izquierdo'),
-(12, NULL, 'Angel Urias Lopez', NULL, NULL, '0000000000', 'angel1@hotmail.com', '2001-01-01', 'activo', '2026-04-20', 'Masculino', 'Zaira Ramos', '2222222222', 'CALLE 2 , FRACC REAL , MOCHIS', 'NINGUNA'),
-(13, NULL, 'Fanny de la Cruz', NULL, NULL, '8888888888', 'fan@hotmail.com', '2005-01-01', 'activo', '2026-04-20', 'Femenino', 'Juan Rene', '4444444458', 'Calle 78 San Rafael', 'niguna'),
-(14, NULL, 'Doralin', 'Zavala', 'Partida', '7777777777', 'dora@hotmail.com', '2000-05-12', 'activo', '2026-04-27', 'Femenino', 'Juan Rene', '0000000000', 'Calle 3 #1344 San Rafael', 'Todo ok'),
-(15, NULL, 'Eduardo Osuna', NULL, NULL, '6692543216', 'edu@hotmail.com', '1980-02-01', 'activo', '2026-04-27', 'Otro', 'Maria Rendon', '4444444444', 'Calle 2 #345 Real Pacifico', 'NINGUNA'),
-(16, NULL, 'Roberto Juarez Mojica', NULL, NULL, '4444444444', 'rober@live.com.mx', '1998-11-30', 'activo', '2026-04-27', 'Masculino', 'Ivana Ramos', '5555555555', 'Calle 6 #45 Colinas, Mazatlán', 'NINGUNA'),
-(17, NULL, 'Zaira', 'Ra', 'C', '6687123646', 'zaizair@live.com.mx', '2002-08-23', 'activo', '2026-04-27', 'Femenino', 'Juan Perez', '6691666335', 'San Matias 78 Lagos', 'ninguna');
+INSERT INTO `socios` (`id`, `user_id`, `nombres`, `apellido_paterno`, `apellido_materno`, `telefono`, `email`, `fecha_nacimiento`, `estado`, `fecha_registro`, `genero`, `contacto_emergencia_nombre`, `contacto_emergencia_telefono`, `calle`, `numero`, `colonia`, `codigo_postal`, `direccion`, `notas`) VALUES
+(1, NULL, 'Juan Perez López', NULL, NULL, '6691272667', 'juanperez@gmail.com', '2000-09-10', 'inactivo', '2026-04-16', 'Masculino', 'Juan Ramos', '4444444444', 'San Matias', NULL, NULL, NULL, 'San Matias', 'ninguna'),
+(2, NULL, 'Miguel Lizarraga Osuna', NULL, NULL, '6692481620', 'cris00@gmail.com', '2006-03-19', 'inactivo', '2026-04-17', 'Masculino', 'Alondra Hernandez', '6691666339', 'San Juan 23', NULL, NULL, NULL, 'San Juan 23', 'ninguna'),
+(3, NULL, 'Juan', 'Ramos', 'Hernandez', '8889001231', 'juaito@live.com.mx', '1966-07-16', 'inactivo', '2026-04-18', 'Masculino', 'Fanny Cañedo', '3784920204', 'San Matias', NULL, NULL, NULL, 'San Matias', 'OKK'),
+(4, NULL, 'Gabriela', 'Mora', 'Ramirez', '6690000000', 'gabo@gmail.com', '2005-10-19', 'inactivo', '2026-04-19', 'Femenino', '6690000001', '6690000001', 'San Jose #1244 Azul Marino, Mazatlan', NULL, NULL, NULL, 'San Jose #1244 Azul Marino, Mazatlan', 'Este socio no registro ninguna nota adicional.'),
+(5, NULL, 'Maria Navarro Lopez', NULL, NULL, '6691666335', 'mari@live.com.mx', '1980-07-08', 'inactivo', '2026-04-19', 'Femenino', 'Alondra Hernandez', '6691666335', 'San Martin 89 Real Pacifico, Mazatlan', NULL, NULL, NULL, 'San Martin 89 Real Pacifico, Mazatlan', 'Este socio tiene una lesión en el hombro derecho'),
+(6, NULL, 'Juan Manuel Silva', NULL, NULL, '0000000000', 'juan2@outlook.com', '2002-04-12', 'activo', '2026-04-19', 'Masculino', '7892289202', '7892289202', 'Calle 78 #456 Terrranova, Mazatlan', NULL, NULL, NULL, 'Calle 78 #456 Terrranova, Mazatlan', 'Sin notas adicionales'),
+(7, NULL, 'Jose Hernandez Cañedo', NULL, NULL, '1111111111', 'jose@live.com', '2000-02-10', 'activo', '2026-04-19', 'Masculino', 'Alondra Hernandez', '2222222222', 'Calle Juan Grijalva #389', NULL, NULL, NULL, 'Calle Juan Grijalva #389', 'Ninguna'),
+(8, NULL, 'Ivana', 'Ramos', 'De la Cruz', '6691666339', 'ivana@gmail.com', '1990-09-13', 'inactivo', '2026-04-19', 'Femenino', 'Juan Ramos', '6691272560', 'San Matias', '67', 'Real Pacifico', '82124', 'San Matias 67 Real Pacifico', 'NINGUNA'),
+(9, NULL, 'Oscar Torres Olivier', NULL, NULL, '6692497367', 'oscar3@outlook.com', '2006-01-23', 'inactivo', '2026-04-19', 'Masculino', 'Cristobal Lizarraga', '6699248162', 'San Marcos #45 Real Del Valle', NULL, NULL, NULL, 'San Marcos #45 Real Del Valle', 'niguno'),
+(10, NULL, 'Zaira', NULL, NULL, '6682345678', 'zai@gmail.com', '2002-06-23', 'activo', '2026-04-20', 'Femenino', 'Juan Ramos', '1111111111', 'San Matias #123 Colinas', NULL, NULL, NULL, 'San Matias #123 Colinas', 'Ninguna'),
+(11, NULL, 'Carlos', 'Camacho', 'Sanchez', '3333333333', 'carcar@outlook.com', '1990-07-30', 'activo', '2026-04-20', 'Masculino', 'Maria Tejeda', '9999999999', 'Calle Ola #345, Fracc. Haciendas, Mazatlán', NULL, NULL, NULL, 'Calle Ola #345, Fracc. Haciendas, Mazatlán', 'Este socio tiene una lesión en el hombro izquierdo'),
+(12, NULL, 'Angel Urias Lopez', NULL, NULL, '0000000000', 'angel1@hotmail.com', '2001-01-01', 'activo', '2026-04-20', 'Masculino', 'Zaira Ramos', '2222222222', 'CALLE 2 , FRACC REAL , MOCHIS', NULL, NULL, NULL, 'CALLE 2 , FRACC REAL , MOCHIS', 'NINGUNA'),
+(13, NULL, 'Fanny de la Cruz', NULL, NULL, '8888888888', 'fan@hotmail.com', '2005-01-01', 'activo', '2026-04-20', 'Femenino', 'Juan Rene', '4444444458', 'Calle 78 San Rafael', NULL, NULL, NULL, 'Calle 78 San Rafael', 'niguna'),
+(14, NULL, 'Doralin', 'Zavala', 'Partida', '7777777777', 'dora@hotmail.com', '2000-05-12', 'activo', '2026-04-27', 'Femenino', 'Juan Rene', '0000000000', 'morelos', '893', 'hagdkcjhcd', '91038', 'Calle 3 #1344 San Rafael', 'Todo ok'),
+(15, NULL, 'Eduardo', 'Osuna', 'Roa', '6692543219', 'edu@hotmail.com', '1980-02-01', 'inactivo', '2026-04-27', 'Otro', 'Maria Rendon', '4444444444', 'Calle 2', '234', 'Real Pacifico', '98819', 'Calle 2 #345 Real Pacifico', 'NINGUNA'),
+(16, NULL, 'Roberto Juarez Mojica', NULL, NULL, '4444444444', 'rober@live.com.mx', '1998-11-30', 'activo', '2026-04-27', 'Masculino', 'Ivana Ramos', '5555555555', 'Calle 6 #45 Colinas, Mazatlán', NULL, NULL, NULL, 'Calle 6 #45 Colinas, Mazatlán', 'NINGUNA'),
+(17, NULL, 'Zaira', 'Ra', 'C', '6687123646', 'zaizair@live.com.mx', '2002-08-23', 'inactivo', '2026-04-27', 'Femenino', 'Juan Perez', '6691666335', 'San Matias 78 Lagos', NULL, NULL, NULL, 'San Matias 78 Lagos', 'ninguna'),
+(18, NULL, 'Alejandro', 'Bustamante', 'Hernandez', '1234567890', 'alejo@gmail.com', '1990-09-19', 'activo', '2026-05-14', 'Masculino', 'Zaira Ramos', '0000000000', 'San Jose', '1', 'Real del Valle', '82124', NULL, 'Este socio es entrenador personal.'),
+(19, NULL, 'Alfredo', 'Gomez', 'Díaz', '7388278492', 'alf345@outlook.com', '1980-11-04', 'activo', '2026-05-14', 'Masculino', 'Sheyla Gomez', '2222222222', 'Insurgentes', '89', 'Centro', '82100', NULL, ''),
+(20, NULL, 'Gael', 'Muñoz', 'Estrada', '0000000000', 'gaelm34@outlook.com', '2026-05-15', 'suspendido', '2026-05-14', 'Otro', 'Esthela Zamora', '2874207478', 'Catalina', 'jjuimh', 'hgg', '82124', NULL, 'jhhj'),
+(21, NULL, 'Zai', 'Ramos', 'De la Cruz', '6691272667', 'arizazaira23@gmail.com', '2002-06-23', 'activo', '2026-05-14', 'Femenino', 'Ivana Ramos de la Cruz', '6692543213', 'San Matías', 'hola', 'Real del Valle', '82124', NULL, ''),
+(22, NULL, 'Olivier', 'Juarez', 'Perez', '6692218518', 'ollie69@gmail.com', '2006-06-06', 'inactivo', '2026-05-14', 'Femenino', 'Oscar Armando Lizarraga', '3679204082', 'Catalina', '2874', 'Hacienda de Seminario', '82242', NULL, 'lol'),
+(23, NULL, 'Oscar', 'Liz', 'uhfnv', '5555555555', 'jashsis@gamil.com', '2007-02-11', 'activo', '2026-05-15', 'Masculino', 'Maria Rendon', '4444444444', 'Palos Prietos', '234', 'Francisco Villa', '53522', NULL, '');
 
 -- --------------------------------------------------------
 
@@ -690,7 +1014,12 @@ INSERT INTO `socio_biometria` (`id`, `socio_id`, `huella_hash`, `fecha_registro`
 (13, 14, 0x65386634386264633833343534306234393731653166343665323030303466633035323830353665613862643134363732653536313438646465643633356632, '2026-04-27 07:23:48'),
 (14, 15, 0x63306261326438663865313834326636633061633734316665653065363430306562323635633733346136333131323062643261363739323866396135303238, '2026-04-27 08:01:39'),
 (15, 16, 0x66343830386563333231653933366537323034616538383132613762653630316538646463326366653661633831623137356664643437333863646535656464, '2026-04-27 08:30:15'),
-(16, 17, 0x63383135306432633332373162663734643739356262313230333438616634326661366538383439313337336234326462393937333366393730633765616439, '2026-04-27 15:27:26');
+(16, 17, 0x63383135306432633332373162663734643739356262313230333438616634326661366538383439313337336234326462393937333366393730633765616439, '2026-04-27 15:27:26'),
+(17, 19, 0x37616135383834373137353238363339663331666262303538623162613863353366383662323035306161303062393061353131333836333137313061396631, '2026-05-14 07:45:44'),
+(18, 20, 0x62376465303435633834633036383166313830636661653231373664356138303136643236313564616166303535383933376635363665303761616136316333, '2026-05-14 07:54:56'),
+(19, 21, 0x35663239346330333361613933306639323131333739623562366663373233376465663835643335633364303737663837333735633237373335653734306135, '2026-05-15 04:24:57'),
+(20, 22, 0x37366639636161366137303363303333393463636231613265323039363530653130353237363631393764303565373233336166333334376631353965386233, '2026-05-15 06:40:39'),
+(21, 23, 0x31646165306364343465396538396266663866306532353562323032666433313364303133366532656630353330323763666536616164366235363133396637, '2026-05-15 17:36:57');
 
 -- --------------------------------------------------------
 
@@ -736,16 +1065,28 @@ INSERT INTO `socio_membresia` (`id`, `socio_id`, `membresia_id`, `fecha_inicio`,
 (6, 12, 1, '2026-04-20 00:00:00', '2026-04-21 00:00:00', 0),
 (7, 13, 1, '2026-04-20 00:00:00', '2026-04-21 00:00:00', 0),
 (8, 14, 3, '2026-04-27 00:00:00', '2026-05-27 00:00:00', 1),
-(9, 15, 1, '2026-04-27 00:00:00', '2026-04-28 00:00:00', 1),
+(9, 15, 1, '2026-04-27 00:00:00', '2026-04-28 00:00:00', 0),
 (10, 16, 3, '2026-04-27 00:00:00', '2026-05-27 00:00:00', 1),
-(11, 5, 2, '2026-04-27 00:00:00', '2026-05-04 00:00:00', 1),
-(12, 17, 2, '2026-04-27 00:00:00', '2026-05-04 00:00:00', 1),
+(11, 5, 2, '2026-04-27 00:00:00', '2026-05-04 00:00:00', 0),
+(12, 17, 2, '2026-04-27 00:00:00', '2026-05-04 00:00:00', 0),
 (13, 12, 1, '2026-04-26 05:00:00', '2026-04-27 05:00:00', 0),
 (14, 11, 1, '2026-04-27 22:41:00', '2026-04-28 22:41:00', 0),
 (15, 13, 3, '2026-04-26 10:41:00', '2026-05-26 10:41:00', 1),
-(16, 12, 1, '2026-04-27 13:42:00', '2026-04-28 13:42:00', 1),
-(17, 4, 1, '2026-04-27 13:30:00', '2026-04-28 13:30:00', 1),
-(18, 11, 1, '2026-04-27 08:25:00', '2026-04-28 08:25:00', 1);
+(16, 12, 1, '2026-04-27 13:42:00', '2026-04-28 13:42:00', 0),
+(17, 4, 1, '2026-04-27 13:30:00', '2026-04-28 13:30:00', 0),
+(18, 11, 1, '2026-04-27 08:25:00', '2026-04-28 08:25:00', 0),
+(19, 11, 3, '2026-05-09 06:04:00', '2026-06-08 06:04:00', 1),
+(20, 20, 3, '2026-05-14 09:54:00', '2026-06-13 09:54:00', 1),
+(21, 12, 1, '2026-05-15 21:20:00', '2026-05-16 21:20:00', 1),
+(22, 21, 2, '2026-05-15 21:25:00', '2026-05-22 21:25:00', 1),
+(23, 22, 1, '2026-05-14 08:40:00', '2026-05-15 08:40:00', 0),
+(24, 23, 1, '2026-05-15 09:36:00', '2026-05-16 09:36:00', 0),
+(25, 23, 1, '2026-05-15 20:28:00', '2026-05-16 20:28:00', 1),
+(26, 20, 1, '2026-06-13 09:54:00', '2026-06-14 09:54:00', 0),
+(27, 21, 2, '2026-05-22 21:25:00', '2026-05-29 21:25:00', 0),
+(28, 6, 1, '2026-05-16 00:29:00', '2026-05-17 00:29:00', 1),
+(29, 19, 1, '2026-05-16 00:51:00', '2026-05-17 00:51:00', 1),
+(30, 18, 1, '2026-05-16 00:00:00', '2026-05-17 00:00:00', 1);
 
 -- --------------------------------------------------------
 
@@ -959,7 +1300,7 @@ ALTER TABLE `instructor_horarios`
 -- AUTO_INCREMENT de la tabla `inventario_movimientos`
 --
 ALTER TABLE `inventario_movimientos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `membresias`
@@ -977,25 +1318,25 @@ ALTER TABLE `notificaciones`
 -- AUTO_INCREMENT de la tabla `pagos_membresia`
 --
 ALTER TABLE `pagos_membresia`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `socios`
 --
 ALTER TABLE `socios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT de la tabla `socio_biometria`
 --
 ALTER TABLE `socio_biometria`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT de la tabla `socio_instructor_sesiones`
@@ -1007,7 +1348,7 @@ ALTER TABLE `socio_instructor_sesiones`
 -- AUTO_INCREMENT de la tabla `socio_membresia`
 --
 ALTER TABLE `socio_membresia`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT de la tabla `users`

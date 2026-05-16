@@ -402,11 +402,7 @@ class InventarioController
             exit;
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | REDIRECCIONES
-        |--------------------------------------------------------------------------
-        */
+        /* REDIRECCIONES */
         if ($ok) {
             header("Location: " . self::MOVIMIENTOS_VIEW . "?movimiento=1");
         } else {
