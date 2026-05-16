@@ -73,9 +73,7 @@ include __DIR__ . '/../layouts/sidebar.php';
                     <!-- ================================================= -->
                     <!-- FORMULARIO PRINCIPAL                               -->
                     <!-- ================================================= -->
-                    <form method="POST" action="<?= BASE_URL ?>/app/controllers/SocioController.php?action=store">
-
-                        
+                    <form method="POST" action="<?= BASE_URL ?>/app/controllers/SocioController.php?action=store" id="formSocioCreate" novalidate>
 
                        <div class="row g-3">
 
@@ -361,10 +359,7 @@ include __DIR__ . '/../layouts/sidebar.php';
                         <!-- BOTONES DE ACCIÓN                                 -->
                         <!-- ================================================= -->
                         <div class="action-row mt-4">
-                            <a
-                                href="<?= BASE_URL ?>/resources/views/socios/index.php"
-                                class="btn btn-secondary"
-                            >
+                            <a href="<?= BASE_URL ?>/app/controllers/SocioController.php?action=index" class="btn btn-secondary">
                                 Cancelar
                             </a>
 

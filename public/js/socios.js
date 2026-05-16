@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const huellaDemo = document.getElementById('huellaDemo');
     const btnHuellaDemo = document.getElementById('btnHuellaDemo');
     const membresiaSeleccionada = document.getElementById('membresiaSeleccionada');
-    const notas = document.querySelector('textarea[name="notas"][form="formSocioCreate"]');
+    const notas = document.querySelector('textarea[name="notas"]');
 
     const previewNombre = document.getElementById('previewNombre');
     const previewNacimiento = document.getElementById('previewNacimiento');
@@ -56,6 +56,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function limpiarError(input) {
         if (input) input.classList.remove('input-error');
+    }
+
+    function edadValida(fechaNacimientoValor) {
+        const fecha = new Date(fechaNacimientoValor + 'T00:00:00');
+        const hoy = new Date();
+
+        if (isNaN(fecha.getTime()) || fecha > hoy) {
+            return false;
+        }
+
+        let edad = hoy.getFullYear() - fecha.getFullYear();
+        const mes = hoy.getMonth() - fecha.getMonth();
+
+        if (mes < 0 || (mes === 0 && hoy.getDate() < fecha.getDate())) {
+            edad--;
+        }
+
+        return edad >= 14 && edad <= 100;
+    }
+
+    function soloNumeros(valor) {
+        return /^\d+$/.test(valor);
+    }
+
+    function telefonoValido(valor) {
+        return /^\d{10}$/.test(valor);
+    }
+
+    function codigoPostalValido(valor) {
+        return /^\d{5}$/.test(valor);
+    }
+
+    function emailValido(valor) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valor);
+    }
+
+    function numeroDireccionValido(valor) {
+        return /^\d{1,20}$/.test(valor);
     }
 
     function actualizarNombreCompleto() {
@@ -88,6 +126,10 @@ document.addEventListener('DOMContentLoaded', () => {
             input.addEventListener('input', () => {
                 if (input === codigoPostal) {
                     input.value = input.value.replace(/\D/g, '').slice(0, 5);
+                }
+
+                if (input === numero) {
+                    input.value = input.value.replace(/\D/g, '').slice(0, 20);
                 }
 
                 limpiarError(input);
@@ -235,7 +277,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const valorMembresia = membresiaSeleccionada ? membresiaSeleccionada.value.trim() : '';
 
             [
-                nombre,
                 nombres,
                 apellidoPaterno,
                 apellidoMaterno,
@@ -271,32 +312,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 hayErrores = true;
             }
 
-            if (valorFechaNacimiento === '') {
+            if (!edadValida(valorFechaNacimiento)) {
                 marcarError(fechaNacimiento);
                 hayErrores = true;
-            } else {
-                const fecha = new Date(valorFechaNacimiento + 'T00:00:00');
-                const hoy = new Date();
-
-                let edad = hoy.getFullYear() - fecha.getFullYear();
-                const mes = hoy.getMonth() - fecha.getMonth();
-
-                if (mes < 0 || (mes === 0 && hoy.getDate() < fecha.getDate())) {
-                    edad--;
-                }
-
-                if (isNaN(fecha.getTime()) || fecha > hoy || edad < 12 || edad > 90) {
-                    marcarError(fechaNacimiento);
-                    hayErrores = true;
-                }
             }
 
-            if (!/^\d{10}$/.test(valorTelefono)) {
+            if (!telefonoValido(valorTelefono)) {
                 marcarError(telefono);
                 hayErrores = true;
             }
 
-            if (valorEmail === '' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valorEmail)) {
+            if (!emailValido(valorEmail)) {
                 marcarError(email);
                 hayErrores = true;
             }
@@ -311,7 +337,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 hayErrores = true;
             }
 
-            if (!/^\d{10}$/.test(valorTelefonoEmergencia)) {
+            if (!telefonoValido(valorTelefonoEmergencia)) {
                 marcarError(telefonoEmergencia);
                 hayErrores = true;
             }
@@ -321,7 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 hayErrores = true;
             }
 
-            if (valorNumero === '' || valorNumero.length > 20) {
+            if (!numeroDireccionValido(valorNumero)) {
                 marcarError(numero);
                 hayErrores = true;
             }
@@ -331,7 +357,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 hayErrores = true;
             }
 
-            if (!/^\d{5}$/.test(valorCodigoPostal)) {
+            if (!codigoPostalValido(valorCodigoPostal)) {
                 marcarError(codigoPostal);
                 hayErrores = true;
             }
@@ -357,4 +383,93 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    const formSocioEdit = document.getElementById('formSocioEdit');
+
+if (formSocioEdit) {
+    formSocioEdit.addEventListener('submit', (e) => {
+        let hayErrores = false;
+
+        [
+            nombres,
+            apellidoPaterno,
+            fechaNacimiento,
+            telefono,
+            email,
+            genero,
+            nombreContactoEmergencia,
+            telefonoEmergencia,
+            calle,
+            numero,
+            colonia,
+            codigoPostal
+        ].forEach(limpiarError);
+
+        if (!nombres || nombres.value.trim().length < 2) {
+            marcarError(nombres);
+            hayErrores = true;
+        }
+
+        if (!apellidoPaterno || apellidoPaterno.value.trim().length < 2) {
+            marcarError(apellidoPaterno);
+            hayErrores = true;
+        }
+
+        if (!fechaNacimiento || !edadValida(fechaNacimiento.value.trim())) {
+            marcarError(fechaNacimiento);
+            hayErrores = true;
+        }
+
+        if (!telefono || !telefonoValido(telefono.value.trim())) {
+            marcarError(telefono);
+            hayErrores = true;
+        }
+
+        if (!email || !emailValido(email.value.trim())) {
+            marcarError(email);
+            hayErrores = true;
+        }
+
+        if (!genero || genero.value.trim() === '') {
+            marcarError(genero);
+            hayErrores = true;
+        }
+
+        if (!nombreContactoEmergencia || nombreContactoEmergencia.value.trim().length < 3) {
+            marcarError(nombreContactoEmergencia);
+            hayErrores = true;
+        }
+
+        if (!telefonoEmergencia || !telefonoValido(telefonoEmergencia.value.trim())) {
+            marcarError(telefonoEmergencia);
+            hayErrores = true;
+        }
+
+        if (!calle || calle.value.trim().length < 2) {
+            marcarError(calle);
+            hayErrores = true;
+        }
+
+        if (!numero || !numeroDireccionValido(numero.value.trim())) {
+            marcarError(numero);
+            hayErrores = true;
+        }
+
+        if (!colonia || colonia.value.trim().length < 2) {
+            marcarError(colonia);
+            hayErrores = true;
+        }
+
+        if (!codigoPostal || !codigoPostalValido(codigoPostal.value.trim())) {
+            marcarError(codigoPostal);
+            hayErrores = true;
+        }
+
+        if (hayErrores) {
+            alert('Revisa los campos marcados antes de guardar.');
+            e.preventDefault();
+        }
+    });
+}
+
 });

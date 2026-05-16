@@ -50,7 +50,7 @@ include __DIR__ . '/../layouts/sidebar.php';
 
         <!-- FORMULARIO -->
         <div class="page-card card-section">
-            <form method="POST" action="<?= BASE_URL ?>/routes/socios_update.php" id="formSocioEdit">
+            <form method="POST" action="<?= BASE_URL ?>/app/controllers/SocioController.php?action=update" id="formSocioEdit" novalidate >
 
                 <input type="hidden" name="id" value="<?= htmlspecialchars($socio['id']) ?>">
                 <input type="hidden" name="nombre" id="nombre" value="<?= htmlspecialchars($nombreCompleto) ?>">
@@ -273,7 +273,6 @@ include __DIR__ . '/../layouts/sidebar.php';
                             class="form-control custom-input"
                             rows="5"
                             maxlength="1000"
-                            required
                         ><?= htmlspecialchars($socio['notas'] ?? '') ?></textarea>
                     </div>
 
@@ -285,7 +284,7 @@ include __DIR__ . '/../layouts/sidebar.php';
                         Guardar cambios
                     </button>
 
-                    <a href="<?= BASE_URL ?>/resources/views/socios/index.php?id=<?= urlencode($socio['id']) ?>" class="btn btn-secondary">
+                    <a href="<?= BASE_URL ?>/app/controllers/SocioController.php?action=index" class="btn btn-secondary">
                         Cancelar
                     </a>
                 </div>
@@ -296,42 +295,7 @@ include __DIR__ . '/../layouts/sidebar.php';
     </div>
 </div>
 
-<!-- JS LOCAL DE ESTA VISTA -->
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const nombre = document.getElementById('nombre');
-    const nombres = document.getElementById('nombres');
-    const apellidoPaterno = document.getElementById('apellidoPaterno');
-    const apellidoMaterno = document.getElementById('apellidoMaterno');
-
-    const telefono = document.getElementById('telefono');
-    const telefonoEmergencia = document.getElementById('telefonoEmergencia');
-    const codigoPostal = document.getElementById('codigoPostal');
-
-    function actualizarNombreCompleto() {
-        if (!nombre || !nombres || !apellidoPaterno || !apellidoMaterno) return;
-
-        nombre.value = `${nombres.value.trim()} ${apellidoPaterno.value.trim()} ${apellidoMaterno.value.trim()}`
-            .replace(/\s+/g, ' ')
-            .trim();
-    }
-
-    [nombres, apellidoPaterno, apellidoMaterno].forEach(input => {
-        if (input) {
-            input.addEventListener('input', actualizarNombreCompleto);
-        }
-    });
-
-    actualizarNombreCompleto();
-
-    [telefono, telefonoEmergencia, codigoPostal].forEach(input => {
-        if (input) {
-            input.addEventListener('input', () => {
-                input.value = input.value.replace(/\D/g, '').slice(0, input === codigoPostal ? 5 : 10);
-            });
-        }
-    });
-});
-</script>
+<!-- JS DEL MÓDULO DE SOCIOS -->
+<script src="<?= BASE_URL ?>/public/js/socios.js?v=123"></script>
 
 <?php include __DIR__ . '/../layouts/footer.php'; ?>

@@ -241,4 +241,49 @@ class Socio
 
         return $huella;
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | OBTENER MEMBRESIA ACTIVA SOCIO 
+    |--------------------------------------------------------------------------
+    */
+
+    public function obtenerMembresiaActivaSocio(int $socioId): ?array
+    {
+        try {
+            $stmt = $this->conn->prepare("CALL sp_obtener_membresia_activa_socio(:socio_id)");
+            $stmt->bindParam(':socio_id', $socioId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $data = $stmt->fetch(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+
+            return $data ?: null;
+        } catch (PDOException $e) {
+            die('Error en obtenerMembresiaActivaSocio: ' . $e->getMessage());
+        }
+    }
+
+     /*
+    |--------------------------------------------------------------------------
+    | OBTENER HISTORIAL RECIENTE DE LOS PAGOS DE SOCIOS 
+    |--------------------------------------------------------------------------
+    */
+
+
+    public function obtenerHistorialRecientePagosSocio(int $socioId): array
+    {
+        try {
+            $stmt = $this->conn->prepare("CALL sp_obtener_historial_reciente_pagos_socio(:socio_id)");
+            $stmt->bindParam(':socio_id', $socioId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+
+            return $data;
+        } catch (PDOException $e) {
+            die('Error en obtenerHistorialRecientePagosSocio: ' . $e->getMessage());
+        }
+    }
 }

@@ -351,3 +351,133 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* =========================================================
+   MEMBRESÍA ACTUAL E HISTORIAL
+   ========================================================= */
+
+.socio-membership-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.socio-membership-card {
+    border: 1px solid rgba(59, 130, 246, 0.22);
+    border-radius: 18px;
+    padding: 16px;
+    background: linear-gradient(
+        180deg,
+        rgba(10, 20, 42, 0.95) 0%,
+        rgba(7, 14, 30, 0.98) 100%
+    );
+}
+
+.socio-membership-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.socio-membership-header h5 {
+    margin: 0;
+    font-size: 1.08rem;
+    color: #f8fafc;
+}
+
+.socio-membership-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.socio-membership-grid div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.socio-membership-grid small {
+    color: #94a3b8;
+    font-size: 0.78rem;
+}
+
+.socio-membership-grid strong {
+    color: #ffffff;
+    font-size: 0.92rem;
+}
+
+.socio-membership-empty {
+    border: 1px dashed rgba(148, 163, 184, 0.25);
+    border-radius: 16px;
+    padding: 18px;
+    text-align: center;
+    color: #94a3b8;
+    background: rgba(10, 18, 36, 0.45);
+}
+
+.socio-payment-history {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.socio-payment-history h6 {
+    margin: 0;
+    color: #f8fafc;
+    font-size: 0.95rem;
+}
+
+.socio-payment-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.socio-payment-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.socio-payment-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: #3b82f6;
+    margin-top: 7px;
+    flex-shrink: 0;
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.55);
+}
+
+.socio-payment-content {
+    flex: 1;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+    padding-bottom: 10px;
+}
+
+.socio-payment-content strong {
+    display: block;
+    color: #f8fafc;
+    margin-bottom: 4px;
+    font-size: 0.9rem;
+}
+
+.socio-payment-content p {
+    margin: 0;
+    color: #dbe5f5;
+    font-size: 0.85rem;
+}
+
+.socio-payment-content small {
+    color: #94a3b8;
+    font-size: 0.76rem;
+}
+
+@media (max-width: 992px) {
+    .socio-membership-grid {
+        grid-template-columns: 1fr;
+    }
+}

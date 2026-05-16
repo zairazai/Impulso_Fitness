@@ -251,7 +251,95 @@ include __DIR__ . '/../layouts/sidebar.php';
                                 <h4>Membresía e historial</h4>
 
                                 <div class="empty-box">
-                                    Esta sección se mostrará cuando conectemos el módulo de membresías y pagos reales.
+                                    <div class="socio-membership-summary">
+                                            <?php if ($membresiaActiva): ?>
+
+                                            <div class="socio-membership-card">
+                                                <div class="socio-membership-header">
+                                                    <h5><?= htmlspecialchars($membresiaActiva['membresia_nombre']) ?></h5>
+
+                                                    <span class="status-pill status-active">
+                                                        <?= ($socioSeleccionado['estado'] ?? '') === 'activo'
+                                                            ? 'ACTIVA'
+                                                            : 'VIGENTE / SOCIO INACTIVO' ?>
+                                                    </span>
+                                                </div>
+
+                                                <div class="socio-membership-grid">
+                                                    <div>
+                                                        <small>Inicio</small>
+                                                        <strong>
+                                                            <?= date('d/m/Y', strtotime($membresiaActiva['fecha_inicio'])) ?>
+                                                        </strong>
+                                                    </div>
+
+                                                    <div>
+                                                        <small>Vencimiento</small>
+                                                        <strong>
+                                                            <?= date('d/m/Y', strtotime($membresiaActiva['fecha_fin'])) ?>
+                                                        </strong>
+                                                    </div>
+
+                                                    <div>
+                                                        <small>Precio</small>
+                                                        <strong>
+                                                            $<?= number_format($membresiaActiva['precio'], 2) ?>
+                                                        </strong>
+                                                    </div>
+
+                                                    <div>
+                                                        <small>Días restantes</small>
+                                                        <strong>
+                                                            <?= (int)$membresiaActiva['dias_restantes'] ?>
+                                                        </strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        <?php else: ?>
+
+                                            <div class="socio-membership-empty">
+                                                <p>El socio no tiene una membresía activa.</p>
+                                            </div>
+
+                                        <?php endif; ?>
+
+                                        <?php if (!empty($historialPagosReciente)): ?>
+
+                                            <div class="socio-payment-history mt-4">
+                                                <h6>Últimos pagos</h6>
+
+                                                <div class="socio-payment-timeline">
+
+                                                    <?php foreach ($historialPagosReciente as $pago): ?>
+
+                                                        <div class="socio-payment-item">
+                                                            <div class="socio-payment-dot"></div>
+
+                                                            <div class="socio-payment-content">
+                                                                <strong>
+                                                                    <?= htmlspecialchars($pago['membresia_nombre']) ?>
+                                                                </strong>
+
+                                                                <p>
+                                                                    $<?= number_format($pago['monto'], 2) ?>
+                                                                    ·
+                                                                    <?= htmlspecialchars($pago['metodo_pago']) ?>
+                                                                </p>
+
+                                                                <small>
+                                                                    <?= date('d/m/Y H:i', strtotime($pago['fecha_pago'])) ?>
+                                                                </small>
+                                                            </div>
+                                                        </div>
+
+                                                    <?php endforeach; ?>
+
+                                                </div>
+                                            </div>
+
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
                             </div>
 
@@ -266,28 +354,38 @@ include __DIR__ . '/../layouts/sidebar.php';
                                     Editar
                                 </a>
 
-                                <?php if (($socioSeleccionado['estado'] ?? '') !== 'inactivo'): ?>
+                                <?php if (($socioSeleccionado['estado'] ?? '') === 'activo'): ?>
+
                                     <form
                                         method="POST"
                                         action="<?= BASE_URL ?>/routes/socios_delete.php"
-                                        onsubmit="return confirm('¿Deseas desactivar este socio?');"
+                                        onsubmit="return confirm('¿Deseas suspender este socio?');"
                                     >
                                         <input
                                             type="hidden"
                                             name="id"
                                             value="<?= htmlspecialchars($socioSeleccionado['id']) ?>"
                                         >
+
                                         <button type="submit" class="btn btn-danger">
-                                            Desactivar
+                                            Suspender
                                         </button>
                                     </form>
+
+                                <?php elseif (($socioSeleccionado['estado'] ?? '') === 'suspendido'): ?>
+
+                                    <span class="badge bg-danger d-flex align-items-center px-3">
+                                        Suspendido
+                                    </span>
+
                                 <?php else: ?>
+
                                     <span class="badge bg-secondary d-flex align-items-center px-3">
                                         Inactivo
                                     </span>
+
                                 <?php endif; ?>
                             </div>
-
                         </div>
                     </div>
                 <?php else: ?>

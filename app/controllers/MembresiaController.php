@@ -73,13 +73,27 @@ class MembresiaController
         require_once __DIR__ . '/../../resources/views/membresias/index.php';
     }
 
-    public function historial(): void
+   public function historial(): void
     {
         $this->validarSesion();
 
         $this->modelo->actualizarEstadosMembresias();
 
-        $historial = $this->modelo->historialPagos();
+        $busqueda = trim($_GET['buscar'] ?? '');
+
+        $fechaInicio = !empty($_GET['fecha_inicio'])
+            ? $_GET['fecha_inicio']
+            : null;
+
+        $fechaFin = !empty($_GET['fecha_fin'])
+            ? $_GET['fecha_fin']
+            : null;
+
+        $historial = $this->modelo->historialPagos(
+            $busqueda,
+            $fechaInicio,
+            $fechaFin
+        );
 
         require_once __DIR__ .
         '/../../resources/views/membresias/historial.php';
@@ -157,9 +171,13 @@ class MembresiaController
     );
 
     if ($ok) {
+
         $this->modelo->actualizarEstadosMembresias();
 
-        header("Location: " . self::SOCIOS_INDEX_ROUTE . "?id=$socioId&paid=1");
+        $_SESSION['success'] = 'Pago registrado correctamente. Puedes generar el recibo desde el historial.';
+
+        header("Location: " . BASE_URL . "/app/controllers/MembresiaController.php?action=historial");
+
         exit;
     }
 
@@ -201,6 +219,57 @@ class MembresiaController
     require_once __DIR__ . '/../../resources/views/membresias/recibo.php';
 }
 
+public function exportarHistorial(): void
+    {
+        $this->validarSesion();
+
+        $busqueda = trim($_GET['buscar'] ?? '');
+
+        $fechaInicio = !empty($_GET['fecha_inicio'])
+            ? $_GET['fecha_inicio']
+            : null;
+
+        $fechaFin = !empty($_GET['fecha_fin'])
+            ? $_GET['fecha_fin']
+            : null;
+
+        $historial = $this->modelo->historialPagos(
+            $busqueda,
+            $fechaInicio,
+            $fechaFin
+        );
+
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename=historial_pagos_membresias.csv');
+
+        $salida = fopen('php://output', 'w');
+
+        fprintf($salida, chr(0xEF).chr(0xBB).chr(0xBF));
+
+        fputcsv($salida, [
+            'ID',
+            'Socio',
+            'Fecha de pago',
+            'Método de pago',
+            'Membresía',
+            'Monto'
+        ]);
+
+        foreach ($historial as $pago) {
+            fputcsv($salida, [
+                $pago['id'] ?? '',
+                $pago['socio_nombre'] ?? '',
+                $pago['fecha_pago'] ?? '',
+                $pago['metodo_pago'] ?? '',
+                $pago['membresia_nombre'] ?? '',
+                $pago['monto'] ?? ''
+            ]);
+        }
+
+        fclose($salida);
+        exit;
+    }
+
 }
 
 $controller = new MembresiaController();
@@ -223,6 +292,10 @@ switch ($action) {
 
     case 'recibo':
     $controller->recibo();
+    break;
+    
+    case 'exportarHistorial':
+    $controller->exportarHistorial();
     break;
 
     default:

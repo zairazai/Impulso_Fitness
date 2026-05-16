@@ -55,41 +55,80 @@ include __DIR__ . '/../layouts/sidebar.php';
         <?php endif; ?>
 
         <!-- ========================================================= -->
-        <!-- FILTROS VISUALES                                          -->
+        <!-- Form historial                                         -->
         <!-- ========================================================= -->
+        <form method="GET" action="<?= BASE_URL ?>/app/controllers/MembresiaController.php">
+
+        <input type="hidden" name="action" value="historial">
+
         <div class="page-card card-section mb-4">
+
             <div class="historial-filters">
+
                 <div class="historial-filter-group">
-                    <label for="buscarPagoInput" class="form-label">Buscar socio</label>
+
+                    <label for="buscarPagoInput" class="form-label">
+                        Buscar socio
+                    </label>
+
                     <input
                         type="text"
                         id="buscarPagoInput"
+                        name="buscar"
                         class="form-control custom-input"
                         placeholder="Juan Pérez"
+                        value="<?= htmlspecialchars($_GET['buscar'] ?? '') ?>"
                     >
+
                 </div>
 
                 <div class="historial-filter-group">
-                    <label for="rangoFechas" class="form-label">Intervalo de fechas</label>
+
+                    <label class="form-label">
+                        Fecha inicio
+                    </label>
+
                     <input
-                        type="text"
-                        id="rangoFechas"
+                        type="date"
+                        name="fecha_inicio"
                         class="form-control custom-input"
-                        placeholder="01-04-2026 a 30-04-2026"
+                        value="<?= htmlspecialchars($_GET['fecha_inicio'] ?? '') ?>"
                     >
+
+                </div>
+
+                <div class="historial-filter-group">
+
+                    <label class="form-label">
+                        Fecha fin
+                    </label>
+
+                    <input
+                        type="date"
+                        name="fecha_fin"
+                        class="form-control custom-input"
+                        value="<?= htmlspecialchars($_GET['fecha_fin'] ?? '') ?>"
+                    >
+
                 </div>
 
                 <div class="historial-filter-actions">
-                    <button type="button" class="btn btn-outline-info">
-                        Exportar
-                    </button>
 
-                    <button type="button" class="btn btn-primary">
+                    <a href="<?= BASE_URL ?>/app/controllers/MembresiaController.php?action=exportarHistorial&buscar=<?= urlencode($_GET['buscar'] ?? '') ?>&fecha_inicio=<?= urlencode($_GET['fecha_inicio'] ?? '') ?>&fecha_fin=<?= urlencode($_GET['fecha_fin'] ?? '') ?>" class="btn btn-outline-info">
+                        Exportar
+                    </a>
+
+                    <button type="submit" class="btn btn-primary">
                         Filtrar
                     </button>
+
                 </div>
+
             </div>
+
         </div>
+
+    </form>
 
         <!-- ========================================================= -->
         <!-- TABLA DE HISTORIAL                                        -->

@@ -267,9 +267,9 @@ public function __construct()
         );
 
         if ($ok) {
-            header("Location: " . self::SOCIOS_INDEX_ROUTE . "?success=1");
+            header("Location: " . self::SOCIOS_INDEX_ROUTE . "&id=$id&success=1");
         } else {
-            header("Location: " . self::SOCIOS_EDIT_ROUTE . "?id=$id&error=update");
+            header("Location: " . self::SOCIOS_EDIT_ROUTE . "&id=$id&error=update");
         }
 
         exit;
@@ -283,6 +283,8 @@ public function __construct()
         $idSeleccionado = (int)($_GET['id'] ?? 0);
 
         $socioSeleccionado = null;
+        $membresiaActiva = null;
+        $historialPagosReciente = [];
 
         if ($idSeleccionado > 0) {
             $socioSeleccionado = $this->modelo->obtenerSocioPorId($idSeleccionado);
@@ -292,6 +294,13 @@ public function __construct()
             $socioSeleccionado = $this->modelo->obtenerSocioPorId(
                 (int)$socios[0]['id']
             );
+        }
+
+        if ($socioSeleccionado) {
+            $socioId = (int)$socioSeleccionado['id'];
+
+            $membresiaActiva = $this->modelo->obtenerMembresiaActivaSocio($socioId);
+            $historialPagosReciente = $this->modelo->obtenerHistorialRecientePagosSocio($socioId);
         }
 
         require_once __DIR__ . '/../../resources/views/socios/index.php';
@@ -341,7 +350,7 @@ public function __construct()
         $id = (int)($_POST['id'] ?? 0);
 
         if ($id <= 0) {
-            header("Location: " . self::SOCIOS_INDEX_ROUTE . "?error=id");
+            header("Location: " . self::SOCIOS_INDEX_ROUTE . "&error=id");
             exit;
         }
 
@@ -349,10 +358,12 @@ public function __construct()
         $ok = $this->modelo->desactivarSocio($id);
 
         if ($ok) {
-            header("Location: " . self::SOCIOS_INDEX_ROUTE . "?deleted=1&id=$id");
+            header("Location: " . self::SOCIOS_INDEX_ROUTE . "&deleted=1&id=$id");
         } else {
-            header("Location: " . self::SOCIOS_INDEX_ROUTE . "?error=delete");
+            header("Location: " . self::SOCIOS_INDEX_ROUTE . "&error=delete");
         }
+
+exit;
 
         exit;
     }

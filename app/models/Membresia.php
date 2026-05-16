@@ -182,9 +182,9 @@ class Membresia
                 )
             ");
 
-            $stmt->bindParam(':busqueda', $busqueda, PDO::PARAM_STR);
-            $stmt->bindParam(':fecha_inicio', $fechaInicio);
-            $stmt->bindParam(':fecha_fin', $fechaFin);
+            $stmt->bindValue(':busqueda', $busqueda, PDO::PARAM_STR);
+            $stmt->bindValue(':fecha_inicio', $fechaInicio, $fechaInicio === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+            $stmt->bindValue(':fecha_fin', $fechaFin, $fechaFin === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
 
             $stmt->execute();
 
