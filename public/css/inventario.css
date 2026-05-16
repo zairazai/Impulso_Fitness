@@ -458,6 +458,34 @@
     margin-top: 8px;
 }
 
+.inventario-module .locked-input-wrapper {
+    position: relative;
+}
+
+.inventario-module .locked-input-wrapper input {
+    width: 100%;
+    padding-right: 48px;
+}
+
+.inventario-module .stock-lock-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 10px;
+    background: rgba(77, 171, 247, 0.12);
+    color: #93c5fd;
+    cursor: pointer;
+}
+
+.inventario-module .stock-lock-btn:hover {
+    background: rgba(77, 171, 247, 0.22);
+    color: #ffffff;
+}
+
 /* =========================================================
    RESPONSIVE
    ========================================================= */

@@ -57,11 +57,14 @@ require_once __DIR__ . '/../layouts/header.php';
                             <option value="">Seleccionar producto</option>
 
                             <?php foreach ($productos as $producto): ?>
+
                                 <option value="<?= (int)$producto['id'] ?>">
+
                                     <?= htmlspecialchars($producto['codigo']) ?> -
                                     <?= htmlspecialchars($producto['nombre']) ?>
-                                    | Stock actual: <?= (int)$producto['stock'] ?>
+
                                 </option>
+
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -89,13 +92,41 @@ require_once __DIR__ . '/../layouts/header.php';
                     </div>
 
                     <div class="form-group full">
+
                         <label>Referencia</label>
 
-                        <input
-                            type="text"
-                            name="referencia"
-                            placeholder="Ej. Compra proveedor, venta manual, ajuste físico"
-                        >
+                        <select name="referencia" id="referencia">
+
+                            <option value="">
+                                Seleccionar referencia
+                            </option>
+
+                            <option value="Compra proveedor">
+                                Compra proveedor
+                            </option>
+
+                            <option value="Entrada inventario">
+                                Entrada inventario
+                            </option>
+
+                            <option value="Transferencia sucursal">
+                                Transferencia sucursal
+                            </option>
+
+                            <option value="Producto dañado">
+                                Producto dañado
+                            </option>
+
+                            <option value="Producto caducado">
+                                Producto caducado
+                            </option>
+
+                            <option value="Ajuste inventario puntual">
+                                Ajuste inventario puntual
+                            </option>
+
+                        </select>
+
                     </div>
 
                     <div class="form-group full">

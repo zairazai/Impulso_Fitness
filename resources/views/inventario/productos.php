@@ -50,7 +50,6 @@ require_once __DIR__ . '/../layouts/header.php';
             <?php if (isset($_GET['updated'])): ?>
                 <div class="alert success">
                     Producto actualizado correctamente.
-                    El stock se administra desde movimientos.
                 </div>
             <?php endif; ?>
 
@@ -315,27 +314,56 @@ require_once __DIR__ . '/../layouts/header.php';
 
                 <div class="form-group">
                     <label>Precio venta</label>
-                    <input type="number" step="0.01" name="precio_venta" id="precio_venta" required>
-                </div>
-
-                <label id="stockLabel">Stock inicial</label>
 
                     <input
                         type="number"
-                        name="stock"
-                        id="stock"
-                        value="0"
-                        min="0"
+                        step="0.01"
+                        name="precio_venta"
+                        id="precio_venta"
+                        required
                     >
+                </div>
+
+                <div class="form-group">
+                    <label id="stockLabel">Stock inicial</label>
+
+                    <div class="locked-input-wrapper">
+
+                        <input
+                            type="number"
+                            name="stock"
+                            id="stock"
+                            value="0"
+                            min="0"
+                        >
+
+                        <button
+                            type="button"
+                            id="stockLockBtn"
+                            class="stock-lock-btn d-none"
+                            title="El stock se modifica desde movimientos"
+                        >
+                            <i class="bi bi-lock-fill"></i>
+                        </button>
+
+                    </div>
 
                     <small class="form-text" id="stockHelpText">
                         Solo se usa al crear el producto.
                     </small>
-
-                <div class="form-group">
-                    <label>Stock mínimo</label>
-                    <input type="number" name="stock_minimo" id="stock_minimo" value="5" min="0">
                 </div>
+
+                    <div class="form-group">
+                        <label>Stock mínimo</label>
+
+                        <input
+                            type="number"
+                            name="stock_minimo"
+                            id="stock_minimo"
+                            value="5"
+                            min="0"
+                        >
+                    </div>
 
                 <div class="form-group full">
                     <label>Descripción</label>

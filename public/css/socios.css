@@ -1,15 +1,14 @@
 /* =========================================================
    SOCIOS.CSS
-   Estilos exclusivos del módulo de socios:
-   - Registro de socio
-   - Vista previa
-   - Búsqueda de socio
-   - Detalle del socio
+   Estilo unificado con Inventario
+   - Diseño limpio
    - Validaciones visuales
+   - Alerts consistentes
+   - Tarjetas estilo dashboard
    ========================================================= */
 
 /* =========================================================
-   REGISTRO DE SOCIO
+   LAYOUT GENERAL
    ========================================================= */
 
 .register-layout {
@@ -31,18 +30,40 @@
     top: 20px;
 }
 
-/* Tarjetas internas del módulo socios */
-.card-section {
-    padding: 18px;
+.left-column-search,
+.detail-column,
+.preview-list,
+.detail-sections,
+.socio-membership-summary,
+.socio-payment-history,
+.socio-payment-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
-.side-card {
+/* =========================================================
+   TARJETAS
+   ========================================================= */
+
+.card-section,
+.side-card,
+.detail-card,
+.detail-box,
+.socio-membership-card {
+    background: rgba(5, 18, 52, 0.92);
+    border: 1px solid rgba(77, 171, 247, 0.18);
+    border-radius: 20px;
     padding: 18px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22);
 }
 
-.side-card h4 {
-    margin-bottom: 14px;
-    font-size: 1.05rem;
+.side-card h4,
+.detail-box h4,
+.socio-membership-header h5 {
+    margin-bottom: 12px;
+    color: #f8fafc;
 }
 
 .success-card {
@@ -55,7 +76,59 @@
 }
 
 /* =========================================================
-   PRESELECCIÓN DE MEMBRESÍA EN SOCIOS
+   INPUTS
+   ========================================================= */
+
+.custom-input,
+input,
+select,
+textarea {
+    background: rgba(15, 30, 70, 0.9) !important;
+    border: 1px solid rgba(77, 171, 247, 0.22) !important;
+    color: #ffffff !important;
+    border-radius: 14px !important;
+    transition: 0.2s ease;
+}
+
+.custom-input::placeholder,
+input::placeholder,
+textarea::placeholder {
+    color: #94a3b8 !important;
+}
+
+.custom-input:focus,
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #4dabf7 !important;
+    box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.16) !important;
+    outline: none;
+}
+
+/* =========================================================
+   VALIDACIONES
+   ========================================================= */
+
+.input-error {
+    border: 1px solid #ff4d4f !important;
+    background: rgba(255, 77, 79, 0.08) !important;
+    box-shadow: 0 0 8px rgba(255, 77, 79, 0.35);
+    color: #fff !important;
+}
+
+.input-error:focus {
+    border-color: #ff4d4f !important;
+    box-shadow: 0 0 10px rgba(255, 77, 79, 0.55) !important;
+}
+
+.input-error-message {
+    margin-top: 4px;
+    font-size: 0.8rem;
+    color: #ff6b6b;
+}
+
+/* =========================================================
+   MEMBRESÍAS
    ========================================================= */
 
 .membership-block {
@@ -70,9 +143,9 @@
 }
 
 .membership-card {
-    border: 1px solid rgba(43, 81, 145, 0.55);
-    border-radius: 14px;
-    background: rgba(10, 18, 36, 0.92);
+    border: 1px solid rgba(77, 171, 247, 0.14);
+    border-radius: 16px;
+    background: rgba(10, 18, 36, 0.94);
     padding: 16px 14px;
     display: flex;
     flex-direction: column;
@@ -84,18 +157,14 @@
 }
 
 .membership-card:hover {
-    border-color: #3b82f6;
-    transform: translateY(-1px);
+    border-color: #4dabf7;
+    transform: translateY(-2px);
 }
 
 .membership-card.active {
-    border: 2px solid #f5a623;
-    box-shadow: 0 0 18px rgba(245, 166, 35, 0.25);
-    background: linear-gradient(
-        180deg,
-        rgba(12, 28, 70, 1) 0%,
-        rgba(8, 20, 54, 1) 100%
-    );
+    border: 1px solid #4dabf7;
+    background: rgba(77, 171, 247, 0.12);
+    box-shadow: 0 0 18px rgba(77, 171, 247, 0.15);
 }
 
 .membership-title,
@@ -115,57 +184,27 @@
 .membership-card strong {
     color: #ffffff;
     font-size: 0.95rem;
-    margin-top: 4px;
 }
 
 /* =========================================================
-   VISTA PREVIA
+   BADGES
    ========================================================= */
-
-.preview-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.preview-list p {
-    margin: 0;
-    font-size: 0.92rem;
-    color: #dbe5f5;
-}
-
-.preview-list strong {
-    color: #f8fafc;
-}
 
 .badge-plan {
     display: inline-block;
-    background: #7c3aed;
-    color: #ffffff;
     padding: 4px 10px;
     border-radius: 999px;
     font-size: 0.75rem;
+    font-weight: 700;
+
+    background: rgba(59, 130, 246, 0.18);
+    color: #60a5fa;
+    border: 1px solid rgba(59, 130, 246, 0.28);
 }
 
 /* =========================================================
-   BOTONES / ACCIONES
+   BUSCADOR DE SOCIOS
    ========================================================= */
-
-.action-row {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-}
-
-/* =========================================================
-   BUSCAR SOCIO
-   ========================================================= */
-
-.left-column-search {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
 
 .socio-search-grid {
     display: grid;
@@ -174,9 +213,14 @@
     align-items: start;
 }
 
-.search-toolbar {
+.search-toolbar,
+.action-row {
     display: flex;
-    gap: 12px;
+    gap: 10px;
+}
+
+.action-row {
+    justify-content: flex-end;
 }
 
 .socios-list {
@@ -192,26 +236,30 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: rgba(13, 23, 45, 0.92);
-    border: 1px solid #273759;
-    border-radius: 16px;
+
     padding: 14px 16px;
+    border-radius: 16px;
+
+    background: rgba(10, 20, 42, 0.88);
+    border: 1px solid rgba(77, 171, 247, 0.14);
+
     color: #ffffff;
     text-decoration: none;
-    transition: 0.2s ease;
+
+    transition: 0.22s ease;
 }
 
 .socio-list-item:hover,
-.socio-list-item.selected,
-.socio-list-item.active {
-    border-color: #3b82f6;
+.socio-list-item.active,
+.socio-list-item.selected {
+    border-color: #4dabf7;
     background: rgba(20, 33, 61, 0.98);
+    transform: translateY(-1px);
 }
 
-.socio-list-item h5,
-.socio-list-item h4 {
-    margin: 0 0 6px 0;
-    font-size: 1rem;
+.socio-list-item h4,
+.socio-list-item h5 {
+    margin: 0 0 6px;
     color: #f8fafc;
 }
 
@@ -225,59 +273,41 @@
    DETALLE DEL SOCIO
    ========================================================= */
 
-.detail-column {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-}
-
 .detail-card h2 {
     margin-bottom: 10px;
-    font-size: 1.42rem;
+    font-size: 1.4rem;
 }
 
-.detail-sections {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    margin-top: 16px;
-}
-
-.detail-box {
-    border: 1px solid rgba(101, 118, 150, 0.22);
-    border-radius: 16px;
-    padding: 14px;
-    background: rgba(8, 16, 34, 0.72);
-}
-
-.detail-box h4 {
-    margin-bottom: 12px;
-    font-size: 1rem;
-}
-
-.detail-info-grid {
+.detail-info-grid,
+.socio-membership-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px 16px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px 16px;
 }
 
-.detail-info-grid p {
-    margin: 0;
+.detail-info-grid p,
+.socio-membership-grid div {
     display: flex;
     flex-direction: column;
     gap: 4px;
-    font-size: 0.9rem;
+    margin: 0;
 }
 
-.detail-info-grid span {
+.detail-info-grid span,
+.socio-membership-grid small {
     color: #9fb0cb;
     font-size: 0.8rem;
 }
 
-.detail-info-grid strong {
-    color: #f8fafc;
+.detail-info-grid strong,
+.socio-membership-grid strong {
+    color: #ffffff;
     font-size: 0.9rem;
 }
+
+/* =========================================================
+   HISTORIAL / TIMELINE
+   ========================================================= */
 
 .history-list {
     list-style: none;
@@ -293,45 +323,106 @@
     font-size: 0.9rem;
 }
 
+.socio-payment-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.socio-payment-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    margin-top: 7px;
+    flex-shrink: 0;
+
+    background: #22c55e;
+    box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+}
+
+.socio-payment-content {
+    flex: 1;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+}
+
+.socio-payment-content strong {
+    display: block;
+    margin-bottom: 4px;
+    color: #f8fafc;
+}
+
+.socio-payment-content p {
+    margin: 0;
+    color: #dbe5f5;
+    font-size: 0.85rem;
+}
+
+.socio-payment-content small {
+    color: #94a3b8;
+    font-size: 0.76rem;
+}
+
 /* =========================================================
-   VALIDACIÓN DE INPUTS
+   ESTADOS VACÍOS
    ========================================================= */
 
-.input-error {
-    border: 1px solid #ff4d4f !important;
-    background-color: rgba(255, 77, 79, 0.08);
-    box-shadow: 0 0 6px rgba(255, 77, 79, 0.35);
-    color: #fff;
-    transition: all 0.2s ease;
-}
-
-.input-error:focus {
-    outline: none;
-    border-color: #ff4d4f !important;
-    box-shadow: 0 0 10px rgba(255, 77, 79, 0.6);
-}
-
-.input-error:hover {
-    box-shadow: 0 0 8px rgba(255, 77, 79, 0.45);
-}
-
-.custom-input {
-    transition: all 0.2s ease;
-}
-
-.custom-input:focus {
-    border-color: #4dabf7;
-    box-shadow: 0 0 6px rgba(77, 171, 247, 0.4);
-}
-
-.input-error-message {
-    font-size: 0.8rem;
-    color: #ff4d4f;
-    margin-top: 4px;
+.socio-membership-empty {
+    border: 1px dashed rgba(148, 163, 184, 0.25);
+    border-radius: 16px;
+    padding: 18px;
+    text-align: center;
+    color: #94a3b8;
+    background: rgba(10, 18, 36, 0.45);
 }
 
 /* =========================================================
-   RESPONSIVE DEL MÓDULO SOCIOS
+   ALERTAS
+   ========================================================= */
+
+.alert,
+.alert-success,
+.alert-danger,
+.alert-warning {
+    padding: 13px 16px;
+    border-radius: 14px;
+    font-weight: 600;
+    border: 1px solid transparent;
+}
+
+.alert-success {
+    background: rgba(16, 185, 129, 0.13);
+    border-color: rgba(16, 185, 129, 0.25);
+    color: #34d399;
+}
+
+.alert-danger {
+    background: rgba(239, 68, 68, 0.13);
+    border-color: rgba(239, 68, 68, 0.25);
+    color: #f87171;
+}
+
+.alert-warning {
+    background: rgba(245, 166, 35, 0.16);
+    border-color: rgba(245, 166, 35, 0.25);
+    color: #fbbf24;
+}
+
+/* =========================================================
+   SCROLL
+   ========================================================= */
+
+.socios-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.socios-list::-webkit-scrollbar-thumb {
+    background: rgba(77, 171, 247, 0.3);
+    border-radius: 999px;
+}
+
+/* =========================================================
+   RESPONSIVE
    ========================================================= */
 
 @media (max-width: 1200px) {
@@ -347,136 +438,7 @@
 
 @media (max-width: 992px) {
     .membership-grid,
-    .detail-info-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* =========================================================
-   MEMBRESÍA ACTUAL E HISTORIAL
-   ========================================================= */
-
-.socio-membership-summary {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.socio-membership-card {
-    border: 1px solid rgba(59, 130, 246, 0.22);
-    border-radius: 18px;
-    padding: 16px;
-    background: linear-gradient(
-        180deg,
-        rgba(10, 20, 42, 0.95) 0%,
-        rgba(7, 14, 30, 0.98) 100%
-    );
-}
-
-.socio-membership-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 16px;
-}
-
-.socio-membership-header h5 {
-    margin: 0;
-    font-size: 1.08rem;
-    color: #f8fafc;
-}
-
-.socio-membership-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
-}
-
-.socio-membership-grid div {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.socio-membership-grid small {
-    color: #94a3b8;
-    font-size: 0.78rem;
-}
-
-.socio-membership-grid strong {
-    color: #ffffff;
-    font-size: 0.92rem;
-}
-
-.socio-membership-empty {
-    border: 1px dashed rgba(148, 163, 184, 0.25);
-    border-radius: 16px;
-    padding: 18px;
-    text-align: center;
-    color: #94a3b8;
-    background: rgba(10, 18, 36, 0.45);
-}
-
-.socio-payment-history {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
-
-.socio-payment-history h6 {
-    margin: 0;
-    color: #f8fafc;
-    font-size: 0.95rem;
-}
-
-.socio-payment-timeline {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
-
-.socio-payment-item {
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-}
-
-.socio-payment-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 999px;
-    background: #3b82f6;
-    margin-top: 7px;
-    flex-shrink: 0;
-    box-shadow: 0 0 10px rgba(59, 130, 246, 0.55);
-}
-
-.socio-payment-content {
-    flex: 1;
-    border-bottom: 1px solid rgba(148, 163, 184, 0.08);
-    padding-bottom: 10px;
-}
-
-.socio-payment-content strong {
-    display: block;
-    color: #f8fafc;
-    margin-bottom: 4px;
-    font-size: 0.9rem;
-}
-
-.socio-payment-content p {
-    margin: 0;
-    color: #dbe5f5;
-    font-size: 0.85rem;
-}
-
-.socio-payment-content small {
-    color: #94a3b8;
-    font-size: 0.76rem;
-}
-
-@media (max-width: 992px) {
+    .detail-info-grid,
     .socio-membership-grid {
         grid-template-columns: 1fr;
     }
