@@ -15,9 +15,11 @@ class MembresiaController
 
     /*  RUTAS DE REDIRECCIÓN */
     private const LOGIN_ROUTE = BASE_URL . '/login';
-    private const MEMBRESIAS_INDEX_ROUTE = BASE_URL . '/app/controllers/MembresiaController.php?action=index';
-    private const SOCIOS_INDEX_ROUTE = BASE_URL . '/app/controllers/SocioController.php?action=index';
-    private const MEMBRESIAS_HISTORIAL_ROUTE = BASE_URL . '/app/controllers/MembresiaController.php?action=historial';
+    private const DASHBOARD_ROUTE = BASE_URL . '/resources/views/dashboard.php';
+    private const PRODUCTOS_ROUTE = BASE_URL . '/app/controllers/InventarioController.php?action=productos';
+    private const ENTRADA_ROUTE = BASE_URL . '/app/controllers/InventarioController.php?action=entrada';
+    private const MOVIMIENTOS_ROUTE = BASE_URL . '/app/controllers/InventarioController.php?action=movimientos';
+    private const STOCK_BAJO_ROUTE = BASE_URL . '/app/controllers/InventarioController.php?action=stockBajo';
 
     /*
     |--------------------------------------------------------------------------
@@ -293,7 +295,7 @@ switch ($action) {
     case 'recibo':
     $controller->recibo();
     break;
-    
+
     case 'exportarHistorial':
     $controller->exportarHistorial();
     break;

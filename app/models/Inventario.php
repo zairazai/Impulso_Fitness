@@ -105,7 +105,7 @@ class Inventario
 
             return $ok;
         } catch (PDOException $e) {
-            die('Error en guardarProducto: ' . $e->getMessage());
+            throw $e;
         }
     }
 
@@ -163,7 +163,7 @@ class Inventario
 
             return $ok;
         } catch (PDOException $e) {
-            die('Error en registrarMovimiento: ' . $e->getMessage());
+            throw $e;
         }
     }
 

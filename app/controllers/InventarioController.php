@@ -11,10 +11,6 @@
 | - Baja lógica de productos
 | - Registrar movimientos de inventario
 | - Validar permisos por rol
-|
-| IMPORTANTE:
-| Toda comunicación con la BD se realiza mediante el modelo Inventario.php
-| y procedimientos almacenados.
 */
 
 /*
@@ -34,6 +30,12 @@ require_once __DIR__ . '/../../config/app.php';
 
 class InventarioController
 {
+    private Inventario $modelo;
+
+    public function __construct()
+    {
+        $this->modelo = new Inventario();
+    }
     /*
     |--------------------------------------------------------------------------
     | RUTAS DEL SISTEMA
@@ -42,7 +44,6 @@ class InventarioController
     */
     private const LOGIN_VIEW = BASE_URL . '/resources/views/auth/login.php';
     private const DASHBOARD_VIEW = BASE_URL . '/resources/views/dashboard.php';
-
     private const PRODUCTOS_VIEW = BASE_URL . '/routes/inventario_mostrar_productos.php';
     private const ENTRADA_VIEW = BASE_URL . '/resources/views/inventario/entrada.php';
     private const MOVIMIENTOS_VIEW = BASE_URL . '/resources/views/inventario/movimientos.php';
@@ -109,42 +110,26 @@ class InventarioController
     }
 
     /*
-|--------------------------------------------------------------------------
-| MOSTRAR PRODUCTOS
-|--------------------------------------------------------------------------
-| Obtiene la lista de productos desde el modelo y carga la vista.
-| De esta forma la vista solo muestra la información y no consulta
-| directamente al modelo.
-*/
-public function productos(): void
-{
-    $this->validarRolesInventario();
-
-    /*
     |--------------------------------------------------------------------------
-    | OBTENER BÚSQUEDA
+    | MOSTRAR PRODUCTOS
     |--------------------------------------------------------------------------
+    | Obtiene la lista de productos desde el modelo y carga la vista.
+    | De esta forma la vista solo muestra la información y no consulta
+    | directamente al modelo.
     */
-    $busqueda = trim($_GET['buscar'] ?? '');
+    public function productos(): void
+        {
+            $this->validarRolesInventario();
 
-    /*
-    |--------------------------------------------------------------------------
-    | LLAMAR MODELO
-    |--------------------------------------------------------------------------
-    */
-    $modelo = new Inventario();
 
-    $productos = $modelo->listarProductos($busqueda);
+            $busqueda = trim($_GET['buscar'] ?? '');
 
-    /*
-    |--------------------------------------------------------------------------
-    | CARGAR VISTA
-    |--------------------------------------------------------------------------
-    | Usamos ruta física porque require_once necesita ubicar el archivo
-    | real en el servidor.
-    */
-    require_once __DIR__ . '/../../resources/views/inventario/productos.php';
-}
+    
+            $productos = $this->modelo->listarProductos($busqueda);
+
+          
+            require_once __DIR__ . '/../../resources/views/inventario/productos.php';
+        }
 
     /*
     |--------------------------------------------------------------------------
@@ -180,9 +165,10 @@ public function productos(): void
 
         $codigo = trim($_POST['codigo'] ?? '');
 
-            if ($id === 0) {
-                $codigo = '';
-            }
+        if ($id === 0) {
+            $codigo = '';
+        }
+
         $nombre = trim($_POST['nombre'] ?? '');
         $categoria = trim($_POST['categoria'] ?? '');
         $descripcion = trim($_POST['descripcion'] ?? '');
@@ -190,6 +176,13 @@ public function productos(): void
         $costoCompra = (float)($_POST['costo_compra'] ?? 0);
         $precioVenta = (float)($_POST['precio_venta'] ?? 0);
 
+        /*
+        |--------------------------------------------------------------------------
+        | IMPORTANTE:
+        |--------------------------------------------------------------------------
+        | El stock solo se usa al CREAR producto.
+        | En edición NO debe modificar el stock.
+        */
         $stock = (int)($_POST['stock'] ?? 0);
         $stockMinimo = (int)($_POST['stock_minimo'] ?? 0);
 
@@ -201,12 +194,12 @@ public function productos(): void
         |--------------------------------------------------------------------------
         */
         if (
-
             $nombre === '' ||
             $categoria === '' ||
+            $costoCompra < 0 ||
             $precioVenta <= 0 ||
-            $stock < 0 ||
-            $stockMinimo < 0
+            $stockMinimo < 0 ||
+            ($id === 0 && $stock < 0)
         ) {
             header("Location: " . self::PRODUCTOS_VIEW . "?error=datos");
             exit;
@@ -217,20 +210,23 @@ public function productos(): void
         | LLAMAR MODELO
         |--------------------------------------------------------------------------
         */
-        $modelo = new Inventario();
-
-        $ok = $modelo->guardarProducto(
-            $id,
-            $codigo,
-            $nombre,
-            $categoria,
-            $descripcion,
-            $costoCompra,
-            $precioVenta,
-            $stock,
-            $stockMinimo,
-            $icono
-        );
+        try {
+            $ok = $this->modelo->guardarProducto(
+                $id,
+                $codigo,
+                $nombre,
+                $categoria,
+                $descripcion,
+                $costoCompra,
+                $precioVenta,
+                $stock,
+                $stockMinimo,
+                $icono
+            );
+        } catch (PDOException $e) {
+            header("Location: " . self::PRODUCTOS_VIEW . "?error=bd");
+            exit;
+        }
 
         /*
         |--------------------------------------------------------------------------
@@ -238,18 +234,11 @@ public function productos(): void
         |--------------------------------------------------------------------------
         */
         if ($ok) {
-
-            /*
-            |--------------------------------------------------------------------------
-            | SI EL ID ES MAYOR A 0 = ACTUALIZACIÓN
-            |--------------------------------------------------------------------------
-            */
             if ($id > 0) {
                 header("Location: " . self::PRODUCTOS_VIEW . "?updated=1");
             } else {
                 header("Location: " . self::PRODUCTOS_VIEW . "?created=1");
             }
-
         } else {
             header("Location: " . self::PRODUCTOS_VIEW . "?error=guardar");
         }
@@ -296,9 +285,12 @@ public function productos(): void
         | LLAMAR MODELO
         |--------------------------------------------------------------------------
         */
-        $modelo = new Inventario();
-
-        $ok = $modelo->bajaLogicaProducto($id);
+        try {
+            $ok = $this->modelo->bajaLogicaProducto($id);
+        } catch (PDOException $e) {
+            header("Location: " . self::PRODUCTOS_VIEW . "?error=bd");
+            exit;
+        }
 
         /*
         |--------------------------------------------------------------------------
@@ -322,10 +314,6 @@ public function productos(): void
     | - entrada
     | - salida
     | - ajuste
-    |
-    | Roles permitidos:
-    | - Admin
-    | - Recepcion
     */
     public function movimientoStore(): void
     {
@@ -347,13 +335,9 @@ public function productos(): void
         |--------------------------------------------------------------------------
         */
         $productoId = (int)($_POST['producto_id'] ?? 0);
-
         $tipo = trim($_POST['tipo'] ?? 'entrada');
-
         $cantidad = (int)($_POST['cantidad'] ?? 0);
-
         $referencia = trim($_POST['referencia'] ?? '');
-
         $observaciones = trim($_POST['observaciones'] ?? '');
 
         /*
@@ -365,12 +349,11 @@ public function productos(): void
 
         /*
         |--------------------------------------------------------------------------
-        | VALIDACIONES
+        | VALIDACIONES GENERALES
         |--------------------------------------------------------------------------
         */
         if (
             $productoId <= 0 ||
-            $cantidad <= 0 ||
             !in_array($tipo, ['entrada', 'salida', 'ajuste'])
         ) {
             header("Location: " . self::ENTRADA_VIEW . "?error=datos");
@@ -379,19 +362,45 @@ public function productos(): void
 
         /*
         |--------------------------------------------------------------------------
+        | VALIDACIÓN DE CANTIDAD SEGÚN TIPO
+        |--------------------------------------------------------------------------
+        | Entrada y salida deben ser mayores a 0.
+        | Ajuste puede ser 0 porque representa stock físico exacto.
+        */
+        if (
+            in_array($tipo, ['entrada', 'salida']) &&
+            $cantidad <= 0
+        ) {
+            header("Location: " . self::ENTRADA_VIEW . "?error=cantidad");
+            exit;
+        }
+
+        if (
+            $tipo === 'ajuste' &&
+            $cantidad < 0
+        ) {
+            header("Location: " . self::ENTRADA_VIEW . "?error=cantidad");
+            exit;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
         | LLAMAR MODELO
         |--------------------------------------------------------------------------
         */
-        $modelo = new Inventario();
-
-        $ok = $modelo->registrarMovimiento(
-            $productoId,
-            $usuarioId ? (int)$usuarioId : null,
-            $tipo,
-            $cantidad,
-            $referencia,
-            $observaciones
-        );
+        try {
+            $ok = $this->modelo->registrarMovimiento(
+                $productoId,
+                $usuarioId ? (int)$usuarioId : null,
+                $tipo,
+                $cantidad,
+                $referencia,
+                $observaciones
+            );
+        } catch (PDOException $e) {
+            header("Location: " . self::ENTRADA_VIEW . "?error=bd");
+            exit;
+        }
 
         /*
         |--------------------------------------------------------------------------
@@ -406,4 +415,63 @@ public function productos(): void
 
         exit;
     }
+
+    public function entrada(): void
+    {
+        $this->validarRolesInventario();
+
+        $productos = $this->modelo->listarProductos('');
+
+        require_once __DIR__ . '/../../resources/views/inventario/entrada.php';
+    }
+
+    public function movimientos(): void
+    {
+        $this->validarRolesInventario();
+
+        $busqueda = trim($_GET['buscar'] ?? '');
+
+        $movimientos = $this->modelo->listarMovimientos($busqueda);
+
+        require_once __DIR__ . '/../../resources/views/inventario/movimientos.php';
+    }
+
+}
+
+$controller = new InventarioController();
+
+$action = $_GET['action'] ?? 'productos';
+
+switch ($action) {
+    case 'productos':
+        $controller->productos();
+        break;
+
+    case 'store':
+        $controller->store();
+        break;
+
+    case 'delete':
+        $controller->delete();
+        break;
+
+    case 'entrada':
+        $controller->entrada();
+        break;
+
+    case 'movimientoStore':
+        $controller->movimientoStore();
+        break;
+
+    case 'movimientos':
+        $controller->movimientos();
+        break;
+
+    case 'stockBajo':
+        $controller->stockBajo();
+        break;
+
+    default:
+        $controller->productos();
+        break;
 }

@@ -11,14 +11,6 @@
 require_once __DIR__ . '/../../../config/app.php';
 require_once __DIR__ . '/../../../app/middleware/auth.php';
 
-
-/*
-|--------------------------------------------------------------------------
-| HEADER GENERAL
-|--------------------------------------------------------------------------
-| Cargamos el CSS exclusivo del módulo membresías antes del
-| header para que se inserte correctamente dentro del <head>.
-*/
 $extraCss = BASE_URL . "/public/css/membresias.css";
 
 include __DIR__ . '/../layouts/header.php';

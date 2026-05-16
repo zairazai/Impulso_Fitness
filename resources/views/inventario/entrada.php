@@ -1,34 +1,10 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| MIDDLEWARE DE AUTENTICACIÓN
-|--------------------------------------------------------------------------
-*/
+
+require_once __DIR__ . '/../../../config/app.php';
 require_once __DIR__ . '/../../../app/middleware/auth.php';
 
-/*
-|--------------------------------------------------------------------------
-| MODELO INVENTARIO
-|--------------------------------------------------------------------------
-*/
-require_once __DIR__ . '/../../../app/models/Inventario.php';
-
-/*
-|--------------------------------------------------------------------------
-| OBTENER PRODUCTOS ACTIVOS
-|--------------------------------------------------------------------------
-*/
-$inventario = new Inventario();
-$productos = $inventario->listarProductos('');
-?>
-
-<!DOCTYPE html>
-<html lang="es">
-
-<?php
-
-$extraCss = "/Impulso_Fitness/public/css/inventario.css";
+$extraCss = BASE_URL . "/public/css/inventario.css";
 
 require_once __DIR__ . '/../layouts/header.php';
 
@@ -56,7 +32,7 @@ require_once __DIR__ . '/../layouts/header.php';
                     </p>
                 </div>
 
-                <a href="/Impulso_Fitness/resources/views/inventario/productos.php" class="btn-secondary">
+                <a href="<?= BASE_URL ?>/app/controllers/InventarioController.php?action=productos" class="btn-secondary">
                     <i class="bi bi-box-seam"></i>
                     Ver productos
                 </a>
@@ -72,7 +48,7 @@ require_once __DIR__ . '/../layouts/header.php';
 
                 <form
                     method="POST"
-                    action="/Impulso_Fitness/routes/inventario_movimiento_store.php"
+                    action="<?= BASE_URL ?>/app/controllers/InventarioController.php?action=movimientoStore"
                     class="form-grid"
                 >
 
@@ -108,7 +84,7 @@ require_once __DIR__ . '/../layouts/header.php';
                         <input
                             type="number"
                             name="cantidad"
-                            min="1"
+                            min="0"
                             required
                             placeholder="Ej. 10"
                         >
@@ -135,7 +111,7 @@ require_once __DIR__ . '/../layouts/header.php';
                     </div>
 
                     <div class="modal-actions full">
-                        <a href="/Impulso_Fitness/resources/views/inventario/productos.php" class="btn-secondary">
+                        <a href="<?= BASE_URL ?>/app/controllers/InventarioController.php?action=productos" class="btn-secondary">
                             Cancelar
                         </a>
 
@@ -153,7 +129,7 @@ require_once __DIR__ . '/../layouts/header.php';
 
     </div>
 
-    <script src="/Impulso_Fitness/public/js/inventario.js"></script>
+    <script src="<?= BASE_URL ?>/public/js/inventario.js"></script>
 
 
 <?php include __DIR__ . '/../layouts/footer.php'; ?>

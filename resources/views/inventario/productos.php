@@ -1,39 +1,14 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| MIDDLEWARE DE AUTENTICACIÓN
-|--------------------------------------------------------------------------
-| Protege la vista para que solo usuarios con sesión puedan entrar.
-*/
+
+require_once __DIR__ . '/../../../config/app.php';
 require_once __DIR__ . '/../../../app/middleware/auth.php';
 
-/*
-|--------------------------------------------------------------------------
-| CONFIGURACIÓN GLOBAL
-|--------------------------------------------------------------------------
-| Cargamos BASE_URL para usar rutas centralizadas.
-*/
-require_once __DIR__ . '/../../../config/app.php';
-
-/*
-|--------------------------------------------------------------------------
-| CSS EXTRA DEL MÓDULO
-|--------------------------------------------------------------------------
-*/
 $extraCss = BASE_URL . "/public/css/inventario.css";
 
-/*
-|--------------------------------------------------------------------------
-| HEADER GLOBAL
-|--------------------------------------------------------------------------
-*/
 require_once __DIR__ . '/../layouts/header.php';
 
 ?>
-
-<!DOCTYPE html>
-<html lang="es">
 <body>
 
 <div class="inventario-module">
@@ -95,7 +70,8 @@ require_once __DIR__ . '/../layouts/header.php';
             <!-- BÚSQUEDA -->
             <section class="card-section">
 
-                <form method="GET" action="<?= BASE_URL ?>/routes/inventario_mostrar_productos.php" class="search-form">
+                <form method="GET" action="<?= BASE_URL ?>/app/controllers/InventarioController.php" class="search-form">
+                    <input type="hidden" name="action" value="productos">
 
                     <div class="input-icon">
                         <i class="bi bi-search"></i>
@@ -220,7 +196,7 @@ require_once __DIR__ . '/../layouts/header.php';
                                             <!-- FORMULARIO BAJA LÓGICA -->
                                             <form
                                                 method="POST"
-                                                action="<?= BASE_URL ?>/routes/inventario_delete.php"
+                                                action="<?= BASE_URL ?>/app/controllers/InventarioController.php?action=delete"
                                                 class="delete-form"
                                             >
                                                 <input
@@ -287,7 +263,7 @@ require_once __DIR__ . '/../layouts/header.php';
 
             <form
                 method="POST"
-                action="<?= BASE_URL ?>/routes/inventario_store.php"
+                action="<?= BASE_URL ?>/app/controllers/InventarioController.php?action=store"
                 class="form-grid"
             >
 
@@ -342,10 +318,11 @@ require_once __DIR__ . '/../layouts/header.php';
                     <input type="number" step="0.01" name="precio_venta" id="precio_venta" required>
                 </div>
 
-                <div class="form-group">
-                    <label>Stock</label>
+                <label>Stock inicial</label>
                     <input type="number" name="stock" id="stock" value="0" min="0">
-                </div>
+                    <small class="form-text">
+                        Solo se usa al crear producto. Después se modifica desde movimientos.
+                    </small>
 
                 <div class="form-group">
                     <label>Stock mínimo</label>

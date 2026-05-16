@@ -49,10 +49,20 @@ $isVentasHistorial = str_contains($current, '/ventas/historial.php');
 | INVENTARIO
 |--------------------------------------------------------------------------
 */
-$isInventario = str_contains($current, '/inventario/') || str_contains($current, '/inventarios/');
-$isProductos = str_contains($current, '/inventario/productos.php');
-$isEntradaProductos = str_contains($current, '/entrada');
-$isMovimientos = str_contains($current, '/movimientos');
+/*
+|--------------------------------------------------------------------------
+| INVENTARIO
+|--------------------------------------------------------------------------
+*/
+$isProductos = str_contains($current, 'InventarioController.php?action=productos');
+
+$isEntradaProductos = str_contains($current, 'InventarioController.php?action=entrada');
+
+$isMovimientos = str_contains($current, 'InventarioController.php?action=movimientos');
+
+$isStockBajo = str_contains($current, 'InventarioController.php?action=stockBajo');
+
+$isInventario = $isProductos || $isEntradaProductos || $isMovimientos || $isStockBajo;
 /*
 |--------------------------------------------------------------------------
 | CONTROL DE ACCESO
@@ -179,31 +189,30 @@ $isReportes = str_contains($current, '/reportes/');
             </div>
 
             <!-- INVENTARIO -->
-            <div class="menu-block <?= ($isInventario || $isProductos) ? 'active-block' : '' ?>">
+            <div class="menu-block <?= $isInventario ? 'active-block' : '' ?>">
                 <button
-                    class="menu-link sidebar-toggle-btn <?= ($isInventario || $isProductos) ? 'active-link' : '' ?>"
+                    class="menu-link sidebar-toggle-btn <?= $isInventario ? 'active-link' : '' ?>"
                     type="button"
                     data-target="inventario-submenu"
                 >
                     <span>📦</span> Inventario
                 </button>
 
-                <div id="inventario-submenu" class="sidebar-submenu <?= ($isInventario || $isProductos) ? 'open' : '' ?>">
-                    <a href="/Impulso_Fitness/routes/inventario_mostrar_productos.php"
-                       class="submenu-link <?= $isProductos ? 'active-submenu-link' : '' ?>">
+                <div id="inventario-submenu" class="sidebar-submenu <?= $isInventario ? 'open' : '' ?>">
+                    <a href="<?= BASE_URL ?>/app/controllers/InventarioController.php?action=productos"
+                    class="submenu-link <?= $isProductos ? 'active-submenu-link' : '' ?>">
                         Productos
                     </a>
 
-                    <a href="/Impulso_Fitness/resources/views/inventario/entrada.php"
-                       class="submenu-link <?= $isEntradaProductos ? 'active-submenu-link' : '' ?>">
+                    <a href="<?= BASE_URL ?>/app/controllers/InventarioController.php?action=entrada"
+                    class="submenu-link <?= $isEntradaProductos ? 'active-submenu-link' : '' ?>">
                         Entrada de productos
                     </a>
 
-                    <a href="/Impulso_Fitness/resources/views/inventario/movimientos.php"
-                       class="submenu-link <?= $isMovimientos ? 'active-submenu-link' : '' ?>">
+                    <a href="<?= BASE_URL ?>/app/controllers/InventarioController.php?action=movimientos"
+                    class="submenu-link <?= $isMovimientos ? 'active-submenu-link' : '' ?>">
                         Movimientos
                     </a>
-
                 </div>
             </div>
 
