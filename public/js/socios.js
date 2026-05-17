@@ -50,13 +50,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const previewMembresia = document.getElementById('previewMembresia');
     const previewHuella = document.getElementById('previewHuella');
 
-    function marcarError(input) {
-        if (input) input.classList.add('input-error');
-    }
+   function marcarError(input) {
+    if (!input) return;
 
-    function limpiarError(input) {
-        if (input) input.classList.remove('input-error');
-    }
+    input.classList.add('input-error');
+    input.classList.add('is-invalid');
+    input.setAttribute('aria-invalid', 'true');
+}
+
+function limpiarError(input) {
+    if (!input) return;
+
+    input.classList.remove('input-error');
+    input.classList.remove('is-invalid');
+    input.removeAttribute('aria-invalid');
+}
 
     function edadValida(fechaNacimientoValor) {
         const fecha = new Date(fechaNacimientoValor + 'T00:00:00');

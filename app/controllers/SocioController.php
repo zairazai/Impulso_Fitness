@@ -157,7 +157,9 @@ public function __construct()
         $hash = hash('sha256', $huellaDemo);
         $this->modelo->registrarHuella($nuevoId, $hash);
 
-        header("Location: " . self::MEMBRESIAS_INDEX_ROUTE . "?success=1&id=$nuevoId&plan=" . urlencode($plan));
+        $_SESSION['success'] = 'Socio registrado correctamente. Continúa con la asignación de membresía.';
+
+        header("Location: " . self::MEMBRESIAS_INDEX_ROUTE . "&id=$nuevoId&plan=" . urlencode($plan));
         exit;
     }
 
@@ -266,10 +268,19 @@ public function __construct()
             $notas
         );
 
-        if ($ok) {
-            header("Location: " . self::SOCIOS_INDEX_ROUTE . "&id=$id&success=1");
+       if ($ok) {
+
+            $_SESSION['success'] = 'Socio actualizado correctamente.';
+
+            header("Location: " . self::SOCIOS_INDEX_ROUTE . "&id=$id");
+            exit;
+
         } else {
-            header("Location: " . self::SOCIOS_EDIT_ROUTE . "&id=$id&error=update");
+
+            $_SESSION['error'] = 'No se pudo actualizar el socio.';
+
+            header("Location: " . self::SOCIOS_EDIT_ROUTE . "&id=$id");
+            exit;
         }
 
         exit;
@@ -355,17 +366,23 @@ public function __construct()
         }
 
         
-        $ok = $this->modelo->desactivarSocio($id);
+       $ok = $this->modelo->desactivarSocio($id);
 
         if ($ok) {
-            header("Location: " . self::SOCIOS_INDEX_ROUTE . "&deleted=1&id=$id");
+            $_SESSION['success'] = 'Socio suspendido correctamente.';
+
+            header("Location: " . self::SOCIOS_INDEX_ROUTE . "&id=$id");
+            exit;
         } else {
-            header("Location: " . self::SOCIOS_INDEX_ROUTE . "&error=delete");
+            $_SESSION['error'] = 'No se pudo suspender el socio.';
+
+            header("Location: " . self::SOCIOS_INDEX_ROUTE);
+            exit;
         }
 
-exit;
 
-        exit;
+
+     exit;
     }
 
 }

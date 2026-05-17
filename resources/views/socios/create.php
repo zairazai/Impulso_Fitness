@@ -37,14 +37,16 @@ include __DIR__ . '/../layouts/sidebar.php';
         <!-- ========================================================= -->
         <!-- ALERTAS                                                   -->
         <!-- ========================================================= -->
-        <?php if (isset($_GET['success'])): ?>
-            <div class="alert alert-success">
-                Socio registrado correctamente.
+
+
+        <?php if (isset($_GET['error'])): ?>
+            <div class="alert danger">
+                Ocurrió un problema al procesar la solicitud.
             </div>
         <?php endif; ?>
 
         <?php if (isset($_GET['error'])): ?>
-            <div class="alert alert-danger">
+            <div class="alert danger">
                 Revisa los campos marcados antes de continuar.
             </div>
         <?php endif; ?>
@@ -429,6 +431,6 @@ include __DIR__ . '/../layouts/sidebar.php';
 </div>
 
 <!-- JS DEL MÓDULO DE SOCIOS -->
-<script src="<?= BASE_URL ?>/public/js/socios.js?v=123"></script>
+<script src="<?= BASE_URL ?>/public/js/socios.js?v=124"></script>
 
 <?php include __DIR__ . '/../layouts/footer.php'; ?>

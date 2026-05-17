@@ -52,7 +52,7 @@ require_once __DIR__ . '/../layouts/header.php';
 
             <section class="page-card card-section">
 
-                <form method="GET" action="<?= BASE_URL ?>/app/controllers/InventarioController.php" class="search-form">
+                <form method="GET" action="<?= BASE_URL ?>/app/controllers/InventarioController.php" class="search-form" novalidate id="formProducto" >
                 <input type="hidden" name="action" value="movimientos">
                     <div class="input-icon">
                         <i class="bi bi-search"></i>

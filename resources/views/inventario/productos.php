@@ -68,7 +68,7 @@ require_once __DIR__ . '/../layouts/header.php';
             <!-- BÚSQUEDA -->
             <section class="page-card card-section">
 
-                <form method="GET" action="<?= BASE_URL ?>/app/controllers/InventarioController.php" class="search-form">
+                <form method="GET" action="<?= BASE_URL ?>/app/controllers/InventarioController.php" class="search-form" >
                     <input type="hidden" name="action" value="productos">
 
                     <div class="input-icon">
@@ -262,7 +262,7 @@ require_once __DIR__ . '/../layouts/header.php';
             <form
                 method="POST"
                 action="<?= BASE_URL ?>/app/controllers/InventarioController.php?action=store"
-                class="form-grid"
+                class="form-grid" novalidate id="formProducto"
             >
 
                 <input type="hidden" name="id" id="producto_id" value="0">
@@ -280,12 +280,12 @@ require_once __DIR__ . '/../layouts/header.php';
 
                 <div class="form-group">
                     <label>Nombre</label>
-                    <input type="text" name="nombre" id="nombre" required placeholder="Proteína Whey">
+                    <input type="text" name="nombre" id="nombre" required placeholder="Proteína Whey" class="custom-input" >
                 </div>
 
                 <div class="form-group">
                     <label>Categoría</label>
-                    <select name="categoria" id="categoria" required>
+                    <select name="categoria" id="categoria" required class="custom-input" >
                         <option value="">Seleccionar</option>
                         <option value="Suplementos">Suplementos</option>
                         <option value="Bebidas">Bebidas</option>
@@ -297,7 +297,7 @@ require_once __DIR__ . '/../layouts/header.php';
 
                 <div class="form-group">
                     <label>Icono</label>
-                    <select name="icono" id="icono">
+                    <select name="icono" id="icono" class="custom-input" >
                         <option value="bi-box-seam">Producto general</option>
                         <option value="bi-capsule">Suplemento</option>
                         <option value="bi-cup-straw">Bebida</option>
@@ -309,7 +309,7 @@ require_once __DIR__ . '/../layouts/header.php';
 
                 <div class="form-group">
                     <label>Costo compra</label>
-                    <input type="number" step="0.01" name="costo_compra" id="costo_compra" value="0">
+                    <input type="number" step="0.01" name="costo_compra" id="costo_compra" value="0" class="custom-input">
                 </div>
 
                 <div class="form-group">
@@ -334,6 +334,7 @@ require_once __DIR__ . '/../layouts/header.php';
                             name="stock"
                             id="stock"
                             value="0"
+                            class="custom-input"
                             min="0"
                         >
 
@@ -362,6 +363,7 @@ require_once __DIR__ . '/../layouts/header.php';
                             id="stock_minimo"
                             value="5"
                             min="0"
+                            class="custom-input"
                         >
                     </div>
 

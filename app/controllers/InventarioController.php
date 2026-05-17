@@ -136,31 +136,20 @@ class InventarioController
     | GUARDAR PRODUCTO
     |--------------------------------------------------------------------------
     | Este método sirve para:
-    | - Agregar productos nuevos
-    | - Actualizar productos existentes
-    |
-    | Todo se realiza mediante:
-    | sp_producto_guardar
+    | - Agregar productos nuevos y Actualizar productos existentes
+    |Todo se realiza mediante: sp_producto_guardar
     */
     public function store(): void
     {
         $this->validarSoloAdmin();
 
-        /*
-        |--------------------------------------------------------------------------
-        | VALIDAR MÉTODO POST
-        |--------------------------------------------------------------------------
-        */
+        /* VALIDAR MÉTODO POSt*/
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header("Location: " . self::PRODUCTOS_VIEW);
             exit;
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | OBTENER DATOS DEL FORMULARIO
-        |--------------------------------------------------------------------------
-        */
+        /*obtener datos del frm */
         $id = (int)($_POST['id'] ?? 0);
 
         $codigo = trim($_POST['codigo'] ?? '');
@@ -176,23 +165,14 @@ class InventarioController
         $costoCompra = (float)($_POST['costo_compra'] ?? 0);
         $precioVenta = (float)($_POST['precio_venta'] ?? 0);
 
-        /*
-        |--------------------------------------------------------------------------
-        | IMPORTANTE:
-        |--------------------------------------------------------------------------
-        | El stock solo se usa al CREAR producto.
-        | En edición NO debe modificar el stock.
-        */
+        
         $stock = (int)($_POST['stock'] ?? 0);
         $stockMinimo = (int)($_POST['stock_minimo'] ?? 0);
 
         $icono = trim($_POST['icono'] ?? 'bi-box-seam');
 
-        /*
-        |--------------------------------------------------------------------------
-        | VALIDACIONES BÁSICAS
-        |--------------------------------------------------------------------------
-        */
+        
+        /*validaciones */
         if (
             $nombre === '' ||
             $categoria === '' ||
@@ -205,11 +185,7 @@ class InventarioController
             exit;
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | LLAMAR MODELO
-        |--------------------------------------------------------------------------
-        */
+        /*llamar modelo */
         try {
             $ok = $this->modelo->guardarProducto(
                 $id,
@@ -367,19 +343,16 @@ class InventarioController
         | Entrada y salida deben ser mayores a 0.
         | Ajuste puede ser 0 porque representa stock físico exacto.
         */
-        if (
-            in_array($tipo, ['entrada', 'salida']) &&
-            $cantidad <= 0
+       if (
+            $productoId <= 0 ||
+            !in_array($tipo, ['entrada', 'salida', 'ajuste'])
         ) {
-            header("Location: " . self::ENTRADA_VIEW . "?error=cantidad");
+            header("Location: " . self::ENTRADA_VIEW . "?error=datos");
             exit;
         }
 
-        if (
-            $tipo === 'ajuste' &&
-            $cantidad < 0
-        ) {
-            header("Location: " . self::ENTRADA_VIEW . "?error=cantidad");
+        if ($referencia === '') {
+            header("Location: " . self::ENTRADA_VIEW . "?error=referencia");
             exit;
         }
 

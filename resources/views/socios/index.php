@@ -53,22 +53,18 @@ include __DIR__ . '/../layouts/sidebar.php';
         <!-- ========================================================= -->
         <!-- ALERTAS                                                   -->
         <!-- ========================================================= -->
-        <?php if (isset($_GET['updated'])): ?>
-            <div class="alert alert-success">
-                Socio actualizado correctamente.
+        <?php if (!empty($_SESSION['success'])): ?>
+            <div class="alert success">
+                <?= htmlspecialchars($_SESSION['success']) ?>
             </div>
+            <?php unset($_SESSION['success']); ?>
         <?php endif; ?>
 
-        <?php if (isset($_GET['deleted'])): ?>
-            <div class="alert alert-warning">
-                Socio desactivado correctamente.
+        <?php if (!empty($_SESSION['error'])): ?>
+            <div class="alert danger">
+                <?= htmlspecialchars($_SESSION['error']) ?>
             </div>
-        <?php endif; ?>
-
-        <?php if (isset($_GET['error'])): ?>
-            <div class="alert alert-danger">
-                Ocurrió un problema al procesar la solicitud.
-            </div>
+            <?php unset($_SESSION['error']); ?>
         <?php endif; ?>
 
         <div class="socio-search-grid">
@@ -358,7 +354,7 @@ include __DIR__ . '/../layouts/sidebar.php';
 
                                     <form
                                         method="POST"
-                                        action="<?= BASE_URL ?>/routes/socios_delete.php"
+                                        action="<?= BASE_URL ?>/app/controllers/SocioController.php?action=destroy"
                                         onsubmit="return confirm('¿Deseas suspender este socio?');"
                                     >
                                         <input

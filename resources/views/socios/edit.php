@@ -43,7 +43,7 @@ include __DIR__ . '/../layouts/sidebar.php';
 
         <!-- ALERTAS -->
         <?php if (isset($_GET['error'])): ?>
-            <div class="alert alert-danger">
+            <div class="alert danger">
                 Revisa los datos del formulario antes de guardar.
             </div>
         <?php endif; ?>
@@ -296,6 +296,6 @@ include __DIR__ . '/../layouts/sidebar.php';
 </div>
 
 <!-- JS DEL MÓDULO DE SOCIOS -->
-<script src="<?= BASE_URL ?>/public/js/socios.js?v=123"></script>
+<script src="<?= BASE_URL ?>/public/js/socios.js?v=124"></script>
 
 <?php include __DIR__ . '/../layouts/footer.php'; ?>

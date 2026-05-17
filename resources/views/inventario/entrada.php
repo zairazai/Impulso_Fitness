@@ -42,19 +42,20 @@ require_once __DIR__ . '/../layouts/header.php';
                 </div>
             <?php endif; ?>
 
-            <section class="page-card card-section">
+            <section class="page-card card-section entrada-card">
 
                 <form
                     method="POST"
                     action="<?= BASE_URL ?>/app/controllers/InventarioController.php?action=movimientoStore"
-                    class="form-grid"
+                    class="form-grid movimiento-grid"
+                    novalidate id="formProducto"
                 >
 
                     <div class="form-group full">
                         <label>Producto</label>
 
                         <select name="producto_id" required>
-                            <option value="">Seleccionar producto</option>
+                            <option value="" selected disabled>Seleccionar producto </option>
 
                             <?php foreach ($productos as $producto): ?>
 
@@ -72,7 +73,7 @@ require_once __DIR__ . '/../layouts/header.php';
                     <div class="form-group">
                         <label>Tipo de movimiento</label>
 
-                        <select name="tipo" required>
+                        <select name="tipo"  required>
                             <option value="entrada">Entrada</option>
                             <option value="salida">Salida</option>
                             <option value="ajuste">Ajuste</option>
@@ -88,45 +89,28 @@ require_once __DIR__ . '/../layouts/header.php';
                             min="0"
                             required
                             placeholder="Ej. 10"
+                            class="custom-input"
                         >
                     </div>
 
-                    <div class="form-group full">
+                    <div class="form-group">
+                        <label for="referencia">Referencia</label>
 
-                        <label>Referencia</label>
+                        <select name="referencia"
+                                id="referencia"
+                                class="custom-select"
+                                required>
 
-                        <select name="referencia" id="referencia">
+                            <option value="" selected disabled>Seleccionar referencia</option>
 
-                            <option value="">
-                                Seleccionar referencia
-                            </option>
-
-                            <option value="Compra proveedor">
-                                Compra proveedor
-                            </option>
-
-                            <option value="Entrada inventario">
-                                Entrada inventario
-                            </option>
-
-                            <option value="Transferencia sucursal">
-                                Transferencia sucursal
-                            </option>
-
-                            <option value="Producto dañado">
-                                Producto dañado
-                            </option>
-
-                            <option value="Producto caducado">
-                                Producto caducado
-                            </option>
-
-                            <option value="Ajuste inventario puntual">
-                                Ajuste inventario puntual
-                            </option>
+                            <option value="Compra proveedor">Compra proveedor</option>
+                            <option value="Entrada inventario">Entrada inventario</option>
+                            <option value="Transferencia sucursal">Transferencia sucursal</option>
+                            <option value="Producto dañado">Producto dañado</option>
+                            <option value="Producto caducado">Producto caducado</option>
+                            <option value="Ajuste inventario puntual">Ajuste inventario puntual</option>
 
                         </select>
-
                     </div>
 
                     <div class="form-group full">

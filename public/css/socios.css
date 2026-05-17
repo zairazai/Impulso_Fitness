@@ -107,18 +107,26 @@ textarea:focus {
 
 /* =========================================================
    VALIDACIONES
-   ========================================================= */
+========================================================= */
 
-.input-error {
-    border: 1px solid #ff4d4f !important;
+.custom-input.input-error,
+.custom-input.is-invalid,
+.form-control.input-error,
+.form-select.input-error,
+textarea.input-error {
+    border-color: #ff4d4f !important;
     background: rgba(255, 77, 79, 0.08) !important;
-    box-shadow: 0 0 8px rgba(255, 77, 79, 0.35);
+    box-shadow: 0 0 0 3px rgba(255, 77, 79, 0.18) !important;
     color: #fff !important;
 }
 
-.input-error:focus {
+.custom-input.input-error:focus,
+.custom-input.is-invalid:focus,
+.form-control.input-error:focus,
+.form-select.input-error:focus,
+textarea.input-error:focus {
     border-color: #ff4d4f !important;
-    box-shadow: 0 0 10px rgba(255, 77, 79, 0.55) !important;
+    box-shadow: 0 0 0 3px rgba(255, 77, 79, 0.28) !important;
 }
 
 .input-error-message {
@@ -376,38 +384,36 @@ textarea:focus {
     background: rgba(10, 18, 36, 0.45);
 }
 
+
 /* =========================================================
    ALERTAS
-   ========================================================= */
+========================================================= */
 
-.alert,
-.alert-success,
-.alert-danger,
-.alert-warning {
+.alert {
     padding: 13px 16px;
     border-radius: 14px;
+    margin-bottom: 16px;
     font-weight: 600;
     border: 1px solid transparent;
 }
 
-.alert-success {
+.alert.success {
     background: rgba(16, 185, 129, 0.13);
     border-color: rgba(16, 185, 129, 0.25);
     color: #34d399;
 }
 
-.alert-danger {
+.alert.danger {
     background: rgba(239, 68, 68, 0.13);
     border-color: rgba(239, 68, 68, 0.25);
     color: #f87171;
 }
 
-.alert-warning {
+.alert.warning {
     background: rgba(245, 166, 35, 0.16);
     border-color: rgba(245, 166, 35, 0.25);
     color: #fbbf24;
 }
-
 /* =========================================================
    SCROLL
    ========================================================= */

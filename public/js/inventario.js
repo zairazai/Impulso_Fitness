@@ -202,3 +202,45 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3000);
     }
 });
+
+const formProducto = document.getElementById('formProducto');
+
+if (formProducto) {
+
+    formProducto.addEventListener('submit', function (e) {
+
+        let valido = true;
+
+        const campos = formProducto.querySelectorAll('[required]');
+
+        campos.forEach(campo => {
+
+            campo.classList.remove('input-error');
+
+            if (!campo.value.trim()) {
+
+                campo.classList.add('input-error');
+
+                valido = false;
+            }
+        });
+
+        if (!valido) {
+            e.preventDefault();
+
+            alert('Revisa los campos marcados antes de continuar.');
+        }
+    });
+
+    formProducto.querySelectorAll('input, select, textarea')
+        .forEach(input => {
+
+            input.addEventListener('input', () => {
+                input.classList.remove('input-error');
+            });
+
+            input.addEventListener('change', () => {
+                input.classList.remove('input-error');
+            });
+        });
+}

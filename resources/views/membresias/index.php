@@ -50,24 +50,21 @@ include __DIR__ . '/../layouts/sidebar.php';
             <h1>Registrar Pago de Membresía</h1>
         </div>
 
-        <?php if ($success === 'socio_guardado'): ?>
-            <div class="alert alert-success">
-                Socio guardado correctamente. Ahora confirma el plan y registra el pago.
-            </div>
-        <?php endif; ?>
+          <!-- ALERTAS -->
 
-        <?php if (isset($_GET['paid'])): ?>
-            <div class="alert alert-success">
-                Pago registrado correctamente.
-            </div>
-        <?php endif; ?>
+            <?php if (!empty($_SESSION['success'])): ?>
+                <div class="alert success">
+                    <?= htmlspecialchars($_SESSION['success']) ?>
+                </div>
+                <?php unset($_SESSION['success']); ?>
+            <?php endif; ?>
 
-        <?php if (isset($_GET['error'])): ?>
-            <div class="alert alert-danger">
-                Ocurrió un problema al procesar el pago.
-            </div>
-        <?php endif; ?>
-
+            <?php if (!empty($_SESSION['error'])): ?>
+                <div class="alert danger">
+                    <?= htmlspecialchars($_SESSION['error']) ?>
+                </div>
+                <?php unset($_SESSION['error']); ?>
+            <?php endif; ?>
         <div class="register-layout">
 
             <div class="register-main">
