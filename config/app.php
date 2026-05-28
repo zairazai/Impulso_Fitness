@@ -16,8 +16,8 @@ define('BASE_URL', '/Impulso_Fitness');
 define('MAILER_SMTP_ENABLED', true);
 define('MAILER_HOST', 'smtp.office365.com');
 define('MAILER_PORT', 587);
-define('MAILER_USERNAME', 'angel_jesus_urias@hotmail.com');
-define('MAILER_PASSWORD', 'Kaleigh_Preciado1929');
+define('MAILER_USERNAME', 'correo@example.com');
+define('MAILER_PASSWORD', 'PASSWORD_AQUI');
 define('MAILER_SMTP_SECURE', 'tls'); // 'tls' o 'ssl'
 define('MAILER_FROM', 'angel_jesus_urias@hotmail.com');
 define('MAILER_FROM_NAME', 'Impulso Fitness');
