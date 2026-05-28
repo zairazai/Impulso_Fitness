@@ -90,7 +90,6 @@ public function __construct()
             $numero === '' ||
             $colonia === '' ||
             $codigoPostal === '' ||
-            $huellaDemo === '' ||
             $plan === ''
         ) {
             header("Location: " . self::SOCIOS_CREATE_ROUTE . "?error=campos");
@@ -154,8 +153,10 @@ public function __construct()
             exit;
         }
 
-        $hash = hash('sha256', $huellaDemo);
-        $this->modelo->registrarHuella($nuevoId, $hash);
+        if ($huellaDemo !== '') {
+            $hash = hash('sha256', $huellaDemo);
+            $this->modelo->registrarHuella($nuevoId, $hash);
+        }
 
         $_SESSION['success'] = 'Socio registrado correctamente. Continúa con la asignación de membresía.';
 
@@ -289,7 +290,10 @@ public function __construct()
     /*FUNCION PARA LISTAR SOCIOS*/
     public function index(): void
     {
-        $socios = $this->modelo->listarSocios();
+        $buscar = trim($_GET['buscar'] ?? '');
+
+        $this->modelo->actualizarEstadosMembresias();
+        $socios = $this->modelo->listarSocios($buscar);
 
         $idSeleccionado = (int)($_GET['id'] ?? 0);
 

@@ -78,15 +78,18 @@ include __DIR__ . '/../layouts/sidebar.php';
                 <!-- LISTA DE SOCIOS                                   -->
                 <!-- ================================================= -->
                 <div class="page-card">
-                    <div class="search-toolbar mb-3">
+                    <form method="GET" action="<?= BASE_URL ?>/app/controllers/SocioController.php" class="search-toolbar mb-3">
+                        <input type="hidden" name="action" value="index">
                         <input
                             type="text"
                             id="buscarSocioInput"
+                            name="buscar"
                             class="form-control custom-input"
                             placeholder="Buscar por nombre, correo o ID..."
+                            value="<?= htmlspecialchars($_GET['buscar'] ?? '') ?>"
                         >
-                    </div>
-
+                        <button type="submit" class="btn btn-primary">Buscar</button>
+                    </form>
                     <div class="socios-list" id="sociosList">
                         <?php if (!empty($socios)): ?>
                             <?php foreach ($socios as $row): ?>
@@ -98,7 +101,7 @@ include __DIR__ . '/../layouts/sidebar.php';
 
                                 <a
                                     id="socio-<?= (int)$row['id'] ?>"
-                                    href="<?= BASE_URL ?>/app/controllers/SocioController.php?action=index&id=<?= (int)$row['id'] ?>"
+                                    href="<?= BASE_URL ?>/app/controllers/SocioController.php?action=index&id=<?= (int)$row['id'] ?><?= !empty($_GET['buscar']) ? '&buscar=' . urlencode($_GET['buscar']) : '' ?>"
                                     class="socio-list-item <?= $esSeleccionado ? 'selected' : '' ?>"
                                 >
                                     <div>

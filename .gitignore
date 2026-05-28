@@ -13,3 +13,6 @@ Thumbs.db
 *.tmp
 *.bak
 
+# Dependencias
+/vendor/
+/node_modules/

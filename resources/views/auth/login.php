@@ -39,10 +39,10 @@ $error = $_GET['error'] ?? '';
 
                 <form id="loginForm" method="POST" action="/Impulso_Fitness/login.php" novalidate>
                     <div class="mb-3">
-                        <label for="username" class="form-label login-label">Nombre de usuario</label>
+                        <label for="username" class="form-label login-label">Usuario o correo electrónico</label>
                         <div class="input-group login-input-group">
                             <span class="input-group-text login-icon">👤</span>
-                            <input type="text" id="username" name="username" class="form-control login-input" placeholder="Ingresa tu usuario" required>
+                            <input type="text" id="username" name="username" class="form-control login-input" placeholder="Usuario o correo electrónico" required>
                         </div>
                         <small class="field-error" id="error-username"></small>
                     </div>
@@ -73,7 +73,7 @@ $error = $_GET['error'] ?? '';
                             </label>
                         </div>
 
-                        <a href="#" class="login-link">¿Olvidaste tu contraseña?</a>
+                        <a href="/Impulso_Fitness/app/controllers/AuthController.php?action=forgot" class="login-link">¿Olvidaste tu contraseña?</a>
                     </div>
                 </form>
             </div>

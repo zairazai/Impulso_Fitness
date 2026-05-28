@@ -1,3 +1,17 @@
+:root {
+    --bg-main: #081221;
+    --bg-card: #101C33;
+    --accent-cyan: #22D3EE;
+    --accent-cyan-hover: #06B6D4;
+    --accent-orange: #F97316;
+    --text-main: #F8FAFC;
+    --text-secondary: #94A3B8;
+    --border-color: #334155;
+    --error: #EF4444;
+    --success: #22C55E;
+    --shadow-lg: 0 32px 80px rgba(0, 0, 0, 0.35);
+}
+
 /* =========================================================
    BASE.CSS
    Estilos globales del sistema:
@@ -10,36 +24,36 @@
 
 body {
     margin: 0;
-    background: #06122b;
-    color: #f8fafc;
-    font-family: Arial, sans-serif;
+    background: var(--bg-main);
+    color: var(--text-main);
+    font-family: 'Inter', 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 /* Área principal a la derecha del sidebar */
 .main-content {
     margin-left: 250px;
     min-height: 100vh;
-    padding: 22px;
+    padding: 24px;
 }
 
 /* Card general reutilizable en todos los módulos */
 .page-card {
-    background: linear-gradient(180deg, rgba(5, 16, 40, 0.96) 0%, rgba(5, 14, 34, 0.96) 100%);
-    border: 1px solid rgba(117, 133, 165, 0.22);
+    background: rgba(16, 28, 51, 0.94);
+    border: 1px solid rgba(51, 65, 85, 0.72);
     border-radius: 22px;
-    padding: 20px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+    padding: 22px;
+    box-shadow: var(--shadow-lg);
 }
 
 /* Encabezado de módulo */
 .module-title-bar {
-    margin-bottom: 16px;
+    margin-bottom: 18px;
 }
 
 .module-title-bar h1 {
-    font-size: 1.55rem;
+    font-size: 1.8rem;
     margin: 0;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 /* Encabezados secundarios reutilizables */
@@ -49,73 +63,136 @@ body {
     justify-content: space-between;
 }
 
-.section-header h3 {
+.section-header h3,
+.section-header p {
     margin: 0;
-    font-size: 1.12rem;
-    font-weight: 600;
+}
+
+.section-header h3 {
+    font-size: 1.18rem;
+    font-weight: 700;
+    color: var(--text-main);
 }
 
 .section-header p {
-    margin: 2px 0 0;
-    color: #94a3b8;
-    font-size: 0.86rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
 }
 
 /* Inputs globales reutilizables */
 .custom-input {
-    background: rgba(15, 23, 42, 0.88) !important;
-    border: 1px solid #253552 !important;
-    color: #f8fafc !important;
-    border-radius: 12px !important;
-    padding: 11px 14px !important;
+    background: rgba(15, 25, 45, 0.92) !important;
+    border: 1px solid rgba(51, 65, 85, 0.9) !important;
+    color: var(--text-main) !important;
+    border-radius: 16px !important;
+    padding: 14px 16px !important;
     font-size: 0.95rem !important;
 }
 
-.custom-input::placeholder {
-    color: #7f8da3;
+.custom-input::placeholder,
+input::placeholder,
+textarea::placeholder {
+    color: var(--text-secondary) !important;
 }
 
-.custom-input:focus {
-    background: rgba(15, 23, 42, 0.95) !important;
-    color: #fff !important;
-    border-color: #3b82f6 !important;
-    box-shadow: none !important;
+.custom-input:focus,
+input:focus,
+select:focus,
+textarea:focus {
+    background: rgba(15, 25, 45, 1) !important;
+    border-color: var(--accent-cyan) !important;
+    box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.16) !important;
+    outline: none;
 }
 
 /* Labels de formularios */
 .form-label {
-    color: #cfd9ea;
-    font-weight: 500;
-    margin-bottom: 7px;
+    color: var(--text-secondary);
+    font-weight: 600;
+    margin-bottom: 8px;
     font-size: 0.92rem;
+}
+
+/* Botones globales */
+.btn {
+    border-radius: 18px;
+    padding: 0.75rem 1.4rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background: var(--accent-cyan);
+    color: #081221;
+    border: 1px solid transparent;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background: var(--accent-cyan-hover);
+    color: #081221;
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-main);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus {
+    background: rgba(34, 211, 238, 0.1);
+    border-color: rgba(34, 211, 238, 0.25);
+}
+
+.btn-outline-success {
+    color: var(--success) !important;
+    border-color: rgba(34, 197, 94, 0.4) !important;
+    background: rgba(34, 197, 94, 0.08) !important;
+}
+
+.btn-outline-success:hover,
+.btn-outline-success:focus {
+    color: #ffffff !important;
+    background: var(--success) !important;
+    border-color: var(--success) !important;
 }
 
 /* Badge general para estados */
 .status-pill {
-    display: inline-block;
-    padding: 4px 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2rem;
+    padding: 0 12px;
     border-radius: 999px;
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     font-weight: 700;
+    letter-spacing: 0.04em;
 }
 
 .status-active {
-    background: rgba(16, 185, 129, 0.18);
-    color: #34d399;
+    background: rgba(34, 197, 94, 0.18);
+    color: var(--success);
 }
 
 .status-inactive {
     background: rgba(239, 68, 68, 0.18);
-    color: #f87171;
+    color: var(--error);
+}
+
+.status-warning {
+    background: rgba(249, 115, 22, 0.16);
+    color: var(--accent-orange);
 }
 
 /* Cajas vacías o mensajes suaves */
 .empty-box {
-    padding: 18px;
-    border: 1px dashed rgba(148, 163, 184, 0.25);
-    border-radius: 14px;
-    color: #b7c3d7;
-    background: rgba(12, 20, 38, 0.75);
+    padding: 20px;
+    border: 1px dashed rgba(51, 65, 85, 0.8);
+    border-radius: 18px;
+    color: var(--text-secondary);
+    background: rgba(16, 28, 51, 0.55);
 }
 
 /* Responsive global */

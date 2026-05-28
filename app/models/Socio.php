@@ -29,15 +29,30 @@ class Socio
     | LISTAR SOCIOS
     |--------------------------------------------------------------------------
     */
-    public function listarSocios(): array
+    public function listarSocios(string $busqueda = ''): array
     {
+        // Refresca los estados antes de listar para evitar mostrar datos desactualizados
+        $this->actualizarEstadosMembresias();
+
         $stmt = $this->conn->prepare("CALL sp_listar_socios()");
         $stmt->execute();
 
-        $socios = $stmt->fetchAll();
+        $socios = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        return $socios;
+        if ($busqueda === '') {
+            return $socios;
+        }
+
+        $buscarMinuscula = mb_strtolower(trim($busqueda));
+
+        return array_values(array_filter($socios, function ($socio) use ($buscarMinuscula) {
+            return str_contains(mb_strtolower($socio['nombre'] ?? ''), $buscarMinuscula)
+                || str_contains(mb_strtolower($socio['email'] ?? ''), $buscarMinuscula)
+                || str_contains(mb_strtolower((string)($socio['id'] ?? '')), $buscarMinuscula)
+                || str_contains(mb_strtolower($socio['estado'] ?? ''), $buscarMinuscula)
+                || str_contains(mb_strtolower($socio['telefono'] ?? ''), $buscarMinuscula);
+        }));
     }
 
     /*
@@ -55,6 +70,46 @@ class Socio
         $stmt->closeCursor();
 
         return $socio;
+    }
+
+    public function actualizarEstadosMembresias(): void
+    {
+        // Marcar membresías como inactivas si ya vencieron
+        $stmt = $this->conn->prepare("UPDATE socio_membresia SET activa = 0 WHERE DATE(fecha_fin) <= DATE_SUB(CURDATE(), INTERVAL 0 DAY)");
+        $stmt->execute();
+        $stmt->closeCursor();
+
+        // Marcar socio como inactivo si NO tiene membresía pagada y activa
+        $stmt = $this->conn->prepare(
+            "UPDATE socios s
+             SET s.estado = 'inactivo'
+             WHERE s.estado <> 'suspendido'
+               AND NOT EXISTS (
+                   SELECT 1
+                   FROM socio_membresia sm
+                   WHERE sm.socio_id = s.id
+                     AND sm.activa = 1
+                     AND DATE(sm.fecha_fin) >= CURDATE()
+               )"
+        );
+        $stmt->execute();
+        $stmt->closeCursor();
+
+        // Marcar socio como activo si tiene membresía pagada y vigente (inclusive si inicia en el futuro)
+        $stmt = $this->conn->prepare(
+            "UPDATE socios s
+             SET s.estado = 'activo'
+             WHERE s.estado <> 'suspendido'
+               AND EXISTS (
+                   SELECT 1
+                   FROM socio_membresia sm
+                   WHERE sm.socio_id = s.id
+                     AND sm.activa = 1
+                     AND DATE(sm.fecha_fin) >= CURDATE()
+               )"
+        );
+        $stmt->execute();
+        $stmt->closeCursor();
     }
 
     /*

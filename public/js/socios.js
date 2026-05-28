@@ -375,12 +375,12 @@ function limpiarError(input) {
                 hayErrores = true;
             }
 
-            if (valorHuella === '' || valorHuella.length > 255) {
+            if (valorHuella !== '' && valorHuella.length > 255) {
                 marcarError(huellaDemo);
                 hayErrores = true;
             }
 
-            if (valorNotas === '' || valorNotas.length > 1000) {
+            if (valorNotas !== '' && valorNotas.length > 1000) {
                 marcarError(notas);
                 hayErrores = true;
             }

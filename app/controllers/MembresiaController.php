@@ -20,6 +20,8 @@ class MembresiaController
     private const ENTRADA_ROUTE = BASE_URL . '/app/controllers/InventarioController.php?action=entrada';
     private const MOVIMIENTOS_ROUTE = BASE_URL . '/app/controllers/InventarioController.php?action=movimientos';
     private const STOCK_BAJO_ROUTE = BASE_URL . '/app/controllers/InventarioController.php?action=stockBajo';
+    private const MEMBRESIAS_INDEX_ROUTE = BASE_URL . '/app/controllers/MembresiaController.php?action=index';
+    private const MEMBRESIAS_HISTORIAL_ROUTE = BASE_URL . '/app/controllers/MembresiaController.php?action=historial';
 
     /*
     |--------------------------------------------------------------------------

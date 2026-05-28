@@ -113,7 +113,7 @@ include __DIR__ . '/../layouts/sidebar.php';
                 <div class="historial-filter-actions">
 
                     <a href="<?= BASE_URL ?>/app/controllers/MembresiaController.php?action=exportarHistorial&buscar=<?= urlencode($_GET['buscar'] ?? '') ?>&fecha_inicio=<?= urlencode($_GET['fecha_inicio'] ?? '') ?>&fecha_fin=<?= urlencode($_GET['fecha_fin'] ?? '') ?>" class="btn btn-outline-info">
-                        Exportar
+                        <i class="bi bi-file-earmark-excel"></i> Exportar
                     </a>
 
                     <button type="submit" class="btn btn-primary">

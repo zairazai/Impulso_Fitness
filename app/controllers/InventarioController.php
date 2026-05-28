@@ -44,9 +44,10 @@ class InventarioController
     */
     private const LOGIN_VIEW = BASE_URL . '/resources/views/auth/login.php';
     private const DASHBOARD_VIEW = BASE_URL . '/resources/views/dashboard.php';
-    private const PRODUCTOS_VIEW = BASE_URL . '/routes/inventario_mostrar_productos.php';
-    private const ENTRADA_VIEW = BASE_URL . '/resources/views/inventario/entrada.php';
-    private const MOVIMIENTOS_VIEW = BASE_URL . '/resources/views/inventario/movimientos.php';
+    private const PRODUCTOS_VIEW = BASE_URL . '/app/controllers/InventarioController.php?action=productos';
+    private const ENTRADA_VIEW = BASE_URL . '/app/controllers/InventarioController.php?action=entrada';
+    private const MOVIMIENTOS_VIEW = BASE_URL . '/app/controllers/InventarioController.php?action=movimientos';
+    private const STOCK_BAJO_VIEW = BASE_URL . '/app/controllers/InventarioController.php?action=stockBajo';
 
     /*
     |--------------------------------------------------------------------------
@@ -403,6 +404,15 @@ class InventarioController
         $movimientos = $this->modelo->listarMovimientos($busqueda);
 
         require_once __DIR__ . '/../../resources/views/inventario/movimientos.php';
+    }
+
+    public function stockBajo(): void
+    {
+        $this->validarRolesInventario();
+
+        $productos = $this->modelo->listarStockBajo();
+
+        require_once __DIR__ . '/../../resources/views/inventario/stock_bajo.php';
     }
 
 }

@@ -5,6 +5,13 @@ if (!isset($_SESSION['user'])) {
     header("Location: /Impulso_Fitness/resources/views/auth/login.php");
     exit;
 }
+
+require_once __DIR__ . '/app/models/Dashboard.php';
+
+$dashboard = new Dashboard();
+$sociosActivos = $dashboard->contarSociosActivos();
+$ventasDelDia = $dashboard->contarVentasDelDia();
+$productosActivos = $dashboard->contarProductosActivos();
 ?>
 
 <?php include __DIR__ . '/resources/views/layouts/header.php'; ?>
@@ -15,23 +22,23 @@ if (!isset($_SESSION['user'])) {
 
 <div class="main-content">
     <div class="page-card">
-        <h1>Bienvenida, <?= htmlspecialchars($_SESSION['user']['username']) ?> 👋</h1>
+        <h1>Hola, <?= htmlspecialchars($_SESSION['user']['username']) ?> 👋</h1>
         <p>Ya estás dentro del sistema Impulso Fitness.</p>
 
         <div class="stats-grid">
             <div class="stat-box">
                 <h4>Socios activos</h4>
-                <p>0</p>
+                <p><?= $sociosActivos ?></p>
             </div>
 
             <div class="stat-box">
                 <h4>Ventas del día</h4>
-                <p>0</p>
+                <p><?= $ventasDelDia ?></p>
             </div>
 
             <div class="stat-box">
                 <h4>Productos</h4>
-                <p>0</p>
+                <p><?= $productosActivos ?></p>
             </div>
         </div>
     </div>

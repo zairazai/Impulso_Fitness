@@ -8,10 +8,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$username = trim($_POST['username'] ?? '');
+$login = trim($_POST['username'] ?? '');
 $password = trim($_POST['password'] ?? '');
 
-if ($username === '' || $password === '') {
+if ($login === '' || $password === '') {
     header("Location: /Impulso_Fitness/resources/views/auth/login.php?error=campos");
     exit;
 }
@@ -19,9 +19,10 @@ if ($username === '' || $password === '') {
 $db = new Database();
 $conn = $db->connect();
 
-$sql = "SELECT * FROM users WHERE username = :username LIMIT 1";
+$sql = "SELECT * FROM users WHERE username = :login OR email = :login_email LIMIT 1";
 $stmt = $conn->prepare($sql);
-$stmt->bindParam(':username', $username, PDO::PARAM_STR);
+$stmt->bindParam(':login', $login, PDO::PARAM_STR);
+$stmt->bindParam(':login_email', $login, PDO::PARAM_STR);
 $stmt->execute();
 
 $user = $stmt->fetch();

@@ -28,11 +28,50 @@ class Inventario
     */
     public function listarProductos(string $busqueda = ''): array
     {
-        $stmt = $this->conn->prepare("CALL sp_productos_listar(:busqueda)");
-        $stmt->bindParam(':busqueda', $busqueda, PDO::PARAM_STR);
+        $sql = "SELECT
+                    id,
+                    codigo,
+                    nombre,
+                    categoria,
+                    descripcion,
+                    costo_compra,
+                    precio_venta,
+                    stock,
+                    stock_minimo,
+                    icono,
+                    activo,
+                    CASE
+                        WHEN stock <= 0 THEN 'Agotado'
+                        WHEN stock <= stock_minimo THEN 'Por agotarse'
+                        ELSE 'Stock OK'
+                    END AS estado_stock
+                FROM productos
+                WHERE activo = 1
+                  AND (
+                    :busqueda = ''
+    
+    OR CONVERT(nombre USING utf8mb4)
+        COLLATE utf8mb4_general_ci
+        LIKE CONCAT('%', :busqueda_nombre, '%')
+
+    OR CONVERT(codigo USING utf8mb4)
+        COLLATE utf8mb4_general_ci
+        LIKE CONCAT('%', :busqueda_codigo, '%')
+
+    OR CONVERT(categoria USING utf8mb4)
+        COLLATE utf8mb4_general_ci
+        LIKE CONCAT('%', :busqueda_categoria, '%')
+                  )
+                ORDER BY nombre ASC";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(':busqueda', $busqueda, PDO::PARAM_STR);
+        $stmt->bindValue(':busqueda_nombre', $busqueda, PDO::PARAM_STR);
+        $stmt->bindValue(':busqueda_codigo', $busqueda, PDO::PARAM_STR);
+        $stmt->bindValue(':busqueda_categoria', $busqueda, PDO::PARAM_STR);
         $stmt->execute();
 
-        $data = $stmt->fetchAll();
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         return $data;
@@ -174,11 +213,33 @@ class Inventario
     */
     public function listarMovimientos(string $busqueda = ''): array
     {
-        $stmt = $this->conn->prepare("CALL sp_inventario_movimientos_listar(:busqueda)");
-        $stmt->bindParam(':busqueda', $busqueda, PDO::PARAM_STR);
+        $sql = "SELECT
+                    im.id,
+                    im.producto_id,
+                    p.nombre AS producto,
+                    p.codigo,
+                    p.categoria,
+                    im.tipo,
+                    im.cantidad,
+                    im.fecha,
+                    im.referencia,
+                    im.observaciones
+                FROM inventario_movimientos im
+                INNER JOIN productos p ON p.id = im.producto_id
+                WHERE :busqueda = ''
+                  OR p.nombre COLLATE utf8mb4_general_ci LIKE CONCAT('%', :busqueda_nombre, '%')
+                  OR p.codigo COLLATE utf8mb4_general_ci LIKE CONCAT('%', :busqueda_codigo, '%')
+                  OR im.tipo COLLATE utf8mb4_general_ci LIKE CONCAT('%', :busqueda_tipo, '%')
+                ORDER BY im.fecha DESC";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(':busqueda', $busqueda, PDO::PARAM_STR);
+        $stmt->bindValue(':busqueda_nombre', $busqueda, PDO::PARAM_STR);
+        $stmt->bindValue(':busqueda_codigo', $busqueda, PDO::PARAM_STR);
+        $stmt->bindValue(':busqueda_tipo', $busqueda, PDO::PARAM_STR);
         $stmt->execute();
 
-        $data = $stmt->fetchAll();
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         return $data;

@@ -40,9 +40,9 @@ $isMembresiasRecibo = str_contains($current, '/membresias/recibo.php');
 | VENTAS
 |--------------------------------------------------------------------------
 */
-$isVentas = str_contains($current, '/ventas/');
-$isVentasIndex = str_contains($current, '/ventas/index.php');
-$isVentasHistorial = str_contains($current, '/ventas/historial.php');
+$isVentasIndex = str_contains($current, '/ventas/index.php') || str_contains($current, 'VentaController.php?action=index');
+$isVentasHistorial = str_contains($current, '/ventas/historial.php') || str_contains($current, 'VentaController.php?action=historial');
+$isVentas = $isVentasIndex || $isVentasHistorial;
 
 /*
 |--------------------------------------------------------------------------
@@ -65,10 +65,17 @@ $isStockBajo = str_contains($current, 'InventarioController.php?action=stockBajo
 $isInventario = $isProductos || $isEntradaProductos || $isMovimientos || $isStockBajo;
 /*
 |--------------------------------------------------------------------------
+| INGRESO DE PERSONAL
+|--------------------------------------------------------------------------
+*/
+$isIngresoPersonal = str_contains($current, 'IngresoController.php') || str_contains($current, '/ingreso/');
+
+/*
+|--------------------------------------------------------------------------
 | CONTROL DE ACCESO
 |--------------------------------------------------------------------------
 */
-$isControlAcceso = str_contains($current, '/accesos/') || str_contains($current, '/control-acceso/');
+$isControlAcceso = str_contains($current, '/accesos/') || str_contains($current, 'AccesoController.php');
 
 /*
 |--------------------------------------------------------------------------
@@ -84,7 +91,11 @@ $isEntrenadores = str_contains($current, '/instructores/');
 | REPORTES
 |--------------------------------------------------------------------------
 */
-$isReportes = str_contains($current, '/reportes/');
+$isReportesIndex = str_contains($current, 'ReporteController.php?action=index');
+$isReportesMembresias = str_contains($current, 'ReporteController.php?action=membresias');
+$isReportesInventario = str_contains($current, 'ReporteController.php?action=inventario');
+$isReportesVentas = str_contains($current, '/ventas/historial.php') || str_contains($current, 'VentaController.php?action=historial') || str_contains($current, 'ReporteController.php?action=ventas');
+$isReportes = $isReportesIndex || $isReportesMembresias || $isReportesInventario || $isReportesVentas;
 
 ?>
 
@@ -132,15 +143,16 @@ $isReportes = str_contains($current, '/reportes/');
 
                     <a href="<?= BASE_URL ?>/app/controllers/SocioController.php?action=index"
                     class="submenu-link <?= $isSociosIndex ? 'active-submenu-link' : '' ?>">
-                        Buscar socio
+                        <i class="bi bi-search"></i> Buscar socio
                     </a>
 
                     <a href="<?= BASE_URL ?>/app/controllers/SocioController.php?action=create"
                     class="submenu-link <?= $isSociosCreate ? 'active-submenu-link' : '' ?>">
-                        Nuevo socio
+                        <i class="bi bi-person-plus"></i> Nuevo socio
                     </a>
 
                 </div>
+            </div>
 
             <!-- MEMBRESÍAS -->
             <div class="menu-block <?= $isMembresias ? 'active-block' : '' ?>">
@@ -155,12 +167,12 @@ $isReportes = str_contains($current, '/reportes/');
                 <div id="membresias-submenu" class="sidebar-submenu <?= $isMembresias ? 'open' : '' ?>">
                     <a href="<?= BASE_URL ?>/app/controllers/MembresiaController.php?action=index"
                     class="submenu-link <?= $isMembresiasIndex ? 'active-submenu-link' : '' ?>">
-                        Registrar pago
+                        <i class="bi bi-credit-card"></i> Registrar pago
                     </a>
 
                     <a href="<?= BASE_URL ?>/app/controllers/MembresiaController.php?action=historial"
                     class="submenu-link <?= ($isMembresiasHistorial || $isMembresiasRecibo) ? 'active-submenu-link' : '' ?>">
-                        Historial de pagos
+                        <i class="bi bi-clock-history"></i> Historial de pagos
                     </a>
                 </div>
             </div>
@@ -176,14 +188,9 @@ $isReportes = str_contains($current, '/reportes/');
                 </button>
 
                 <div id="ventas-submenu" class="sidebar-submenu <?= $isVentas ? 'open' : '' ?>">
-                    <a href="/Impulso_Fitness/resources/views/ventas/index.php"
+                    <a href="<?= BASE_URL ?>/app/controllers/VentaController.php?action=index"
                        class="submenu-link <?= $isVentasIndex ? 'active-submenu-link' : '' ?>">
-                        Punto de venta
-                    </a>
-
-                    <a href="/Impulso_Fitness/resources/views/ventas/historial.php"
-                       class="submenu-link <?= $isVentasHistorial ? 'active-submenu-link' : '' ?>">
-                        Historial de ventas
+                        <i class="bi bi-basket"></i> Nueva venta
                     </a>
                 </div>
             </div>
@@ -201,20 +208,31 @@ $isReportes = str_contains($current, '/reportes/');
                 <div id="inventario-submenu" class="sidebar-submenu <?= $isInventario ? 'open' : '' ?>">
                     <a href="<?= BASE_URL ?>/app/controllers/InventarioController.php?action=productos"
                     class="submenu-link <?= $isProductos ? 'active-submenu-link' : '' ?>">
-                        Productos
+                        <i class="bi bi-box-seam"></i> Productos
                     </a>
 
                     <a href="<?= BASE_URL ?>/app/controllers/InventarioController.php?action=entrada"
                     class="submenu-link <?= $isEntradaProductos ? 'active-submenu-link' : '' ?>">
-                        Entrada de productos
+                        <i class="bi bi-arrow-down-circle"></i> Entrada de productos
+                    </a>
+
+                    <a href="<?= BASE_URL ?>/app/controllers/InventarioController.php?action=stockBajo"
+                    class="submenu-link <?= $isStockBajo ? 'active-submenu-link' : '' ?>">
+                        <i class="bi bi-exclamation-triangle"></i> Stock bajo
                     </a>
 
                     <a href="<?= BASE_URL ?>/app/controllers/InventarioController.php?action=movimientos"
                     class="submenu-link <?= $isMovimientos ? 'active-submenu-link' : '' ?>">
-                        Movimientos
+                        <i class="bi bi-repeat"></i> Movimientos
                     </a>
                 </div>
             </div>
+
+            <!-- INGRESO DE PERSONAL -->
+            <a href="<?= BASE_URL ?>/app/controllers/IngresoController.php?action=index"
+               class="menu-link <?= $isIngresoPersonal ? 'active-link' : '' ?>">
+                <span>🎫</span> Ingreso de personal
+            </a>
 
             <!-- CONTROL DE ACCESO -->
             <div class="menu-block <?= $isControlAcceso ? 'active-block' : '' ?>">
@@ -227,14 +245,14 @@ $isReportes = str_contains($current, '/reportes/');
                 </button>
 
                 <div id="acceso-submenu" class="sidebar-submenu <?= $isControlAcceso ? 'open' : '' ?>">
-                    <a href="/Impulso_Fitness/resources/views/accesos/index.php"
-                       class="submenu-link">
-                        Registro de accesos
+                    <a href="<?= BASE_URL ?>/app/controllers/AccesoController.php?action=index"
+                       class="submenu-link <?= str_contains($current, 'AccesoController.php?action=index') ? 'active-submenu-link' : '' ?>">
+                        <i class="bi bi-journal-check"></i> Registro de accesos
                     </a>
 
-                    <a href="/Impulso_Fitness/resources/views/accesos/biometrico.php"
-                       class="submenu-link">
-                        Biométrico
+                    <a href="<?= BASE_URL ?>/app/controllers/AccesoController.php?action=biometrico"
+                       class="submenu-link <?= str_contains($current, 'AccesoController.php?action=biometrico') ? 'active-submenu-link' : '' ?>">
+                        <i class="bi bi-fingerprint"></i> Biométrico
                     </a>
                 </div>
             </div>
@@ -250,14 +268,14 @@ $isReportes = str_contains($current, '/reportes/');
                 </button>
 
                 <div id="admin-submenu" class="sidebar-submenu <?= $isAdministracion ? 'open' : '' ?>">
-                    <a href="/Impulso_Fitness/resources/views/usuarios/index.php"
+                    <a href="<?= BASE_URL ?>/app/controllers/UsuarioController.php?action=index"
                        class="submenu-link <?= $isUsuarios ? 'active-submenu-link' : '' ?>">
-                        Usuarios
+                        <i class="bi bi-people"></i> Usuarios
                     </a>
 
                     <a href="/Impulso_Fitness/resources/views/instructores/index.php"
                        class="submenu-link <?= $isEntrenadores ? 'active-submenu-link' : '' ?>">
-                        Entrenadores
+                        <i class="bi bi-person-badge"></i> Entrenadores
                     </a>
                 </div>
             </div>
@@ -273,19 +291,24 @@ $isReportes = str_contains($current, '/reportes/');
                 </button>
 
                 <div id="reportes-submenu" class="sidebar-submenu <?= $isReportes ? 'open' : '' ?>">
-                    <a href="/Impulso_Fitness/resources/views/reportes/index.php"
-                       class="submenu-link">
-                        Reporte general
+                    <a href="<?= BASE_URL ?>/app/controllers/ReporteController.php?action=index"
+                       class="submenu-link <?= $isReportesIndex ? 'active-submenu-link' : '' ?>">
+                        <i class="bi bi-bar-chart-line-fill"></i> Reporte general
                     </a>
 
-                    <a href="/Impulso_Fitness/resources/views/reportes/membresias.php"
-                       class="submenu-link">
-                        Membresías
+                    <a href="<?= BASE_URL ?>/app/controllers/ReporteController.php?action=membresias"
+                       class="submenu-link <?= $isReportesMembresias ? 'active-submenu-link' : '' ?>">
+                        <i class="bi bi-card-list"></i> Membresías
                     </a>
 
-                    <a href="/Impulso_Fitness/resources/views/reportes/inventario.php"
-                       class="submenu-link">
-                        Inventario
+                    <a href="<?= BASE_URL ?>/app/controllers/ReporteController.php?action=inventario"
+                       class="submenu-link <?= $isReportesInventario ? 'active-submenu-link' : '' ?>">
+                        <i class="bi bi-box-seam"></i> Inventario
+                    </a>
+
+                    <a href="<?= BASE_URL ?>/app/controllers/ReporteController.php?action=ventas"
+                       class="submenu-link <?= $isReportesVentas ? 'active-submenu-link' : '' ?>">
+                        <i class="bi bi-receipt"></i> Historial de ventas
                     </a>
                 </div>
             </div>

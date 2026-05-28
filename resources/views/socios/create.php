@@ -335,7 +335,7 @@ include __DIR__ . '/../layouts/sidebar.php';
                                 </div>
                             </div>
 
-                            <label class="form-label" for="huellaDemo">Código de huella (demo) *</label>
+                            <label class="form-label" for="huellaDemo">Código de huella (demo)</label>
                             <input
                                 type="text"
                                 name="huella_demo"
@@ -343,7 +343,6 @@ include __DIR__ . '/../layouts/sidebar.php';
                                 class="form-control custom-input"
                                 placeholder="Ej. HUELLA-JUAN-001"
                                 maxlength="255"
-                                required
                             >
 
                             <div class="mt-3">
@@ -414,7 +413,7 @@ include __DIR__ . '/../layouts/sidebar.php';
 
                 <!-- Notas -->
                 <div class="page-card side-card">
-                    <h4>Notas *</h4>
+                    <h4>Notas</h4>
                     <textarea
                         class="form-control custom-input"
                         rows="6"
@@ -422,7 +421,6 @@ include __DIR__ . '/../layouts/sidebar.php';
                         form="formSocioCreate"
                         placeholder="Notas adicionales sobre el socio..."
                         maxlength="1000"
-                        required
                     ></textarea>
                 </div>
             </div>

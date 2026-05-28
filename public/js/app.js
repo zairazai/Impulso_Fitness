@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const toggleButtons = document.querySelectorAll('.sidebar-toggle-btn');
+    const submenus = document.querySelectorAll('.sidebar-submenu');
 
     toggleButtons.forEach(button => {
         button.addEventListener('click', () => {
@@ -21,6 +22,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const target = document.getElementById(targetId);
 
             if (target) {
+                submenus.forEach(submenu => {
+                    if (submenu !== target) {
+                        submenu.classList.remove('open');
+                    }
+                });
                 target.classList.toggle('open');
             }
         });

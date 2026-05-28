@@ -229,7 +229,40 @@ class Membresia
     */
     public function actualizarEstadosMembresias(): void
     {
-        $stmt = $this->conn->prepare("CALL sp_actualizar_estados_membresias()");
+        // Marcar membresías como inactivas si ya vencieron
+        $stmt = $this->conn->prepare("UPDATE socio_membresia SET activa = 0 WHERE DATE(fecha_fin) <= DATE_SUB(CURDATE(), INTERVAL 0 DAY)");
+        $stmt->execute();
+        $stmt->closeCursor();
+
+        // Marcar socio como inactivo si NO tiene membresía pagada y activa
+        $stmt = $this->conn->prepare(
+            "UPDATE socios s
+             SET s.estado = 'inactivo'
+             WHERE s.estado <> 'suspendido'
+               AND NOT EXISTS (
+                   SELECT 1
+                   FROM socio_membresia sm
+                   WHERE sm.socio_id = s.id
+                     AND sm.activa = 1
+                     AND DATE(sm.fecha_fin) >= CURDATE()
+               )"
+        );
+        $stmt->execute();
+        $stmt->closeCursor();
+
+        // Marcar socio como activo si tiene membresía pagada y vigente (inclusive si inicia en el futuro)
+        $stmt = $this->conn->prepare(
+            "UPDATE socios s
+             SET s.estado = 'activo'
+             WHERE s.estado <> 'suspendido'
+               AND EXISTS (
+                   SELECT 1
+                   FROM socio_membresia sm
+                   WHERE sm.socio_id = s.id
+                     AND sm.activa = 1
+                     AND DATE(sm.fecha_fin) >= CURDATE()
+               )"
+        );
         $stmt->execute();
         $stmt->closeCursor();
     }
