@@ -109,148 +109,157 @@ class Venta
         $stmt->closeCursor();
     }
 
-    public function registrarVenta(
-        int $userId,
-        ?int $socioId,
-        float $total,
-        string $metodoPago,
-        array $items
-    ): int|false {
-        try {
-            // Si no hay socio seleccionado, intentar obtener o crear un socio "Cliente general"
-            if ($socioId === null || $socioId <= 0) {
-                try {
-                    // Buscar un socio existente con el nombre exacto
-                    $stmtFind = $this->conn->prepare("SELECT id FROM socios WHERE nombres = :nombres LIMIT 1");
-                    $nombreGeneral = 'Cliente general';
-                    $stmtFind->bindValue(':nombres', $nombreGeneral, PDO::PARAM_STR);
-                    $stmtFind->execute();
-                    $found = $stmtFind->fetch(PDO::FETCH_ASSOC);
-                    $stmtFind->closeCursor();
+   public function registrarVenta(
+    int $userId,
+    ?int $socioId,
+    float $total,
+    string $metodoPago,
+    array $items
+): int|false {
+    try {
+        // Si no hay socio seleccionado, intentar obtener o crear un socio "Cliente general"
+        if ($socioId === null || $socioId <= 0) {
+            try {
+                // Buscar un socio existente con el nombre exacto
+                $stmtFind = $this->conn->prepare("SELECT id FROM socios WHERE nombres = :nombres LIMIT 1");
+                $nombreGeneral = 'Cliente general';
+                $stmtFind->bindValue(':nombres', $nombreGeneral, PDO::PARAM_STR);
+                $stmtFind->execute();
+                $found = $stmtFind->fetch(PDO::FETCH_ASSOC);
+                $stmtFind->closeCursor();
 
-                    if ($found && !empty($found['id'])) {
-                        $socioId = (int)$found['id'];
+                if ($found && !empty($found['id'])) {
+                    $socioId = (int)$found['id'];
+                } else {
+                    // Usar el modelo Socio para insertar un registro básico y consistente
+                    require_once __DIR__ . '/Socio.php';
+
+                    $socioModel = new Socio();
+
+                    $nuevoId = $socioModel->insertarSocioCompleto(
+                        $nombreGeneral,
+                        '',
+                        '',
+                        '',
+                        '',
+                        'cliente.general@local',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        '',
+                        'Registro automático: cliente general'
+                    );
+
+                    if ($nuevoId > 0) {
+                        $socioId = $nuevoId;
                     } else {
-                        // Usar el modelo Socio para insertar un registro básico y consistente
-                        require_once __DIR__ . '/Socio.php';
-                        $socioModel = new Socio();
-                        $nuevoId = $socioModel->insertarSocioCompleto(
-                            $nombreGeneral,
-                            '',
-                            '',
-                            '',
-                            '',
-                            'cliente.general@local',
-                            '',
-                            '',
-                            '',
-                            '',
-                            '',
-                            '',
-                            'Registro automático: cliente general'
-                        );
-
-                        if ($nuevoId > 0) {
-                            $socioId = $nuevoId;
-                        } else {
-                            // No se pudo crear; dejar en null y continuar (la venta seguirá guardándose con socio_id NULL)
-                            $socioId = null;
-                        }
+                        // No se pudo crear; dejar en null y continuar
+                        $socioId = null;
                     }
-                } catch (Exception $e) {
-                    // Si falló la creación/búsqueda, no bloquear la venta: continuamos con socio NULL
-                    $socioId = null;
                 }
+            } catch (Exception $e) {
+                // Si falló la creación/búsqueda, no bloquear la venta
+                $socioId = null;
+            }
+        }
+
+        $this->conn->beginTransaction();
+
+        $stmt = $this->conn->prepare(
+            "INSERT INTO ventas (user_id, socio_id, total, metodo_pago)
+             VALUES (:user_id, :socio_id, :total, :metodo_pago)"
+        );
+
+        if ($userId > 0) {
+            $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        } else {
+            $stmt->bindValue(':user_id', null, PDO::PARAM_NULL);
+        }
+
+        if ($socioId !== null && $socioId > 0) {
+            $stmt->bindValue(':socio_id', $socioId, PDO::PARAM_INT);
+        } else {
+            $stmt->bindValue(':socio_id', null, PDO::PARAM_NULL);
+        }
+
+        $stmt->bindValue(':total', $total);
+        $stmt->bindValue(':metodo_pago', $metodoPago, PDO::PARAM_STR);
+        $stmt->execute();
+        $stmt->closeCursor();
+
+        $ventaId = (int)$this->conn->lastInsertId();
+
+        foreach ($items as $item) {
+            $productoId = (int)($item['producto_id'] ?? 0);
+            $cantidad = (int)($item['cantidad'] ?? 0);
+            $precioUnitario = (float)($item['precio_unitario'] ?? 0);
+
+            if ($productoId <= 0 || $cantidad <= 0 || $precioUnitario <= 0) {
+                throw new Exception('Detalle de venta inválido.');
             }
 
-            $this->conn->beginTransaction();
-
-            $stmt = $this->conn->prepare(
-                "INSERT INTO ventas (user_id, socio_id, total, metodo_pago)
-                 VALUES (:user_id, :socio_id, :total, :metodo_pago)"
+            $stmtDetalle = $this->conn->prepare(
+                "INSERT INTO venta_detalle (venta_id, producto_id, cantidad, precio_unitario)
+                 VALUES (:venta_id, :producto_id, :cantidad, :precio_unitario)"
             );
 
+            $stmtDetalle->bindValue(':venta_id', $ventaId, PDO::PARAM_INT);
+            $stmtDetalle->bindValue(':producto_id', $productoId, PDO::PARAM_INT);
+            $stmtDetalle->bindValue(':cantidad', $cantidad, PDO::PARAM_INT);
+            $stmtDetalle->bindValue(':precio_unitario', $precioUnitario);
+            $stmtDetalle->execute();
+            $stmtDetalle->closeCursor();
+
+            $stmtMovimiento = $this->conn->prepare(
+                "CALL sp_inventario_registrar_movimiento(
+                    :producto_id,
+                    :usuario_id,
+                    :tipo,
+                    :cantidad,
+                    :referencia,
+                    :observaciones
+                )"
+            );
+
+            $tipo = 'salida';
+            $referencia = 'Venta #' . $ventaId;
+            $observaciones = 'Salida por venta';
+
+            $stmtMovimiento->bindValue(':producto_id', $productoId, PDO::PARAM_INT);
+
             if ($userId > 0) {
-                $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+                $stmtMovimiento->bindValue(':usuario_id', $userId, PDO::PARAM_INT);
             } else {
-                $stmt->bindValue(':user_id', null, PDO::PARAM_NULL);
+                $stmtMovimiento->bindValue(':usuario_id', null, PDO::PARAM_NULL);
             }
 
-            if ($socioId !== null && $socioId > 0) {
-                $stmt->bindValue(':socio_id', $socioId, PDO::PARAM_INT);
-            } else {
-                $stmt->bindValue(':socio_id', null, PDO::PARAM_NULL);
-            }
+            $stmtMovimiento->bindValue(':tipo', $tipo, PDO::PARAM_STR);
+            $stmtMovimiento->bindValue(':cantidad', $cantidad, PDO::PARAM_INT);
+            $stmtMovimiento->bindValue(':referencia', $referencia, PDO::PARAM_STR);
+            $stmtMovimiento->bindValue(':observaciones', $observaciones, PDO::PARAM_STR);
 
-            $stmt->bindParam(':total', $total);
-            $stmt->bindParam(':metodo_pago', $metodoPago, PDO::PARAM_STR);
-            $stmt->execute();
-            $stmt->closeCursor();
-
-            $ventaId = (int)$this->conn->lastInsertId();
-
-            foreach ($items as $item) {
-                $productoId = (int)($item['producto_id'] ?? 0);
-                $cantidad = (int)($item['cantidad'] ?? 0);
-                $precioUnitario = (float)($item['precio_unitario'] ?? 0);
-
-                if ($productoId <= 0 || $cantidad <= 0 || $precioUnitario <= 0) {
-                    throw new Exception('Detalle de venta inválido.');
-                }
-
-                $stmtDetalle = $this->conn->prepare(
-                    "INSERT INTO venta_detalle (venta_id, producto_id, cantidad, precio_unitario)
-                     VALUES (:venta_id, :producto_id, :cantidad, :precio_unitario)"
-                );
-
-                $stmtDetalle->bindParam(':venta_id', $ventaId, PDO::PARAM_INT);
-                $stmtDetalle->bindParam(':producto_id', $productoId, PDO::PARAM_INT);
-                $stmtDetalle->bindParam(':cantidad', $cantidad, PDO::PARAM_INT);
-                $stmtDetalle->bindParam(':precio_unitario', $precioUnitario);
-                $stmtDetalle->execute();
-                $stmtDetalle->closeCursor();
-
-                $stmtMovimiento = $this->conn->prepare(
-                    "CALL sp_inventario_registrar_movimiento(
-                        :producto_id,
-                        :usuario_id,
-                        :tipo,
-                        :cantidad,
-                        :referencia,
-                        :observaciones
-                    )"
-                );
-
-                $tipo = 'salida';
-                $referencia = 'Venta #' . $ventaId;
-                $observaciones = 'Salida por venta';
-
-                $stmtMovimiento->bindParam(':producto_id', $productoId, PDO::PARAM_INT);
-                if ($userId > 0) {
-                    $stmtMovimiento->bindValue(':usuario_id', $userId, PDO::PARAM_INT);
-                } else {
-                    $stmtMovimiento->bindValue(':usuario_id', null, PDO::PARAM_NULL);
-                }
-                $stmtMovimiento->bindParam(':tipo', $tipo, PDO::PARAM_STR);
-                $stmtMovimiento->bindParam(':cantidad', $cantidad, PDO::PARAM_INT);
-                $stmtMovimiento->bindParam(':referencia', $referencia, PDO::PARAM_STR);
-                $stmtMovimiento->bindParam(':observaciones', $observaciones, PDO::PARAM_STR);
+            try {
                 $stmtMovimiento->execute();
                 $stmtMovimiento->closeCursor();
+            } catch (PDOException $e) {
+                throw new Exception('Stock insuficiente para realizar la venta.');
             }
-
-            $this->conn->commit();
-
-            return $ventaId;
-        } catch (Exception $e) {
-            if ($this->conn->inTransaction()) {
-                $this->conn->rollBack();
-            }
-
-            $this->lastError = $e->getMessage();
-            return false;
         }
+
+        $this->conn->commit();
+
+        return $ventaId;
+    } catch (Exception $e) {
+        if ($this->conn->inTransaction()) {
+            $this->conn->rollBack();
+        }
+
+        $this->lastError = $e->getMessage();
+        return false;
     }
+}
 
     public function historialVentas(
         string $busqueda = '',
